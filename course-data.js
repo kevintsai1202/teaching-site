@@ -2355,6 +2355,61 @@ window.COURSE = {
                 title: 'ChatRoom.css',
                 content: '.chat-window {\n  width: 500px;\n  height: 650px;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #e0e0e0;\n  border-radius: 16px;\n  overflow: hidden;\n  box-shadow: 0 8px 24px rgba(0,0,0,0.08);\n  background: #ffffff;\n}\n.chat-header {\n  padding: 16px;\n  background: linear-gradient(135deg, #4f46e5, #3b82f6);\n  color: white;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n.chat-header h3 {\n  margin: 0;\n  font-size: 16px;\n  font-weight: 600;\n}\n.session-badge {\n  font-size: 11px;\n  background: rgba(255,255,255,0.2);\n  padding: 4px 8px;\n  border-radius: 20px;\n}\n.messages-container {\n  flex: 1;\n  padding: 16px;\n  overflow-y: auto;\n  background-color: #f8fafc;\n}\n.msg-row {\n  display: flex;\n  margin-bottom: 16px;\n  align-items: flex-start;\n}\n.msg-row.user {\n  flex-direction: row-reverse;\n}\n.avatar {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  background: #e2e8f0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 16px;\n}\n.msg-row.user .avatar {\n  background: #dbeafe;\n}\n.msg-row.assistant .avatar {\n  background: #e0e7ff;\n}\n.bubble {\n  max-width: 70%;\n  padding: 10px 14px;\n  border-radius: 12px;\n  margin: 0 8px;\n  font-size: 14px;\n  line-height: 1.5;\n  word-break: break-all;\n}\n.msg-row.user .bubble {\n  background-color: #3b82f6;\n  color: white;\n  border-top-right-radius: 2px;\n}\n.msg-row.assistant .bubble {\n  background-color: white;\n  color: #1e293b;\n  border-top-left-radius: 2px;\n  border: 1px solid #e2e8f0;\n}\n.bubble.thinking {\n  background-color: #f1f5f9;\n  color: #64748b;\n  font-style: italic;\n}\n.loading-dots {\n  display: inline-block;\n  animation: pulse 1.5s infinite;\n}\n@keyframes pulse {\n  0%, 100% { opacity: 1; }\n  50% { opacity: 0.5; }\n}\n.cursor {\n  animation: blink 1s infinite;\n  color: #3b82f6;\n}\n@keyframes blink {\n  50% { opacity: 0; }\n}\n.quick-actions {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n  padding: 12px 16px;\n  background: #ffffff;\n  border-top: 1px solid #f1f5f9;\n}\n.quick-btn {\n  background: #f1f5f9;\n  border: 1px solid #e2e8f0;\n  color: #475569;\n  padding: 6px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  cursor: pointer;\n  transition: all 0.2s ease;\n}\n.quick-btn:hover:not(:disabled) {\n  background: #e2e8f0;\n  color: #0f172a;\n}\n.quick-btn:disabled {\n  opacity: 0.6;\n  cursor: not-allowed;\n}\n.chat-input-bar {\n  display: flex;\n  padding: 16px;\n  background: #ffffff;\n  border-top: 1px solid #e2e8f0;\n  gap: 8px;\n}\n.chat-input-bar input {\n  flex: 1;\n  padding: 10px 14px;\n  border: 1px solid #cbd5e1;\n  border-radius: 8px;\n  outline: none;\n  font-size: 14px;\n}\n.chat-input-bar input:focus {\n  border-color: #3b82f6;\n}\n.chat-input-bar button {\n  background: #3b82f6;\n  color: white;\n  border: none;\n  padding: 0 18px;\n  border-radius: 8px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: background 0.2s;\n}\n.chat-input-bar button:hover:not(:disabled) {\n  background: #2563eb;\n}\n.chat-input-bar button:disabled {\n  background: #cbd5e1;\n  cursor: not-allowed;\n}'
               }
+            },
+            {
+              title: '對話中商品、訂單、推薦的卡片元件呈現方式',
+              type: 'code',
+              paragraphs: [
+                '在智慧客服中，AI 回應不應只是死板的 Markdown 文字，更應該在適當時機，動態將對應的「React 商品卡片、訂單物流卡片、語意推薦卡片」嵌入到對話流中，提昇 UI/UX 質感。',
+                '前端 ChatRoom.jsx 採用「自動偵測與條件渲染」機制來實作此功能：',
+                '1. 串流偵測 (detectAndAttachCards)：當前端 EventSource 接收到後端 AI 推播的字元片段時，會將目前的完整對話內容 (fullResponse) 傳入進行關鍵字匹配。當匹配到商品名稱 (如耳機、鍵盤)、或涉及訂單關鍵字且提及使用者 alice 時，自動在訊息物件中附加對應的 `cards` 資料。',
+                '2. 條件渲染 (renderCards)：在 React 渲染訊息列表時，如果訊息物件含有 `cards` 屬性，則呼叫 `renderCards` 方法，根據 `cards.cardType` 分別渲染出 <ProductCard />、<OrderCard />、或 <RecommendationCard />。'
+              ],
+              code: {
+                language: 'javascript',
+                title: 'ChatRoom.jsx — 核心動態識別與元件渲染邏輯',
+                content: '/**\n * 偵測 AI 回覆內容並自動對應卡片數據\n */\nconst detectAndAttachCards = (text) => {\n  // 1. 商品卡片或語意推薦卡片偵測\n  const matchedProducts = storeProducts.filter(p => text.toLowerCase().includes(p.name.toLowerCase()));\n  if (matchedProducts.length > 0) {\n    if (text.includes("推薦") || text.includes("適合您")) {\n      return { cardType: "recommendations", list: matchedProducts };\n    }\n    return { cardType: "products", list: matchedProducts };\n  }\n\n  // 2. 訂單物流卡片偵測\n  if (text.includes("訂單") && (text.includes("alice") || text.includes("Alice"))) {\n    return { cardType: "orders", list: [/* 來自後端查出的訂單明細 */] };\n  }\n  return null;\n};\n\n/**\n * 條件式渲染不同的 React 元件卡片\n */\nconst renderCards = (cards) => {\n  if (!cards) return null;\n  switch (cards.cardType) {\n    case "products":\n      return <div className="products-grid">{/* 渲染商品網格元件 */}</div>;\n    case "orders":\n      return <div className="orders-list">{/* 渲染物流訂單元件 */}</div>;\n    case "recommendations":\n      return <div className="recommendations-list">{/* 渲染推薦商品元件 */}</div>;\n    default:\n      return null;\n  }\n};'
+              }
+            },
+            {
+              title: '系統運行展示：AI 基礎對話畫面',
+              type: 'text',
+              paragraphs: [
+                '智慧客服機器人的首頁與打招呼畫面。當使用者開啟聊天室時，機器人會主動打招呼並列出支援的功能與快捷指令，提供順暢的客服引導體驗。'
+              ],
+              image: 'assets/teaching-site/demo-ai-chat.png',
+              imageAlt: 'AI 基礎對話運行畫面',
+              imageCaption: 'AI 基礎對話運行畫面：結合毛玻璃效果與漸層 Header 設計，極具美感與科技感。'
+            },
+            {
+              title: '系統運行展示：商品資訊詢問卡片',
+              type: 'text',
+              paragraphs: [
+                '當使用者詢問「有哪些商品」時，後端 AI 模型會自動呼叫 ProductTools 商品查詢工具，從 JPA 資料庫中取得最新的商品價格與庫存數據。前端收到資料後，會自動將文字清單轉換為精美的商品卡片網格。'
+              ],
+              image: 'assets/teaching-site/demo-product-query.png',
+              imageAlt: '商品詢問運行畫面',
+              imageCaption: '商品詢問運行畫面：將傳統 Markdown 文字自動映射並渲染為高質感的商品卡片網格，包含特價標籤與購買按鈕。'
+            },
+            {
+              title: '系統運行展示：歷史訂單與物流追蹤',
+              type: 'text',
+              paragraphs: [
+                '使用者詢問其購買紀錄時（例如「我是 alice，我買了哪些東西？」），AI 精確識別用戶名稱並呼叫 OrderTools 訂單查詢工具，回傳對應的歷史訂單。前端會將其渲染出包含訂單編號、出貨狀態與黑貓物流即時配送進度的卡片。'
+              ],
+              image: 'assets/teaching-site/demo-order-history.png',
+              imageAlt: '訂單查詢運行畫面',
+              imageCaption: '訂單查詢運行畫面：整合物流狀態的訂單卡片，清晰直觀地呈現使用者歷史交易紀錄與追蹤進度。'
+            },
+            {
+              title: '系統運行展示：長期記憶語意商品推薦',
+              type: 'text',
+              paragraphs: [
+                '當使用者點擊「長期記憶語意推薦」時，後端啟動雙路 RAG 檢索，同時在 pgvector 中查找此使用者在過去幾天內聊過的興趣與喜好（例如曾提及需要長時間配戴、需要重低音、預算三千左右等）。AI 結合記憶推薦商城中的特定商品，前端渲染出極具說服力的語意推薦卡片與降價理由。'
+              ],
+              image: 'assets/teaching-site/demo-rag-recommend.png',
+              imageAlt: '語意推薦運行畫面',
+              imageCaption: '語意推薦運行畫面：結合長期記憶 RAG 與向量檢索，分析用戶的潛在喜好，進行高精確度的商品與折扣卡片推薦。'
             }
           ]
         },
