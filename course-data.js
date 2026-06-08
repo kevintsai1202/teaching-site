@@ -2277,6 +2277,88 @@ window.COURSE = {
         {
           id: 'd2-u5',
           chapter: '2-5',
+          title: 'React 快速入門與前端優化指引',
+          summary: '掌握 Node.js 環境、使用 Vite 建立 React 19 專案、JSX 語法元件結構，並學習如何以 Proxy 串接後端 API 及套用 uiuxpromax 優化前端視覺體驗。',
+          source: 'docs/Day2-5-React-Intro.md',
+          heroImage: 'assets/teaching-site/05-ch05-springai-chatclient.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解 Node.js 與 NPM 相依性套件管理機制',
+            '學會使用 Vite 初始化 React 19 專案的指令步驟',
+            '掌握 JSX 語法特色與 Functional Component 元件結構',
+            '理解為何需要開發代理 (Vite Proxy) 以免除 CORS 限制',
+            '掌握 uiuxpromax 視覺優化要點（毛玻璃、漸層Header、微動畫與骨架屏）'
+          ],
+          tasks: [
+            { id: 'd2-u5-t1', text: '安裝 Node.js 並執行 npm 驗證' },
+            { id: 'd2-u5-t2', text: '使用 Vite 建立 React 19 專案並以 npm install 安裝' },
+            { id: 'd2-u5-t3', text: '配置 vite.config.js 的 server.proxy 代理' },
+            { id: 'd2-u5-t4', text: '套用 CSS 動畫實作骨架屏與毛玻璃視覺效果' }
+          ],
+          sections: [
+            {
+              title: 'Node.js 與 React 專案建立',
+              type: 'text',
+              paragraphs: [
+                'Node.js 是前端開發的執行環境，而 NPM (Node Package Manager) 是套件管理工具。在 React 19 的開發中，我們不再使用傳統手動下載 JS 檔的方式，而是使用 NPM 安裝相依套件。',
+                '我們使用業界主流、極速的 Vite 作為建置工具，透過以下指令在命令列中建立專案：'
+              ],
+              bullets: [
+                '建立 Vite React 專案：`npx create-vite@latest frontend --template react`',
+                '進入專案目錄：`cd frontend`',
+                '安裝最新無資安漏洞的 React 19 依賴：`npm install`',
+                '啟動本機開發伺服器 (Port 5173)：`npm run dev`'
+              ]
+            },
+            {
+              title: 'JSX 語法與 Functional Component 元件結構',
+              type: 'code',
+              paragraphs: [
+                'JSX 是 JavaScript 的語法擴充，允許我們在 JavaScript 中直接撰寫一種類似 HTML 的結構。React 19 推薦使用 Functional Component（函式元件）進行開發，相比舊版的 Class 元件更加簡潔。',
+                'JSX 寫作規範與注意事項：',
+                '1. 所有元件必須回傳「單一根節點」（若有多個元素，需用空標籤 `<></>` 包裹）。',
+                '2. 由於 class 在 JS 中是保留字，JSX 中必須改寫為 `className`。',
+                '3. HTML 事件綁定需改為 React 的小駝峰命名（例如 `onclick` 改為 `onClick`）。',
+                '4. 變數與邏輯表達式可直接放在大括號 `{}` 中進行求值與渲染。'
+              ],
+              code: {
+                language: 'jsx',
+                title: 'Counter.jsx — 基本 JSX 函式元件範例',
+                content: 'import React, { useState } from \'react\';\n\n// 宣告一個 Functional Component 元件\nexport default function Counter({ initialCount = 0 }) {\n  // 使用 useState Hook 管理元件內部的狀態\n  const [count, setCount] = useState(initialCount);\n\n  return (\n    <div className="counter-container">\n      <h3>當前計數器：{count}</h3>\n      {/* 點擊事件小駝峰命名，並使用大括號綁定 JavaScript 方法 */}\n      <button onClick={() => setCount(count + 1)}>\n        累加 +1\n      </button>\n    </div>\n  );\n}'
+              }
+            },
+            {
+              title: '開發端代理與後端 API 串接 (Vite Proxy)',
+              type: 'code',
+              paragraphs: [
+                '在前後端分離的架構中，前端 Vite 伺服器運行在 `http://localhost:5173`，而 Spring Boot 後端運行在 `http://localhost:8080`。如果前端直接向後端發送非同步請求 (Fetch / EventSource)，會因為「同源政策 (Same-Origin Policy)」而被瀏覽器阻擋 (CORS 跨網域錯誤)。',
+                '為了解決此問題，我們在 `vite.config.js` 中配置 `server.proxy` 代理轉發，將所有以 `/api` 開頭的請求，在開發環境中自動轉發至 `http://localhost:8080`。這樣前端程式碼只需填寫相對路徑即可，且完全免除了後端配置 CORS 的繁瑣設定！'
+              ],
+              code: {
+                language: 'javascript',
+                title: 'vite.config.js — 配置 API 代理轉發',
+                content: 'import { defineConfig } from \'vite\'\nimport react from \'@vitejs/plugin-react\'\n\nexport default defineConfig({\n  plugins: [react()],\n  server: {\n    port: 5173,\n    proxy: {\n      // 當前端請求 /api/ai/stream 時，Vite 自動代理為 http://localhost:8080/api/ai/stream\n      \'/api\': {\n        target: \'http://localhost:8080\',\n        changeOrigin: true\n      }\n    }\n  }\n})'
+              }
+            },
+            {
+              title: 'uiuxpromax 前端視覺優化指引',
+              type: 'text',
+              paragraphs: [
+                '一個優秀的 Web 應用不僅要能跑，更要能 WOW 使用者。在智慧客服專案中，我們採用 uiuxpromax 的設計哲學，利用 Vanilla CSS 優化整體視覺，徹底告別單調的 MVP 樣式：'
+              ],
+              bullets: [
+                '🎨 毛玻璃效果 (Glassmorphism)：卡片使用 `backdrop-filter: blur(14px)` 搭配半透明邊框，營造精緻浮空感。',
+                '🌈 漸層極光配色：Header 使用 linear-gradient(135deg, indigo, purple) 漸層配色，搭配狀態指示燈 (Pulse LED) 動態閃爍。',
+                '⚡ 微懸停動畫 (Micro-interactions)：滑鼠懸停於商品、訂單卡片時，加入 `transform: translateY(-4px) scale(1.01)` 與 `transition` 讓卡片活起來。',
+                '⏳ 骨架屏載入動畫 (Skeleton Screen)：當 AI 正在思考或呼叫 Tool 時，在對話框中顯示灰白色的骨架屏閃爍 (shimmer keyframe)，極大降地等待期間的無聊感。'
+              ]
+            }
+          ]
+        },
+        {
+          id: 'd2-u6',
+          chapter: '2-6',
           title: 'React 聊天室與 SSE 串流式對話實戰',
           summary: '使用 React 串接後端 Server-Sent Events (SSE) 串流 API，利用原生 EventSource 與狀態管理實現即時打字機對話效果。',
           source: 'docs/Day2-5-React-SSE.md',
@@ -2414,8 +2496,8 @@ window.COURSE = {
           ]
         },
         {
-          id: 'd2-u6',
-          chapter: '2-6',
+          id: 'd2-u7',
+          chapter: '2-7',
           title: '對話歷史向量化與 RAG 檢索',
           summary: '將聊天室的對話紀錄（User Prompt 與 AI Response）非同步向量化儲存，並在發問時透過多路 RAG 同時檢索商品庫與歷史對話，打造具備長效語意記憶的 AI 助手。',
           source: 'docs/Day2-6-ChatHistory-RAG.md',
