@@ -1,7 +1,7 @@
 window.COURSE = {
   meta: {
-    title: 'Spring Boot 4 與 Spring AI 2.0 兩天實戰課程',
-    subtitle: '從後端分層、資料庫遷移，到智慧客服、工具呼叫與 RAG，逐步完成可驗證的企業級教學專案。',
+    title: '新一代全端 AI 開發流程實戰',
+    subtitle: '結合 Spring Boot 4 與 React 19，從後端分層、向量資料庫到前端 uiuxpromax 客服介面，完成具備 RAG 長期記憶與 MCP 工具鏈的智慧電商客服系統。',
     audience: '具備 Java 基礎，想建立 Spring Boot 與 AI 應用整合能力的開發者',
     totalHours: '2 天 × 6 小時',
     projectName: '智慧商城客服系統',
