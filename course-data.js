@@ -497,6 +497,73 @@ window.COURSE = {
               }
             },
             {
+              title: '輸入驗證：為什麼不能信任前端傳來的資料',
+              type: 'text',
+              paragraphs: [
+                '目前的 `create` 端點直接把 `@RequestBody` 拿到的物件存進去，前端傳什麼就存什麼。這代表 `name` 傳空字串、`price` 傳負數，全部都會寫入記憶體（或之後的資料庫）而不會報錯。',
+                'Bean Validation（JSR-380）讓你把驗證規則標在 Model 欄位上，Controller 只需加一個 `@Valid`，Spring 就會在呼叫 Service 之前自動驗證，不合法的請求直接回傳 400，完全不進入業務邏輯。'
+              ],
+              bullets: [
+                '驗證規則標在 Model / DTO 欄位，不散落在 Service 或 Controller 各處',
+                '規則跟資料走：不管從哪個 Controller 端點傳入，同一套規則都生效',
+                '驗證失敗時 Spring 自動回傳 `400 Bad Request`，並帶上每個欄位的錯誤訊息'
+              ]
+            },
+            {
+              title: '在 Model 加上 Bean Validation 標註',
+              type: 'code',
+              paragraphs: [
+                '把約束條件直接標在 `Product` 欄位上。標註描述「這個欄位允許什麼值」，Spring 負責在請求進來時執行驗證。'
+              ],
+              code: {
+                language: 'java',
+                title: 'Product.java — 加上驗證標註',
+                content: '@Data\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Product {\n\n    private Long id;\n\n    @NotBlank(message = "商品名稱不可為空")          // 不允許 null、""、"   "\n    @Size(max = 100, message = "名稱最多 100 字")\n    private String name;\n\n    @NotNull(message = "售價不可為 null")\n    @DecimalMin(value = "0.0", inclusive = false,   // 必須大於 0\n                message = "售價必須大於 0")\n    private BigDecimal price;\n\n    @Size(max = 500, message = "描述最多 500 字")    // null 可接受，有值才驗長度\n    private String description;\n\n    @Min(value = 0, message = "庫存不可為負數")\n    private Integer stock;\n}'
+              }
+            },
+            {
+              title: '在 Controller 加上 @Valid 觸發驗證',
+              type: 'code',
+              paragraphs: [
+                '只需要在 `@RequestBody` 前加 `@Valid`，Spring 就會在解析完請求 Body 後、進入方法邏輯之前執行驗證。驗證失敗時拋出 `MethodArgumentNotValidException`，Spring 自動回傳 400。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductController.java — create 端點加上 @Valid',
+                content: '// ✅ 加上 @Valid：Spring 驗證 Product 欄位，不通過直接回 400\n@PostMapping\n@ResponseStatus(HttpStatus.CREATED)\npublic Product create(@Valid @RequestBody Product product) {\n    return productService.save(product);\n}\n\n// PUT 修改也一樣需要驗證\n@PutMapping("/{id}")\npublic ResponseEntity<Product> update(\n        @PathVariable Long id,\n        @Valid @RequestBody Product product) {       // ← @Valid 同樣適用\n    return productService.findById(id)\n        .map(existing -> {\n            product.setId(existing.getId());\n            return ResponseEntity.ok(productService.save(product));\n        })\n        .orElse(ResponseEntity.notFound().build());\n}'
+              }
+            },
+            {
+              title: '驗證失敗時的回應格式',
+              type: 'code',
+              paragraphs: [
+                'Spring Boot 預設的驗證失敗回應已包含錯誤欄位與訊息，可直接用於前端顯示。以下是傳入空白名稱與負數價格時的實際回應。'
+              ],
+              code: {
+                language: 'json',
+                title: 'POST /api/products — 驗證失敗回應（400 Bad Request）',
+                content: '// 請求 Body（不合法）\n{\n  "name": "",\n  "price": -100\n}\n\n// Spring 自動回傳的 400 回應\n{\n  "status": 400,\n  "errors": [\n    {\n      "field": "name",\n      "message": "商品名稱不可為空"\n    },\n    {\n      "field": "price",\n      "message": "售價必須大於 0"\n    }\n  ]\n}'
+              }
+            },
+            {
+              title: '常用 Bean Validation 標註速查',
+              type: 'text',
+              paragraphs: [
+                '以下是最常用到的驗證標註，依照驗證對象分組。所有標註都來自 `jakarta.validation.constraints` 套件，引入 `spring-boot-starter-validation` 即可使用。'
+              ],
+              bullets: [
+                '**字串類**：`@NotBlank`（非空且非空白）、`@NotEmpty`（非空但可以全空白）、`@Size(min, max)`（長度範圍）、`@Email`（Email 格式）、`@Pattern(regexp)`（正規表示式）',
+                '**數字類**：`@NotNull`（非 null）、`@Min(value)`（整數最小值）、`@Max(value)`（整數最大值）、`@DecimalMin`（含小數的最小值）、`@DecimalMax`（含小數的最大值）、`@Positive`（必須大於 0）、`@PositiveOrZero`（大於等於 0）',
+                '**集合類**：`@NotEmpty`（集合不可空）、`@Size(min, max)`（集合元素數量範圍）',
+                '**巢狀物件**：`@Valid` 標在欄位上 → 對該物件的欄位遞迴驗證（如 List 裡的每個元素）'
+              ],
+              callout: {
+                type: 'info',
+                title: '@Valid 與 @Validated 的差別',
+                body: '@Valid 是 Jakarta EE 標準，@Validated 是 Spring 的擴充版本。功能幾乎相同，差別在於 @Validated 支援「群組驗證（Validation Groups）」，可以為「新增」和「修改」分別定義不同的規則組合。一般情況用 @Valid 就夠；需要分組時再換 @Validated。'
+              }
+            },
+            {
               title: 'AI 提示詞練習',
               type: 'text',
               paragraphs: [
@@ -656,13 +723,24 @@ window.COURSE = {
               title: 'docker-compose.yml 設定說明',
               type: 'code',
               paragraphs: [
-                '本課程的 docker-compose.yml 使用官方提供的 pgvector 映像，內建 PostgreSQL 18 與向量擴充套件，Day 2 的 RAG 功能直接依賴這個映像。'
+                '本課程的 docker-compose.yml 使用官方提供的 pgvector 映像，內建 PostgreSQL 18 與向量擴充套件，Day 2 的 RAG 功能直接依賴這個映像。以下是完整的設定內容與詳細的欄位用途說明。'
               ],
               code: {
                 language: 'yaml',
                 title: 'docker-compose.yml 核心設定',
-                content: 'services:\n  postgres:\n    image: pgvector/pgvector:pg18   # 含向量擴充的官方映像\n    environment:\n      POSTGRES_DB: learn_spring\n      POSTGRES_USER: postgres\n      POSTGRES_PASSWORD: password\n    ports:\n      - "5432:5432"              # 本機 5432 對應容器 5432\n    volumes:\n      - postgres_data:/var/lib/postgresql/data  # 資料持久化\n\nvolumes:\n  postgres_data:'
-              }
+                content: 'version: \'3.8\'                     # Docker Compose 檔案格式版本\n\nservices:                          # 定義此 Compose 專案要執行的容器服務\n  postgres:                        # 資料庫服務名稱 (自訂)\n    image: pgvector/pgvector:pg18  # 使用包含向量擴充套件的官方 PostgreSQL 18 映像檔\n    container_name: spring-postgres # 指定容器運作時的名稱，方便透過 CLI 進行管理\n    ports:\n      - "5432:5432"                # 將主機的 5432 連接埠映射到容器的 5432 連接埠\n    environment:                   # 設定容器內部的環境變數\n      POSTGRES_DB: learn_spring    # 容器啟動時自動建立的資料庫名稱\n      POSTGRES_USER: postgres      # 資料庫超級使用者（Administrator）的帳號\n      POSTGRES_PASSWORD: password  # 資料庫超級使用者帳號對應的密碼\n    volumes:                       # 掛載資料卷，將容器內資料與本機目錄連結\n      - postgres_data:/var/lib/postgresql # 將資料持久化儲存於具名卷，防止容器重建後資料丟失\n    restart: always                # 容器重啟策略：當容器崩潰或 Docker 引擎重啟時，會自動重啟此服務\n\nvolumes:                           # 宣告全域的具名資料卷\n  postgres_data:                   # 定義名為 postgres_data 的具名卷，供 postgres 服務掛載使用'
+              },
+              bullets: [
+                'version: \'3.8\' — 指定 Docker Compose 檔案格式版本，確保與 Docker Engine 的相容性。',
+                'services — 所有要執行的容器都必須宣告在此標籤下。本專案只有一個名為 postgres 的服務。',
+                'image — 使用 pgvector/pgvector:pg18 映像檔。因為 Day 2 的 RAG 功能需要向量檢索（pgvector），故必須選用內建該擴充套件的 PostgreSQL。',
+                'container_name — 容器名稱設定為 spring-postgres。固定名稱可方便後續執行 docker logs spring-postgres 或 docker exec -it spring-postgres bash。',
+                'ports — 主機與容器的埠號對應（主機埠:容器埠）。將主機 5432 埠映射到容器的 5432 埠，Spring Boot 等外部工具便可直接透過 localhost:5432 連線資料庫。',
+                'environment — 定義容器的環境變數。對 postgres 映像檔來說，這是初始化資料庫所必須設定的帳號與密碼資訊。',
+                'volumes — 本機與容器內部目錄的掛載。/var/lib/postgresql 是 PostgreSQL 儲存資料檔案的地方。將其映射到具名卷 postgres_data 後，即使容器重啟或被刪除重建，資料庫中的商品、使用者等資料不會丟失。',
+                'restart: always — 代表重啟策略。當 Docker 服務重啟，或該容器因為非預期錯誤而停止時，Docker 守護程序會自動嘗試重啟該容器，確保服務高可用性。',
+                'volumes: postgres_data: — 聲明一個名為 postgres_data 的具名資料卷（Named Volume），由 Docker 自動在主機上管理其實際存放路徑，免去手動指定主機絕對路徑的麻煩。'
+              ]
             },
             {
               title: '用 AI Agent 設定 application.yml 資料庫連線',
@@ -795,6 +873,337 @@ window.COURSE = {
               }
             },
             {
+              title: '@Transactional：寫入操作一定要加',
+              type: 'text',
+              paragraphs: [
+                'Repository 幫你省去了 SQL 撰寫，但「資料一致性的保障」不在 Repository 層，而是在 Service 層的交易（Transaction）控制上。',
+                '當一個業務操作需要對資料庫做新增、修改或刪除時，必須在 Service 方法上加 `@Transactional`，讓這些動作被包在同一個交易區塊裡——成功就全部提交，失敗就全部回滾，不會出現「存到一半」的殘缺資料。'
+              ],
+              bullets: [
+                '`@Transactional` → 寫入操作（INSERT / UPDATE / DELETE），讓 Hibernate 在方法結束後自動 commit，發生例外時自動 rollback',
+                '`@Transactional(readOnly = true)` → 純查詢操作，告知 Hibernate 跳過 dirty checking、提示資料庫使用唯讀連線，降低效能開銷',
+                '**不加的後果**：Hibernate Session 可能在方法執行中途失效，寫入操作拋出 `TransactionRequiredException`，且只在特定流程才觸發，難以排查'
+              ],
+              callout: {
+                type: 'warning',
+                title: '交易標註加在 Service，不加在 Repository',
+                body: 'Repository 已由 Spring Data 管理自己的基礎交易，但業務邏輯常常要在一個方法裡呼叫多個 Repository 操作（如先查後存、批次更新），這些步驟必須共用同一個交易才有意義。把 @Transactional 加在 Service，才能讓整個業務動作成為原子操作。'
+              }
+            },
+            {
+              title: '@Transactional 標註規範與 Service 完整範例',
+              type: 'code',
+              paragraphs: [
+                '以下是本課程 ProductService 的完整寫法，查詢方法用 `readOnly = true`、寫入方法用預設（可讀可寫）。這個模式是 Spring Boot 專案的標準慣例，直接套用即可。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductService.java — @Transactional 標準用法',
+                content: '@Service\npublic class ProductService {\n\n    private final ProductRepository productRepository;\n\n    public ProductService(ProductRepository productRepository) {\n        this.productRepository = productRepository;\n    }\n\n    // ✅ 純查詢：readOnly = true，Hibernate 跳過髒數據檢查\n    @Transactional(readOnly = true)\n    public List<Product> getAllProducts() {\n        return productRepository.findAll();\n    }\n\n    // ✅ 純查詢\n    @Transactional(readOnly = true)\n    public Optional<Product> getProductById(Long id) {\n        return productRepository.findById(id);\n    }\n\n    // ✅ 寫入：使用預設 @Transactional，方法結束後自動 commit\n    @Transactional\n    public Product saveProduct(Product product) {\n        return productRepository.save(product);\n    }\n\n    // ✅ 寫入：包含先查後刪，兩個動作在同一個交易內\n    @Transactional\n    public void deleteProduct(Long id) {\n        productRepository.deleteById(id);\n    }\n\n    // ❌ 沒有標註：寫入操作在某些情境下會拋出 TransactionRequiredException\n    public Product unsafeSave(Product product) {\n        return productRepository.save(product);  // 不穩定，避免這樣寫\n    }\n}'
+              }
+            },
+            {
+              title: 'readOnly = true 對效能的實際影響',
+              type: 'text',
+              paragraphs: [
+                '`readOnly = true` 不只是語意宣告，它在底層帶來兩個具體效果，在高流量查詢場景尤其明顯。'
+              ],
+              bullets: [
+                '**跳過 dirty checking**：Hibernate 在交易結束前會掃描所有載入的 Entity 是否有變更（dirty checking），`readOnly = true` 直接略過這個掃描，省去 CPU 與記憶體開銷',
+                '**提示資料庫使用唯讀連線**：部分資料庫連線池（如 HikariCP）與讀寫分離架構會依此將查詢路由到唯讀副本（Read Replica），降低主庫壓力',
+                '**防止意外寫入**：標記為 `readOnly` 的方法若試圖執行寫入，資料庫驅動或連線池會報錯，形成一道安全護欄'
+              ]
+            },
+            {
+              title: '@Query 改資料必須同時加上 @Modifying',
+              type: 'text',
+              paragraphs: [
+                'Repository 的派生方法（如 `save()`、`deleteById()`）已由 Spring Data 內部處理好交易邏輯，直接呼叫就行。但若你用 `@Query` 自行撰寫 JPQL 的 UPDATE 或 DELETE，Spring Data JPA 預設把它當成 SELECT 語句對待，必須額外加上 `@Modifying` 才能正確執行。',
+                '缺少 `@Modifying` 時，Spring Data 會在執行時拋出 `InvalidDataAccessApiUsageException`，錯誤訊息是「Executing an update/delete query」，容易讓人誤以為是 SQL 語法問題。'
+              ],
+              bullets: [
+                '`@Modifying` — 告知 Spring Data 這個 `@Query` 是寫入操作，不是查詢',
+                '`@Transactional` — 寫入操作仍需交易包覆，通常加在 Service；若 Repository 方法需要獨立交易可直接加在此',
+                '兩個標註缺一不可，順序不影響結果'
+              ]
+            },
+            {
+              title: '@Modifying + @Query 完整範例',
+              type: 'code',
+              paragraphs: [
+                '以下示範三種常見場景：批次更新、條件刪除，以及派生刪除方法（不需要 `@Modifying`）的對比。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductRepository.java — @Modifying 用法',
+                content: '@Repository\npublic interface ProductRepository\n        extends JpaRepository<Product, Long>,\n                JpaSpecificationExecutor<Product> {\n\n    // ✅ 批次更新：@Modifying + @Transactional 缺一不可\n    //    clearAutomatically = true：更新後清除 Hibernate 一級快取，\n    //    避免同一 Session 後續查詢拿到舊值（幽靈快取問題）\n    @Modifying(clearAutomatically = true)\n    @Transactional\n    @Query("UPDATE Product p SET p.price = :price WHERE p.id = :id")\n    int updatePriceById(@Param("id") Long id, @Param("price") BigDecimal price);\n\n    // ✅ 條件刪除：直接對資料庫下 DELETE，效率高，適合批次\n    @Modifying(clearAutomatically = true)\n    @Transactional\n    @Query("DELETE FROM Product p WHERE p.stock = 0")\n    int deleteOutOfStockProducts();\n\n    // ✅ 派生刪除：Spring Data 先 SELECT 再逐筆 DELETE\n    //    不需要 @Modifying，但交易需由呼叫方（Service）提供\n    //    優點：會觸發 Hibernate 生命週期回呼（@PreRemove 等）\n    void deleteByNameContaining(String name);\n\n    // ❌ 錯誤示範：@Query 寫入但缺少 @Modifying → 執行時拋出例外\n    // @Query("UPDATE Product p SET p.price = :price WHERE p.id = :id")\n    // int wrongUpdate(@Param("id") Long id, @Param("price") BigDecimal price);\n}'
+              }
+            },
+            {
+              title: 'clearAutomatically：不加會有幽靈快取問題',
+              type: 'text',
+              paragraphs: [
+                '`@Modifying` 的 `clearAutomatically = true` 選項決定是否在執行 DML 後清除 Hibernate 的 **一級快取（first-level cache）**。不清除時，同一個 Session 後續讀到的 Entity 仍是快取中的舊值，即使資料庫已更新。'
+              ],
+              code: {
+                language: 'java',
+                title: '幽靈快取問題示意',
+                content: '// 同一個 @Transactional Service 方法中：\n\nProduct p = productRepository.findById(1L).get();  // 載入進一級快取，price = 100\n\n// 執行批次更新（若未設 clearAutomatically = true）\nproductRepository.updatePriceById(1L, new BigDecimal("200"));\n\n// ⚠️ 快取未清除，拿到的仍是 price = 100 的舊物件\nProduct stale = productRepository.findById(1L).get();\nSystem.out.println(stale.getPrice());  // 印出 100，而不是 200\n\n// ✅ clearAutomatically = true → 一級快取被清除，重新從 DB 讀取\n// stale.getPrice() → 200（正確）'
+              },
+              bullets: [
+                '`clearAutomatically = true`（建議預設加上）→ DML 執行後清除一級快取，後續查詢從資料庫重新讀取',
+                '`flushAutomatically = true` → DML 執行前先將 Session 中待寫入的變更 flush 到 DB，確保 DML 看到最新狀態',
+                'Hibernate `@PreRemove`、`@PostPersist` 等生命週期回呼：`@Modifying` 的 DELETE 不會觸發，派生刪除方法才會'
+              ]
+            },
+            {
+              title: '@Modifying 批次刪除 vs 派生刪除的選用時機',
+              type: 'text',
+              bullets: [
+                '**需要批次效率**（萬筆以上）→ 用 `@Modifying` + `@Query DELETE`，直接下 SQL，不載入 Entity，效率高',
+                '**需要觸發生命週期事件**（`@PreRemove`、`@EntityListeners`）→ 用派生刪除方法，Spring Data 先查再逐筆刪，每筆都經過 Hibernate 管理',
+                '**一般 CRUD**（單筆刪除）→ 用 `deleteById()`，Spring Data 已處理好交易與快取',
+                '**批次更新**（改特定條件下的欄位）→ 幾乎都用 `@Modifying` + `@Query UPDATE`，派生方法做不到批次更新'
+              ]
+            },
+            {
+              title: 'Audit 欄位：自動記錄建立與修改時間',
+              type: 'text',
+              paragraphs: [
+                '正式應用中的資料表幾乎都需要 `created_at`、`updated_at`，用來記錄每筆資料的建立與最後修改時間。如果每個 Entity 都手動在 `save()` 前設定，既容易漏，也會讓業務邏輯摻雜技術細節。',
+                'Spring Data JPA 的 **JPA Auditing** 功能可以讓這兩個欄位完全自動填入：建立時寫入 `created_at`，之後每次更新只更新 `updated_at`，開發者不需要寫任何設定程式碼。'
+              ],
+              bullets: [
+                '在啟動類別（或 `@Configuration` 類別）加上 `@EnableJpaAuditing`，啟用整個機制',
+                '在 Entity 或共用父類別加上 `@EntityListeners(AuditingEntityListener.class)`，告知 Hibernate 要監聽生命週期事件',
+                '用 `@CreatedDate` / `@LastModifiedDate` 標記對應欄位，Spring 自動在寫入前填值'
+              ],
+              code: {
+                language: 'java',
+                title: 'LearnSpringApplication.java — 啟用 JPA Auditing',
+                content: '@SpringBootApplication\n@EnableJpaAuditing  // 啟用 JPA Auditing，應用程式啟動時生效\npublic class LearnSpringApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(LearnSpringApplication.class, args);\n    }\n}'
+              }
+            },
+            {
+              title: 'BaseAuditEntity：把 Audit 欄位抽成共用父類別',
+              type: 'code',
+              paragraphs: [
+                '多個 Entity 都需要 audit 欄位時，建議抽成 `BaseAuditEntity` 讓所有 Entity 繼承。`@MappedSuperclass` 表示這個類別本身不對應任何資料表，只把欄位定義「繼承」給子類別的資料表。'
+              ],
+              code: {
+                language: 'java',
+                title: 'BaseAuditEntity.java',
+                content: '@MappedSuperclass\n@EntityListeners(AuditingEntityListener.class)  // 監聽 @PrePersist / @PreUpdate 事件\npublic abstract class BaseAuditEntity {\n\n    // 建立時間：@PrePersist 時由 Spring 自動填入，之後不允許修改\n    @CreatedDate\n    @Column(name = "created_at", updatable = false, nullable = false)\n    private LocalDateTime createdAt;\n\n    // 最後修改時間：每次 @PreUpdate 時自動更新\n    @LastModifiedDate\n    @Column(name = "updated_at", nullable = false)\n    private LocalDateTime updatedAt;\n\n    public LocalDateTime getCreatedAt() { return createdAt; }\n    public LocalDateTime getUpdatedAt() { return updatedAt; }\n}'
+              }
+            },
+            {
+              title: 'Entity 繼承 BaseAuditEntity',
+              type: 'code',
+              paragraphs: [
+                'Product 繼承 `BaseAuditEntity` 後，資料表自動多出 `created_at` 與 `updated_at` 兩欄。記得補上對應的 Flyway 遷移腳本，否則 `ddl-auto: validate` 會因欄位不符而啟動失敗。'
+              ],
+              code: {
+                language: 'java',
+                title: 'Product.java — 繼承 Audit 父類別',
+                content: '@Data\n@NoArgsConstructor\n@AllArgsConstructor\n@Entity\n@Table(name = "products")\npublic class Product extends BaseAuditEntity {\n\n    @Id\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n\n    @Column(nullable = false)\n    private String name;\n\n    private String description;\n\n    @Column(nullable = false)\n    private BigDecimal price;\n\n    private Integer stock;\n\n    // created_at 與 updated_at 從 BaseAuditEntity 繼承，不需要重複宣告\n}'
+              }
+            },
+            {
+              title: 'Flyway 遷移腳本需同步新增 Audit 欄位',
+              type: 'code',
+              paragraphs: [
+                '新增繼承的 audit 欄位後，資料庫欄位也要對應更新。若已有 V1 建立 products 資料表，此時需要補一支 V2 遷移腳本新增欄位，不可以修改 V1——Flyway 不允許改動已執行過的腳本。'
+              ],
+              code: {
+                language: 'sql',
+                title: 'V2__add_audit_columns.sql',
+                content: '-- 為既有資料表補上 audit 欄位\nALTER TABLE products\n    ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT NOW(),\n    ADD COLUMN updated_at TIMESTAMP NOT NULL DEFAULT NOW();\n\n-- 若 users 資料表也需要 audit 欄位，在同一支腳本一起處理\nALTER TABLE users\n    ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT NOW(),\n    ADD COLUMN updated_at TIMESTAMP NOT NULL DEFAULT NOW();'
+              }
+            },
+            {
+              title: '建立者與修改者欄位（需搭配 Spring Security，本課程僅說明）',
+              type: 'text',
+              paragraphs: [
+                '除了時間戳記，正式系統還常需要 `created_by`（建立者帳號）與 `updated_by`（最後修改者帳號）。Spring Data JPA 提供對應的 `@CreatedBy` 與 `@LastModifiedBy` 標註，但它們需要額外實作 `AuditorAware<T>` 介面，告知 Spring「目前登入的使用者是誰」。',
+                '由於「取得目前使用者」通常需要讀取 Spring Security 的 `SecurityContextHolder`，本課程暫不實作完整的 Security 整合，僅說明設計結構與整合方式。'
+              ],
+              bullets: [
+                '`@CreatedBy` → 建立時由 `AuditorAware.getCurrentAuditor()` 填入，之後不允許修改',
+                '`@LastModifiedBy` → 每次更新時自動更新為目前使用者',
+                '`AuditorAware<T>` → 由你實作的介面，Spring 在需要使用者資訊時呼叫；`T` 通常是 `String`（帳號名稱）',
+                '測試階段可暫時實作為固定回傳 `"system"`，接上 Spring Security 後再替換為真實登入帳號'
+              ],
+              callout: {
+                type: 'info',
+                title: 'AuditorAware 與 Spring Security 的整合方式（僅說明）',
+                body: '實作 AuditorAware<String>，在 getCurrentAuditor() 方法中從 SecurityContextHolder.getContext().getAuthentication().getName() 取得目前使用者帳號並回傳。課程完整引入 Spring Security 後再實作此介面，目前可先回傳 Optional.of("system") 讓 audit 欄位正常寫入。'
+              }
+            },
+            {
+              title: 'AuditorAware 結構說明（示意，非本課程完整實作）',
+              type: 'code',
+              paragraphs: [
+                '以下程式碼展示介面結構與未來整合 Spring Security 的方向，目前專案可先用簡化版讓 audit 功能運作，等課程引入身分驗證後再替換為完整版。'
+              ],
+              code: {
+                language: 'java',
+                title: 'AuditorAware 實作方向',
+                content: '// ✅ 開發 / 測試階段：先回傳固定值，讓 @CreatedBy 能正常寫入\n@Component\npublic class StaticAuditorAware implements AuditorAware<String> {\n    @Override\n    public Optional<String> getCurrentAuditor() {\n        return Optional.of("system");  // 暫用固定值\n    }\n}\n\n// ✅ 接上 Spring Security 後替換為此版本（需引入 spring-boot-starter-security）\n// @Component\n// public class SecurityAuditorAware implements AuditorAware<String> {\n//     @Override\n//     public Optional<String> getCurrentAuditor() {\n//         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())\n//             .filter(Authentication::isAuthenticated)\n//             .map(Authentication::getName);\n//     }\n// }\n\n// @EnableJpaAuditing 需要知道用哪個 AuditorAware，加上 auditorAwareRef 指定\n// @SpringBootApplication\n// @EnableJpaAuditing(auditorAwareRef = "securityAuditorAware")\n// public class LearnSpringApplication { ... }'
+              }
+            },
+            {
+              title: 'Query Method 的限制：條件一多就爆炸',
+              type: 'text',
+              paragraphs: [
+                'Query Method 命名在條件固定時非常好用，但商業搜尋場景通常有多個「可選過濾條件」：使用者可能同時填名稱與價格上限，也可能只填其中一個，甚至全不填。',
+                'Query Method 無法處理「條件可有可無」的動態查詢——你必須為每種組合寫一個方法，或在 Service 層用 if-else 分支呼叫不同查詢，兩種做法維護成本都很高。'
+              ],
+              code: {
+                language: 'java',
+                title: '難以維護的 if-else 分支查詢（反例）',
+                content: '// ❌ 反例：每多一個可選條件就要翻倍方法數\npublic List<Product> search(String name, Double maxPrice, Boolean inStock) {\n    if (name != null && maxPrice != null && inStock != null) {\n        return repo.findByNameContainingAndPriceLessThanAndStockGreaterThan(...);\n    } else if (name != null && maxPrice != null) {\n        return repo.findByNameContainingAndPriceLessThan(...);\n    } else if (name != null) {\n        return repo.findByNameContaining(name);\n    }\n    // ... 還有更多分支\n}'
+              }
+            },
+            {
+              title: 'Specification：動態查詢的正確解法',
+              type: 'text',
+              paragraphs: [
+                '`Specification<T>` 是 Spring Data JPA 內建的動態查詢機制，核心概念是把每個查詢條件包裝成一個獨立物件，再自由組合。',
+                '每個 Specification 本質上是一個 lambda，簽章為 `(root, query, cb) -> Predicate`：`root` 代表 FROM 的 Entity、`cb`（CriteriaBuilder）是 WHERE 條件的工廠。回傳 `null` 就代表「這個條件不套用」，非常適合可選欄位。'
+              ],
+              bullets: [
+                '不需要修改 SQL 字串，只在 Java 程式碼層組合條件',
+                '每個條件獨立封裝，可單獨測試每一個 Predicate',
+                '`null` 條件自動被 Spring Data 跳過，不會影響查詢語意',
+                '透過 `.and()` / `.or()` 自由串接，組合結果仍是一個 Specification 物件'
+              ]
+            },
+            {
+              title: '步驟一：Repository 加入 JpaSpecificationExecutor',
+              type: 'code',
+              paragraphs: [
+                '在原本的 `ProductRepository` 額外繼承 `JpaSpecificationExecutor<Product>`，這樣就能呼叫 `findAll(Specification<T>)` 等動態查詢方法，原有的 `JpaRepository` 功能完全不受影響。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductRepository.java',
+                content: '@Repository\npublic interface ProductRepository\n        extends JpaRepository<Product, Long>,\n                JpaSpecificationExecutor<Product> {  // 加入這一行\n\n    // 原有的 Query Method 保留不動\n    List<Product> findByNameContainingIgnoreCase(String name);\n}'
+              }
+            },
+            {
+              title: '步驟二：建立 ProductSpec 條件工廠',
+              type: 'code',
+              paragraphs: [
+                '建議把所有 Specification 條件集中在一個 `ProductSpec` 類別，以靜態方法的形式對外提供。每個方法負責一個欄位的判斷，傳入 `null` 時回傳 `null`（代表不套用此條件）。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductSpec.java',
+                content: 'public class ProductSpec {\n\n    // 名稱包含關鍵字（不分大小寫）\n    public static Specification<Product> nameContains(String name) {\n        return (root, query, cb) ->\n            name == null ? null\n                : cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");\n    }\n\n    // 價格小於等於上限\n    public static Specification<Product> priceLessThan(Double max) {\n        return (root, query, cb) ->\n            max == null ? null\n                : cb.lessThanOrEqualTo(root.get("price"), max);\n    }\n\n    // 庫存大於 0\n    public static Specification<Product> inStock() {\n        return (root, query, cb) ->\n            cb.greaterThan(root.get("stock"), 0);\n    }\n}'
+              }
+            },
+            {
+              title: '步驟三：在 Service 動態組合條件',
+              type: 'code',
+              paragraphs: [
+                '`Specification.where()` 建立起點，`.and()` / `.or()` 串接條件。條件方法回傳 `null` 時 Spring Data 自動跳過，不會產生多餘的 `WHERE 1=1 AND NULL` 問題。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductService.java — 動態查詢方法',
+                content: '@Service\npublic class ProductService {\n\n    private final ProductRepository productRepository;\n\n    public ProductService(ProductRepository productRepository) {\n        this.productRepository = productRepository;\n    }\n\n    /**\n     * 動態搜尋商品：三個條件皆為可選，null 表示不套用\n     */\n    public List<Product> search(String name, Double maxPrice, Boolean onlyInStock) {\n\n        Specification<Product> spec = Specification\n            .where(ProductSpec.nameContains(name))          // null → 跳過\n            .and(ProductSpec.priceLessThan(maxPrice))       // null → 跳過\n            .and(Boolean.TRUE.equals(onlyInStock)           // false/null → 跳過\n                ? ProductSpec.inStock() : null);\n\n        return productRepository.findAll(spec);\n    }\n}'
+              }
+            },
+            {
+              title: '步驟四：Controller 接收查詢參數',
+              type: 'code',
+              paragraphs: [
+                'Controller 只負責把 HTTP 查詢字串轉成 Java 型別，業務邏輯與查詢組合全部留在 Service 與 Spec 層。三個參數都是 optional（不帶就是 null），對應到 Service 中的「不套用此條件」。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductController.java — 搜尋端點',
+                content: '@RestController\n@RequestMapping("/api/products")\npublic class ProductController {\n\n    private final ProductService productService;\n\n    public ProductController(ProductService productService) {\n        this.productService = productService;\n    }\n\n    // GET /api/products/search?name=手機&maxPrice=15000&inStock=true\n    @GetMapping("/search")\n    public List<Product> search(\n            @RequestParam(required = false) String name,\n            @RequestParam(required = false) Double maxPrice,\n            @RequestParam(required = false) Boolean inStock) {\n\n        return productService.search(name, maxPrice, inStock);\n    }\n}'
+              }
+            },
+            {
+              title: 'Specification 產生的 SQL 實際長什麼樣',
+              type: 'code',
+              paragraphs: [
+                '以下是三種不同傳參組合，對應 Specification 實際產生的 SQL 片段，方便你驗證行為是否符合預期。'
+              ],
+              code: {
+                language: 'sql',
+                title: '動態 WHERE 子句對照',
+                content: '-- 呼叫：search("手機", 15000.0, true)\nSELECT * FROM products\nWHERE LOWER(name) LIKE \'%手機%\'\n  AND price <= 15000\n  AND stock > 0;\n\n-- 呼叫：search("手機", null, null)  → 只帶 name\nSELECT * FROM products\nWHERE LOWER(name) LIKE \'%手機%\';\n\n-- 呼叫：search(null, null, null)  → 全部不帶，等同 findAll()\nSELECT * FROM products;'
+              }
+            },
+            {
+              title: 'Specification 與 Query Method 的選用時機',
+              type: 'text',
+              bullets: [
+                '**Query Method**：條件固定、不超過 2 個欄位組合 → 命名直觀、無額外程式碼',
+                '**Specification**：有 1 個以上的可選條件、條件組合數 > 3 → 維護性與可讀性大幅提升',
+                '**`@Query` JPQL**：需要 GROUP BY、子查詢、特殊函數等 Specification 難以表達的語意',
+                '兩者可以共存於同一個 Repository，依查詢複雜度選用不同方式'
+              ],
+              callout: {
+                type: 'info',
+                title: '何時從 Query Method 遷移到 Specification',
+                body: '當你發現 Service 出現 3 個以上的 if-else 分支去呼叫不同查詢方法，或同一個查詢需要「有帶參數就過濾、沒帶就全顯示」的語意時，就是引入 Specification 的時機。不需要一開始就用，等複雜度出現再重構即可。'
+              }
+            },
+            {
+              title: 'ddl-auto 設定與開發階段策略',
+              type: 'text',
+              paragraphs: [
+                '`spring.jpa.hibernate.ddl-auto` 控制 Spring Boot 啟動時 Hibernate 是否自動同步資料庫 Schema。在正式課程專案（已接 Flyway）中設定為 `validate`，但理解各選項的用途對開發流程非常重要。'
+              ],
+              bullets: [
+                '`create` — 每次啟動都「刪除舊資料表、重新建立」，資料全部清空，只適合一次性初始測試',
+                '`create-drop` — 啟動時建立、關閉時刪除，適合跑完即棄的整合測試',
+                '`update` — 啟動時比對 Entity 與現有 Schema，只做「新增」操作（加欄位、加資料表），**不會刪除或重新命名已有欄位**',
+                '`validate` — 只驗證 Entity 與資料庫 Schema 是否一致，不做任何修改；不一致就報錯啟動失敗',
+                '`none` — 完全不處理 Schema，開發者自行管理資料庫結構'
+              ],
+              callout: {
+                type: 'info',
+                title: '開發初期：可短暫使用 update',
+                body: '在本機快速驗證 Entity 設計時，暫時把 `ddl-auto` 設為 `update` 可以省去撰寫 Flyway 腳本的成本，讓你先把 API 跑通、確認欄位設計合理，再補上遷移腳本。但一旦開始推進測試機或正式機，就應立即改回 `validate` 並改用 Flyway 管理所有 Schema 變更。'
+              }
+            },
+            {
+              title: '為什麼正式環境不能靠 ddl-auto',
+              type: 'text',
+              paragraphs: [
+                '`update` 模式看起來方便，但在部署到測試機或正式機後有幾個關鍵風險，這也是為什麼本課程選擇 Flyway 的原因。'
+              ],
+              bullets: [
+                '**只增不減**：`update` 只會新增欄位與資料表，無法刪除廢棄欄位或安全重新命名欄位，隨時間累積出 Schema 髒污',
+                '**無法重現**：同一支程式在不同環境（本機、測試機、正式機）可能產生不同的 Schema 狀態，難以追蹤差異',
+                '**無版本紀錄**：誰在什麼時間做了哪個 Schema 變更？`ddl-auto` 沒有任何記錄，發生問題時難以回溯',
+                '**無法回滾**：Flyway 支援 Undo 腳本（企業版）或手動反向腳本，`ddl-auto` 沒有任何回滾機制',
+                '**並發部署風險**：多個 Pod 同時啟動時，`update` 可能觸發競爭條件，Flyway 有分散式鎖保護避免此問題'
+              ],
+              code: {
+                language: 'yaml',
+                title: 'application.yml — 不同階段的推薦設定',
+                content: 'spring:\n  jpa:\n    hibernate:\n      # ✅ 開發初期（本機，尚未決定最終 Schema）\n      ddl-auto: update\n\n      # ✅ 已接 Flyway（測試機、正式機，Schema 由遷移腳本管理）\n      ddl-auto: validate\n\n      # ✅ 想讓 JPA 完全不插手 Schema（完全手動或外部工具管理）\n      ddl-auto: none'
+              }
+            },
+            {
+              title: 'Flyway vs ddl-auto 職責對照',
+              type: 'code',
+              paragraphs: [
+                'Flyway 與 `ddl-auto` 都能管理 Schema，但定位完全不同。本課程選擇讓兩者各司其職：Flyway 負責所有 Schema 演進，JPA 只負責驗證 Entity 與資料庫是否吻合。'
+              ],
+              code: {
+                language: 'text',
+                title: 'Schema 管理職責分工',
+                content: '┌─────────────────────────────────────────────────────┐\n│  開發初期（本機驗證）                                 │\n│  ddl-auto: update  → 讓 JPA 自動同步，快速迭代       │\n│  優點：免寫 SQL，欄位改動立即生效                    │\n│  缺點：無版本記錄、無法在其他環境重現相同狀態         │\n├─────────────────────────────────────────────────────┤\n│  測試機 / 正式機（所有共享環境）                     │\n│  ddl-auto: validate + Flyway 管理                    │\n│  優點：每次 Schema 變更都有腳本可追蹤、重現與回滾    │\n│  優點：CI/CD 自動執行遷移，跨環境 Schema 狀態一致    │\n│  優點：Flyway 分散式鎖防止並發啟動的 Schema 競爭    │\n└─────────────────────────────────────────────────────┘\n\n建議時機：Entity 設計穩定後，立即把 ddl-auto: update\n  改為 validate，並補齊對應的 Flyway V2__xxx.sql 腳本'
+              }
+            },
+            {
               title: '用 AI Agent 為既有專案加入 JPA',
               type: 'code',
               paragraphs: [
@@ -818,6 +1227,444 @@ window.COURSE = {
                 'Day 2 的工具呼叫其實要建立在穩定的 Service / Repository 流程上。也就是說，AI 不會直接查資料庫，而是會重用你在這一章建立好的後端查詢能力。',
                 '因此 JPA 不是孤立的資料庫章節，而是整個 AI 應用可驗證性的基礎。'
               ]
+            }
+          ]
+        },
+        {
+          id: 'd1-u5',
+          chapter: '1-5',
+          title: 'API 文件（Swagger / SpringDoc OpenAPI）',
+          summary: '透過 springdoc-openapi 自動產生互動式 API 文件，讓前端與測試人員不需要看程式碼就能理解與呼叫 API。',
+          source: 'docs/Day1-5-API-Docs.md',
+          heroImage: 'assets/teaching-site/05-ch05-api-docs.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解 OpenAPI 規範與 Swagger UI 的關係',
+            '加入 springdoc-openapi 並確認 Swagger UI 可正常存取',
+            '用標註豐富 Controller 的 API 說明',
+            '設定全域 API 資訊（標題、版本、聯絡方式）'
+          ],
+          tasks: [
+            { id: 'd1-u5-t1', text: '在 pom.xml 加入 springdoc-openapi 依賴並啟動應用，確認可存取 /swagger-ui.html' },
+            { id: 'd1-u5-t2', text: '在 ProductController 加上 @Operation 與 @ApiResponse 標註' },
+            { id: 'd1-u5-t3', text: '建立 OpenApiConfig 設定全域 API 資訊' }
+          ],
+          sections: [
+            {
+              title: '為什麼需要 API 文件',
+              type: 'text',
+              paragraphs: [
+                '後端 API 一旦超過 5 個端點，沒有文件的開發協作就開始痛苦：前端不知道要傳什麼格式、測試人員要翻程式碼才知道有哪些欄位、新人要花大量時間猜 request body 結構。',
+                'OpenAPI 規範（前身是 Swagger）定義了一套描述 REST API 的標準格式，springdoc-openapi 能自動從 Spring MVC 的 Controller 掃描產生 OpenAPI 文件，並提供互動式 UI 讓人直接從瀏覽器呼叫 API。'
+              ],
+              bullets: [
+                '自動掃描：不需要手寫文件，從 Controller 標註推導',
+                'Swagger UI：瀏覽器直接測試每個端點，看到 request / response 格式',
+                '機器可讀格式：前端工具可從 `/v3/api-docs` 取得 JSON 格式規格，自動產生 API client'
+              ]
+            },
+            {
+              title: '加入 springdoc-openapi 依賴',
+              type: 'code',
+              paragraphs: [
+                '在 `pom.xml` 加入以下依賴，啟動應用後 Swagger UI 與 OpenAPI JSON 就自動可用，不需要任何額外設定。',
+                '**版本對應規則**：springdoc-openapi 與 Spring Boot 的主版本號一一對應 —— Spring Boot 2.x 用 v1.x、Spring Boot 3.x 用 v2.x、Spring Boot 4.x 用 v3.x。本課程使用 Spring Boot 4.0.0，因此選用 `3.0.3`。'
+              ],
+              code: {
+                language: 'xml',
+                title: 'pom.xml — 加入 springdoc-openapi',
+                content: '<dependency>\n    <groupId>org.springdoc</groupId>\n    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>\n    <version>3.0.3</version>  <!-- Spring Boot 4.x 對應 v3.x；Spring Boot 3.x 請用 v2.x -->\n</dependency>'
+              }
+            },
+            {
+              title: '啟動後的預設存取路徑',
+              type: 'text',
+              bullets: [
+                '`http://localhost:8080/swagger-ui.html` → 互動式 Swagger UI（可直接測試）',
+                '`http://localhost:8080/v3/api-docs` → OpenAPI JSON 規格（機器讀取）',
+                '`http://localhost:8080/v3/api-docs.yaml` → YAML 格式規格'
+              ],
+              callout: {
+                type: 'info',
+                title: '正式環境建議關閉 Swagger UI',
+                body: '在 application.yml 加上 springdoc.api-docs.enabled: false 與 springdoc.swagger-ui.enabled: false，或透過 Spring Profile 只在 dev 環境啟用，避免正式環境暴露 API 結構。'
+              }
+            },
+            {
+              title: '用標註豐富 API 說明',
+              type: 'code',
+              paragraphs: [
+                '不加標註時 Swagger UI 只能從方法簽章推導基本資訊。用 `@Operation`、`@Parameter`、`@ApiResponse` 補充說明後，文件立即更完整，前端閱讀效率大幅提升。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductController.java — 加入 OpenAPI 標註',
+                content: '@RestController\n@RequestMapping("/api/products")\n@Tag(name = "商品管理", description = "商品的新增、查詢、修改與刪除")\npublic class ProductController {\n\n    @Operation(\n        summary = "查詢所有商品",\n        description = "回傳完整商品清單，可加 keyword 參數進行模糊搜尋"\n    )\n    @GetMapping\n    public ResponseEntity<List<Product>> getProducts(\n            @Parameter(description = "商品名稱關鍵字（選填）")\n            @RequestParam(required = false) String keyword) {\n        // ...\n    }\n\n    @Operation(summary = "新增商品")\n    @ApiResponses({\n        @ApiResponse(responseCode = "201", description = "新增成功"),\n        @ApiResponse(responseCode = "400", description = "輸入資料驗證失敗")\n    })\n    @PostMapping\n    public ResponseEntity<Product> createProduct(\n            @Valid @RequestBody Product product) {\n        // ...\n    }\n}'
+              }
+            },
+            {
+              title: '設定全域 API 資訊',
+              type: 'code',
+              paragraphs: [
+                '建立一個 `@Configuration` 類別，設定整份文件的標題、版本與聯絡資訊，讓 Swagger UI 頁首顯示正確的專案說明。'
+              ],
+              code: {
+                language: 'java',
+                title: 'OpenApiConfig.java',
+                content: '@Configuration\npublic class OpenApiConfig {\n\n    @Bean\n    public OpenAPI openAPI() {\n        return new OpenAPI()\n            .info(new Info()\n                .title("智慧商城客服系統 API")\n                .version("1.0.0")\n                .description("Spring Boot 4 + Spring AI 2.0 教學專案 API 文件")\n                .contact(new Contact()\n                    .name("開發團隊")\n                    .email("dev@example.com")));\n    }\n}'
+              }
+            },
+            {
+              title: 'AI 提示詞練習',
+              type: 'text',
+              paragraphs: [
+                '試著用以下提示詞讓 AI 助手幫你完善 API 文件標註：'
+              ],
+              bullets: [
+                '「請幫我在 ProductController 的所有端點加上 @Operation 說明，並補充每個可能的 HTTP 狀態碼對應的 @ApiResponse 標註。」',
+                '「如何讓 Swagger UI 只在 dev profile 啟用，在 prod profile 自動關閉？請修改 application.yml 與 OpenApiConfig。」'
+              ]
+            }
+          ]
+        },
+        {
+          id: 'd1-u6',
+          chapter: '1-6',
+          title: '全域例外處理（Global Exception Handler）',
+          summary: '用 @RestControllerAdvice 統一攔截應用程式例外，回傳格式一致的錯誤回應，讓前端不再猜測錯誤格式。',
+          source: 'docs/Day1-6-GlobalException.md',
+          heroImage: 'assets/teaching-site/06-ch06-global-exception.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解沒有全域例外處理的系統有什麼問題',
+            '建立統一的 ErrorResponse 回應格式',
+            '用 @RestControllerAdvice 集中處理各類例外',
+            '自訂業務例外類別，讓錯誤語意更清楚'
+          ],
+          tasks: [
+            { id: 'd1-u6-t1', text: '建立 ErrorResponse record 作為統一錯誤格式' },
+            { id: 'd1-u6-t2', text: '建立 GlobalExceptionHandler，處理 404 與驗證失敗例外' },
+            { id: 'd1-u6-t3', text: '建立 ResourceNotFoundException，在 ProductService 找不到商品時拋出' }
+          ],
+          sections: [
+            {
+              title: '沒有全域例外處理的問題',
+              type: 'text',
+              paragraphs: [
+                '沒有統一例外處理時，Spring Boot 預設的錯誤回應格式混雜了 Tomcat 訊息與 Java 堆疊資訊，前端無法依賴固定結構解析錯誤。更糟的是，不同端點可能回傳完全不同格式的錯誤，增加前端的防禦成本。',
+                '`@RestControllerAdvice` 讓你在一個地方定義所有例外的處理方式：每種例外對應一個方法，統一回傳相同結構的 JSON，Controller 本身完全不需要 try-catch。'
+              ],
+              bullets: [
+                '例外處理集中在一個類別，不散落各個 Controller',
+                '回傳格式統一，前端只需解析一種結構',
+                'Controller 保持乾淨，只做「請求分派」這一件事'
+              ]
+            },
+            {
+              title: '建立統一的 ErrorResponse 格式',
+              type: 'code',
+              paragraphs: [
+                '先定義所有錯誤回應共用的資料結構。使用 Java Record 讓程式碼簡潔，Jackson 自動序列化為 JSON。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ErrorResponse.java',
+                content: '/**\n * 統一的 API 錯誤回應格式\n * 所有例外處理方法都回傳此格式，讓前端只需解析一種結構\n */\npublic record ErrorResponse(\n    int status,          // HTTP 狀態碼\n    String error,        // 錯誤類型（如 "Not Found"）\n    String message,      // 人類可讀的錯誤說明\n    String path,         // 發生錯誤的 API 路徑\n    LocalDateTime timestamp  // 錯誤發生時間\n) {\n    /** 快速建立標準錯誤回應的工廠方法 */\n    public static ErrorResponse of(HttpStatus status, String message, String path) {\n        return new ErrorResponse(\n            status.value(),\n            status.getReasonPhrase(),\n            message,\n            path,\n            LocalDateTime.now()\n        );\n    }\n}'
+              }
+            },
+            {
+              title: '自訂業務例外類別',
+              type: 'code',
+              paragraphs: [
+                '用語意明確的例外類別取代直接拋出 `RuntimeException`，讓 GlobalExceptionHandler 能精確攔截並對應正確的 HTTP 狀態碼。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ResourceNotFoundException.java',
+                content: '/**\n * 查詢資源不存在時拋出，對應 HTTP 404\n */\npublic class ResourceNotFoundException extends RuntimeException {\n\n    public ResourceNotFoundException(String resourceName, Long id) {\n        super(resourceName + " 不存在：id = " + id);\n    }\n}\n\n// Service 使用方式\n@Transactional(readOnly = true)\npublic Product getProductById(Long id) {\n    return productRepository.findById(id)\n        .orElseThrow(() -> new ResourceNotFoundException("商品", id));\n}'
+              }
+            },
+            {
+              title: '建立 GlobalExceptionHandler',
+              type: 'code',
+              paragraphs: [
+                '`@RestControllerAdvice` 讓這個類別的 `@ExceptionHandler` 方法攔截整個應用程式的例外。每個方法對應一種例外類型，回傳統一的 `ErrorResponse`。'
+              ],
+              code: {
+                language: 'java',
+                title: 'GlobalExceptionHandler.java',
+                content: '@RestControllerAdvice\npublic class GlobalExceptionHandler {\n\n    /** 查詢資源不存在 → 404 */\n    @ExceptionHandler(ResourceNotFoundException.class)\n    public ResponseEntity<ErrorResponse> handleNotFound(\n            ResourceNotFoundException ex, HttpServletRequest req) {\n        return ResponseEntity\n            .status(HttpStatus.NOT_FOUND)\n            .body(ErrorResponse.of(HttpStatus.NOT_FOUND, ex.getMessage(), req.getRequestURI()));\n    }\n\n    /** Bean Validation 驗證失敗 → 400，收集所有欄位錯誤 */\n    @ExceptionHandler(MethodArgumentNotValidException.class)\n    public ResponseEntity<Map<String, Object>> handleValidation(\n            MethodArgumentNotValidException ex, HttpServletRequest req) {\n\n        List<String> errors = ex.getBindingResult().getFieldErrors().stream()\n            .map(f -> f.getField() + "：" + f.getDefaultMessage())\n            .toList();\n\n        Map<String, Object> body = Map.of(\n            "status", 400,\n            "error", "Bad Request",\n            "message", "輸入資料驗證失敗",\n            "errors", errors,\n            "path", req.getRequestURI()\n        );\n        return ResponseEntity.badRequest().body(body);\n    }\n\n    /** 其他未預期例外 → 500，避免洩漏堆疊資訊給前端 */\n    @ExceptionHandler(Exception.class)\n    public ResponseEntity<ErrorResponse> handleGeneral(\n            Exception ex, HttpServletRequest req) {\n        return ResponseEntity\n            .status(HttpStatus.INTERNAL_SERVER_ERROR)\n            .body(ErrorResponse.of(\n                HttpStatus.INTERNAL_SERVER_ERROR,\n                "伺服器發生錯誤，請稍後再試",\n                req.getRequestURI()));\n    }\n}'
+              }
+            },
+            {
+              title: '例外處理回應對照',
+              type: 'code',
+              paragraphs: [
+                '以下是三種例外情境對應的實際 JSON 回應，前端可依 `status` 欄位決定顯示方式。'
+              ],
+              code: {
+                language: 'json',
+                title: '各類例外的回應格式',
+                content: '// GET /api/products/999 → 商品不存在\n{\n  "status": 404,\n  "error": "Not Found",\n  "message": "商品 不存在：id = 999",\n  "path": "/api/products/999",\n  "timestamp": "2026-06-08T10:30:00"\n}\n\n// POST /api/products → 驗證失敗\n{\n  "status": 400,\n  "error": "Bad Request",\n  "message": "輸入資料驗證失敗",\n  "errors": ["name：商品名稱不可為空", "price：售價必須大於 0"],\n  "path": "/api/products"\n}\n\n// 任何未預期錯誤\n{\n  "status": 500,\n  "error": "Internal Server Error",\n  "message": "伺服器發生錯誤，請稍後再試",\n  "path": "/api/products"\n}'
+              }
+            },
+            {
+              title: 'ProblemDetail：Spring Boot 3 內建標準格式',
+              type: 'text',
+              paragraphs: [
+                'Spring Boot 3+ 採用 RFC 9457 的 `ProblemDetail` 作為標準錯誤格式，Spring Boot 4 延續支援並推薦使用。不需要自訂 `ErrorResponse`，可直接在 `GlobalExceptionHandler` 回傳 `ProblemDetail` 物件，格式已符合業界標準。'
+              ],
+              bullets: [
+                '`ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "商品不存在")` → 直接建立標準格式物件',
+                '可透過 `problemDetail.setProperty("extra", value)` 加入自訂欄位',
+                '在 `application.yml` 加上 `spring.mvc.problemdetails.enabled: true` 可讓 Spring 預設用此格式回傳驗證錯誤'
+              ]
+            }
+          ]
+        },
+        {
+          id: 'd1-u7',
+          chapter: '1-7',
+          title: '結構化 Log 與動態調整',
+          summary: '善用 @Slf4j 建立有語意的結構化日誌，透過 application.yml 設定 Log 層級，再用 Spring Actuator 在不重啟應用的情況下動態調整。',
+          source: 'docs/Day1-7-Logging.md',
+          heroImage: 'assets/teaching-site/07-ch07-logging.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解 Spring Boot 預設 Log 機制與層級',
+            '用 @Slf4j 寫出結構化、有語意的 Log',
+            '透過 application.yml 設定各套件的 Log 層級',
+            '用 Spring Actuator 動態調整 Log 層級，無需重啟應用'
+          ],
+          tasks: [
+            { id: 'd1-u7-t1', text: '在 ProductService 加上 @Slf4j，在新增、刪除操作加上適當的 INFO / WARN Log' },
+            { id: 'd1-u7-t2', text: '加入 spring-boot-starter-actuator，驗證可透過 PATCH /actuator/loggers 動態調整層級' }
+          ],
+          sections: [
+            {
+              title: 'Spring Boot 預設 Log 機制',
+              type: 'text',
+              paragraphs: [
+                'Spring Boot 預設使用 Logback 作為 Log 框架，並透過 SLF4J 提供統一的 API 介面。不需要任何設定就能使用，只要依賴 `spring-boot-starter`（幾乎所有 Starter 都已包含）就自動啟用。',
+                '預設 Log 格式包含時間戳記、層級、執行緒、類別名稱與訊息。開發時輸出到 console，可另外設定輸出到檔案。'
+              ],
+              bullets: [
+                '`ERROR` → 系統發生嚴重錯誤，需要立即處理',
+                '`WARN` → 可能有問題，但系統還能運作',
+                '`INFO` → 正常業務流程的關鍵節點（預設顯示層級）',
+                '`DEBUG` → 詳細的執行資訊，開發除錯使用',
+                '`TRACE` → 最詳細層級，通常只在框架內部使用'
+              ]
+            },
+            {
+              title: '@Slf4j 與結構化 Log 寫法',
+              type: 'code',
+              paragraphs: [
+                'Lombok 的 `@Slf4j` 自動注入 `log` 物件，省去手動宣告 Logger 的樣板程式碼。Log 訊息用 `{}` 佔位符取代字串拼接，避免不必要的字串建立開銷，也讓訊息格式更清楚。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ProductService.java — @Slf4j 使用範例',
+                content: '@Slf4j   // Lombok：自動注入 private static final Logger log = ...\n@Service\npublic class ProductService {\n\n    public Product saveProduct(Product product) {\n        log.info("新增商品：name={}, price={}", product.getName(), product.getPrice());\n\n        Product saved = productRepository.save(product);\n\n        log.info("商品新增成功：id={}", saved.getId());\n        return saved;\n    }\n\n    public void deleteProduct(Long id) {\n        if (productRepository.existsById(id)) {\n            productRepository.deleteById(id);\n            log.info("商品刪除成功：id={}", id);\n        } else {\n            log.warn("嘗試刪除不存在的商品：id={}", id);\n            throw new ResourceNotFoundException("商品", id);\n        }\n    }\n\n    // ✅ 用 {} 佔位符（延遲計算，層級關閉時不建立字串）\n    log.debug("查詢條件：{}", filterRequest);\n\n    // ❌ 避免字串拼接（即使 DEBUG 關閉也會建立字串）\n    // log.debug("查詢條件：" + filterRequest);\n}'
+              }
+            },
+            {
+              title: 'application.yml 設定 Log 層級',
+              type: 'code',
+              paragraphs: [
+                '透過 `application.yml` 控制各套件的 Log 層級，可以讓本專案輸出 DEBUG、同時讓 Hibernate 顯示實際執行的 SQL，方便開發期除錯。'
+              ],
+              code: {
+                language: 'yaml',
+                title: 'application.yml — Log 層級設定',
+                content: 'logging:\n  level:\n    root: INFO                          # 全域預設層級\n    com.example.tutorial: DEBUG         # 本專案詳細輸出\n    org.hibernate.SQL: DEBUG            # 顯示 Hibernate 產生的 SQL\n    org.hibernate.orm.jdbc.bind: TRACE  # 顯示 SQL 綁定參數值'
+              }
+            },
+            {
+              title: '動態調整 Log 層級（Spring Actuator）',
+              type: 'code',
+              paragraphs: [
+                '正式環境不能為了調 Log 就重啟應用。加入 `spring-boot-starter-actuator` 後，可以透過 HTTP API 在執行期動態修改特定套件的 Log 層級，調完問題再改回去。'
+              ],
+              bullets: [
+                '先在 pom.xml 加入 `spring-boot-starter-actuator` 依賴',
+                '在 application.yml 開放 loggers 端點：`management.endpoints.web.exposure.include: loggers,health`'
+              ],
+              code: {
+                language: 'bash',
+                title: '動態調整 Log 層級（PowerShell）',
+                content: '# 查詢目前 com.example.tutorial 的 Log 層級\nInvoke-RestMethod -Uri "http://localhost:8080/actuator/loggers/com.example.tutorial"\n\n# 動態改為 DEBUG（無需重啟）\nInvoke-RestMethod `\n  -Method PATCH `\n  -Uri "http://localhost:8080/actuator/loggers/com.example.tutorial" `\n  -ContentType "application/json" `\n  -Body \'{"configuredLevel": "DEBUG"}\'\n\n# 問題排查完後改回 INFO\nInvoke-RestMethod `\n  -Method PATCH `\n  -Uri "http://localhost:8080/actuator/loggers/com.example.tutorial" `\n  -ContentType "application/json" `\n  -Body \'{"configuredLevel": "INFO"}\''
+              }
+            },
+            {
+              title: 'Log 最佳實踐',
+              type: 'text',
+              bullets: [
+                '**INFO**：記錄業務關鍵節點（誰建立了什麼、誰觸發了什麼操作），足以在不看程式碼的情況下理解系統在做什麼',
+                '**WARN**：可以自動恢復或降級的異常情境（如 retry、fallback），需要關注但不需要立即處理',
+                '**ERROR**：需要人工介入的問題，搭配 `log.error("...", ex)` 記錄完整 stack trace',
+                '**避免在 Log 記錄密碼、Token、信用卡號**：即使是 DEBUG 層級，log 檔可能被備份或轉發到第三方',
+                '**用 `{}` 佔位符而非字串拼接**：`log.debug("id={}", id)` 在 DEBUG 層級關閉時不建立字串，效能更好'
+              ]
+            }
+          ]
+        },
+        {
+          id: 'd1-u8',
+          chapter: '1-8',
+          title: 'AOP 橫切關注點（Spring 核心機制）',
+          summary: 'AOP（面向切面程式設計）是 Spring 最重要的底層機制之一，@Transactional、@Valid、@RestControllerAdvice 等你已經用過的功能全部建立在 AOP 之上。本章說明概念，並整理第一天哪些功能背後動用了 AOP。',
+          source: 'docs/Day1-8-AOP.md',
+          heroImage: 'assets/teaching-site/08-ch08-aop.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解 AOP 解決的問題與核心詞彙',
+            '知道 Spring AOP 用 Proxy 實現，並了解其限制',
+            '能辨識哪些 Spring 功能背後使用了 AOP',
+            '知道在什麼情況下才需要直接撰寫 AOP'
+          ],
+          tasks: [
+            { id: 'd1-u8-t1', text: '閱讀 AOP 五大元素說明，能用自己的話描述 Aspect、Advice、Pointcut 的關係' },
+            { id: 'd1-u8-t2', text: '對照第一天功能清單，說明至少 3 個用到 AOP 的地方與其對應的 Advice 類型' }
+          ],
+          sections: [
+            {
+              title: 'AOP 解決了什麼問題',
+              type: 'text',
+              paragraphs: [
+                '寫後端程式時，有一類邏輯天生就不屬於任何單一業務模組，卻又需要出現在幾乎每個地方——交易控制、效能計時、權限驗證、Log 記錄。如果把這些邏輯都寫在每個 Service 方法裡，程式碼會充滿重複，而且修改一次規則要動到幾十個地方。',
+                'AOP（Aspect-Oriented Programming，面向切面程式設計）的核心想法是：把這類「橫切關注點（Cross-cutting Concern）」從業務邏輯中抽離出來，統一定義在一個地方，再宣告「在哪些方法的哪個時間點套用」。業務程式碼保持乾淨，橫切邏輯只寫一次。'
+              ],
+              bullets: [
+                '**交易管理**：每個寫入操作都需要 begin / commit / rollback，不該散落各 Service',
+                '**Log 記錄**：記錄方法進入、結束、耗時，不該每個方法都手寫',
+                '**輸入驗證**：呼叫 Service 前驗證參數，不該在每個方法頭部重複 if-else',
+                '**權限檢查**：確認使用者有沒有權限呼叫這個方法，屬於安全層而非業務層'
+              ]
+            },
+            {
+              title: 'Spring AOP 五大核心詞彙',
+              type: 'text',
+              paragraphs: [
+                '理解 AOP 只需要掌握五個詞彙，其餘的都是這五個概念的組合。'
+              ],
+              bullets: [
+                '**Join Point（連接點）**：程式執行中可以被攔截的時間點，Spring AOP 的 Join Point 就是「方法被呼叫的瞬間」',
+                '**Pointcut（切入點）**：用來篩選「哪些 Join Point 要套用 Advice」的規則，通常用 execution 表達式描述，例如「所有 Service 套件下的 public 方法」',
+                '**Advice（增強/通知）**：在 Join Point 要執行的動作，分成 Before（方法前）、After（方法後）、Around（包覆方法前後）、AfterReturning（成功回傳後）、AfterThrowing（拋出例外後）五種',
+                '**Aspect（切面）**：把 Pointcut 與 Advice 組合在一起的模組，就像「交易管理切面」= 所有 Service 方法（Pointcut）+ 自動 commit/rollback（Advice）',
+                '**Weaving（織入）**：把 Aspect 應用到目標物件的過程；Spring AOP 在執行期（Runtime）透過 Proxy 物件完成織入，不修改原始類別的 bytecode'
+              ]
+            },
+            {
+              title: 'AOP 概念圖解',
+              type: 'text',
+              paragraphs: [
+                '上半部展示橫切關注點如何切穿所有 Service，下半部展示 Spring 用 Proxy 在執行期攔截方法的原理。'
+              ],
+              image: 'assets/teaching-site/08-aop-diagram.svg',
+              imageAlt: 'Spring AOP 橫切關注點與 Proxy 機制圖解',
+              imageCaption: '上半部：相同橫切邏輯散落各 Service；下半部：Spring Proxy 在方法前後自動插入 Advice，Real Service 只剩業務邏輯'
+            },
+            {
+              title: 'Spring AOP 的實現方式：Proxy',
+              type: 'text',
+              paragraphs: [
+                'Spring AOP 不修改你的程式碼，而是在執行期替目標 Bean 建立一個「代理物件（Proxy）」。每次你呼叫 `@Autowired` 注入的 Bean 方法，實際上是呼叫 Proxy，Proxy 先執行 Advice（如開啟交易），再呼叫你的真實方法，最後再執行 Advice（如 commit）。',
+                'Spring 根據情況選擇兩種 Proxy 實作：介面存在時用 JDK 動態 Proxy（速度快），無介面時用 CGLIB（繼承方式建立子類別 Proxy）。'
+              ],
+              callout: {
+                type: 'warning',
+                title: '最常踩的 AOP 陷阱：類別內自呼叫不被攔截',
+                body: '在同一個類別內用 this.methodA() 呼叫另一個方法時，呼叫的是真實物件而非 Proxy，所以 AOP 完全不生效。最常見的症狀是：在 Service 內用 this 呼叫另一個 @Transactional 方法，結果交易沒有如預期運作。解法是把被呼叫的方法抽到另一個 Bean，或透過注入自身（self-injection）繞過。'
+              }
+            },
+            {
+              title: '直接撰寫 AOP 的寫法（效能監控範例）',
+              type: 'code',
+              paragraphs: [
+                '雖然日常開發很少直接寫 AOP，但了解寫法有助於理解 Spring 內建功能的運作原理。以下是一個「記錄所有 Service 方法執行時間」的 Around Advice 範例，加入 `spring-boot-starter-aop` 依賴後即可使用。'
+              ],
+              code: {
+                language: 'java',
+                title: 'PerformanceAspect.java — 直接撰寫 AOP 範例',
+                content: '// pom.xml 加入：spring-boot-starter-aop\n@Aspect          // 宣告這是一個切面\n@Component       // 讓 Spring 管理這個 Bean\n@Slf4j\npublic class PerformanceAspect {\n\n    /**\n     * Pointcut：com.example.tutorial.service 套件下所有類別的所有 public 方法\n     * execution(回傳型別 套件.類別.方法名稱(參數))\n     */\n    @Around("execution(* com.example.tutorial.service.*.*(..))")\n    public Object logExecutionTime(ProceedingJoinPoint pjp) throws Throwable {\n\n        long start = System.currentTimeMillis();\n\n        Object result = pjp.proceed();  // 呼叫真實方法（Around 的核心）\n\n        long elapsed = System.currentTimeMillis() - start;\n\n        log.info("[AOP] {}#{} 執行 {} ms",\n            pjp.getTarget().getClass().getSimpleName(),  // 類別名稱\n            pjp.getSignature().getName(),                // 方法名稱\n            elapsed);\n\n        return result;\n    }\n}'
+              }
+            },
+            {
+              title: '很少直接寫 AOP 的原因',
+              type: 'text',
+              paragraphs: [
+                'Spring 已經把最常用的橫切需求都封裝成標註（Annotation）了。你用 `@Transactional` 就等於在 Service 方法外包了一個 Around Advice，用 `@Valid` 就等於在 Controller 方法前放了一個 Before Advice，根本不需要自己寫 `@Aspect`。',
+                '**直接撰寫 AOP 的時機**通常只有兩種：一是需求無法用現有標註表達（例如對所有方法計時、統一寫入稽核 Log）；二是為公司內部框架提供可重用的橫切能力。一般業務開發幾乎不需要接觸 `@Aspect`。'
+              ],
+              bullets: [
+                '`@Transactional` → Spring 幫你寫好的交易 AOP，不需要自己包 Around Advice',
+                '`@Valid` / `@Validated` → Spring 幫你寫好的驗證 AOP，不需要自己在方法頭部驗參數',
+                '`@RestControllerAdvice` → Spring MVC 幫你寫好的例外攔截，不需要自己包 AfterThrowing',
+                '`@EnableJpaAuditing` → JPA 幫你寫好的 @PrePersist / @PreUpdate 攔截，不需要自己設 Listener',
+                '`spring-boot-starter-actuator` → Spring 幫你寫好的管理端點，不需要自己做 Health Check AOP'
+              ]
+            },
+            {
+              title: 'Day 1 哪些功能背後用了 AOP',
+              type: 'text',
+              paragraphs: [
+                '回顧第一天學過的所有功能，以下整理哪些地方在背後使用了 AOP 或相同設計概念，以及對應的 Spring 元件。'
+              ],
+              tagBullets: [
+                {
+                  chapter: '1-2',
+                  tags: ['@Valid', '@Validated'],
+                  aopType: 'proxy',
+                  description: '@Valid on @RequestBody 由 HandlerMethodArgumentResolver 觸發（Before 概念）；@Validated 用在 Service 方法時改由 MethodValidationInterceptor（真正的 Spring AOP Around Advice）執行'
+                },
+                {
+                  chapter: '1-4',
+                  tags: ['@Transactional'],
+                  aopType: 'proxy',
+                  description: 'TransactionInterceptor（Around Advice）；方法進入前 begin、成功後 commit、例外時 rollback'
+                },
+                {
+                  chapter: '1-4',
+                  tags: ['JpaRepository', 'JpaSpecificationExecutor'],
+                  aopType: 'proxy',
+                  description: 'Spring Data 透過 CGLIB Proxy 自動實作介面，每次方法呼叫都經過 Repository Proxy（與 AOP 同源的 Proxy Pattern）'
+                },
+                {
+                  chapter: '1-4',
+                  tags: ['@Modifying'],
+                  aopType: 'proxy',
+                  description: 'Repository Proxy 攔截到帶有 @Modifying 的方法時，切換為 EntityManager.executeUpdate() 模式'
+                },
+                {
+                  chapter: '1-4',
+                  tags: ['@EntityListeners', 'AuditingEntityListener'],
+                  aopType: 'concept',
+                  description: 'JPA 生命週期回呼（@PrePersist、@PreUpdate），在 Entity 持久化前後插入邏輯，AOP 的 Before / After 概念在 JPA 層的實現'
+                },
+                {
+                  chapter: '1-5',
+                  tags: ['springdoc-openapi'],
+                  aopType: 'concept',
+                  description: '啟動時用 Reflection + HandlerMapping 掃描所有 Controller，非 AOP，但依賴 Spring Bean 容器的元資料'
+                },
+                {
+                  chapter: '1-6',
+                  tags: ['@RestControllerAdvice', '@ExceptionHandler'],
+                  aopType: 'concept',
+                  description: 'HandlerExceptionResolver 攔截所有 Controller 拋出的例外，AfterThrowing 概念在 Spring MVC 層的實現'
+                }
+              ],
+              callout: {
+                type: 'info',
+                title: '計數：Day 1 共 7 個功能點使用了 AOP 或相同設計概念',
+                body: '其中屬於真正 Spring AOP Proxy 的有 3 個：@Transactional（TransactionInterceptor）、@Validated on Service（MethodValidationInterceptor）、JpaRepository Proxy。其餘 4 個（JPA Lifecycle、SpringDoc、RestControllerAdvice、@Valid on RequestBody）採用相同的攔截設計概念，但在不同的框架層實現，不走 Spring AOP Proxy。'
+              }
             }
           ]
         }

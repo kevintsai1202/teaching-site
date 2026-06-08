@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 356" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="356" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">API 文件自動化流程（springdoc-openapi）</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">在程式碼加標注 → 啟動時自動掃描 → Swagger UI 互動文件，不需手動維護</text>
+
+  <!-- ── Box 1: Write annotations ── -->
+  <rect x="16" y="52" width="216" height="194" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <rect x="16" y="52" width="216" height="34" rx="8" fill="#2563eb"/>
+  <rect x="16" y="72" width="216" height="14" fill="#2563eb"/>
+  <text x="124" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="white">① 在程式碼加標注</text>
+
+  <rect x="26" y="95" width="196" height="143" rx="6" fill="#1e293b"/>
+  <text x="36" y="111" font-size="9.5" fill="#7dd3fc" font-family="monospace">@Tag(name = "商品管理")</text>
+  <text x="36" y="125" font-size="9.5" fill="#86efac" font-family="monospace">@RestController</text>
+  <text x="36" y="142" font-size="9.5" fill="#c4b5fd" font-family="monospace">@Operation(</text>
+  <text x="36" y="156" font-size="9.5" fill="#c4b5fd" font-family="monospace">  summary = "查詢商品",</text>
+  <text x="36" y="170" font-size="9.5" fill="#c4b5fd" font-family="monospace">  description = "..."</text>
+  <text x="36" y="184" font-size="9.5" fill="#c4b5fd" font-family="monospace">)</text>
+  <text x="36" y="200" font-size="9.5" fill="#fcd34d" font-family="monospace">@ApiResponse(</text>
+  <text x="36" y="214" font-size="9.5" fill="#fcd34d" font-family="monospace">  responseCode = "200",</text>
+  <text x="36" y="228" font-size="9.5" fill="#fcd34d" font-family="monospace">  description = "成功"</text>
+
+  <!-- Arrow 1 -->
+  <line x1="232" y1="149" x2="268" y2="149" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="250" y="141" text-anchor="middle" font-size="10" fill="#94a3b8">啟動掃描</text>
+
+  <!-- ── Box 2: springdoc scan ── -->
+  <rect x="273" y="52" width="252" height="194" rx="8" fill="#fdf4ff" stroke="#d8b4fe" stroke-width="1.5"/>
+  <rect x="273" y="52" width="252" height="34" rx="8" fill="#7c3aed"/>
+  <rect x="273" y="72" width="252" height="14" fill="#7c3aed"/>
+  <text x="399" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="white">② springdoc-openapi 掃描</text>
+
+  <text x="288" y="104" font-size="11" fill="#4c1d95">掃描所有 @RestController</text>
+  <text x="288" y="120" font-size="11" fill="#4c1d95">讀取 @Tag / @Operation 標注</text>
+  <text x="288" y="136" font-size="11" fill="#4c1d95">讀取 @ApiResponse 回應結構</text>
+  <text x="288" y="152" font-size="11" fill="#4c1d95">推斷請求 / 回應 Java 型別</text>
+
+  <line x1="288" y1="162" x2="512" y2="162" stroke="#d8b4fe" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <text x="399" y="180" text-anchor="middle" font-size="11" fill="#7c3aed" font-weight="700">產生 OpenAPI Spec JSON</text>
+  <rect x="292" y="188" width="214" height="46" rx="6" fill="white" stroke="#d8b4fe" stroke-width="1"/>
+  <text x="399" y="207" text-anchor="middle" font-size="11" font-family="monospace" fill="#7c3aed">GET /v3/api-docs</text>
+  <text x="399" y="223" text-anchor="middle" font-size="10" fill="#7c3aed">（標準 OpenAPI 3.1 JSON）</text>
+
+  <!-- Arrow 2 -->
+  <line x1="525" y1="149" x2="561" y2="149" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="543" y="141" text-anchor="middle" font-size="10" fill="#94a3b8">讀取</text>
+
+  <!-- ── Box 3: Swagger UI ── -->
+  <rect x="566" y="52" width="218" height="194" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <rect x="566" y="52" width="218" height="34" rx="8" fill="#16a34a"/>
+  <rect x="566" y="72" width="218" height="14" fill="#16a34a"/>
+  <text x="675" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="white">③ Swagger UI 輸出</text>
+
+  <text x="580" y="103" font-size="11" fill="#15803d" font-weight="700" font-family="monospace">/swagger-ui.html</text>
+  <line x1="580" y1="111" x2="777" y2="111" stroke="#86efac" stroke-width="1"/>
+  <text x="580" y="127" font-size="11" fill="#166534">• 所有 API 端點一覽</text>
+  <text x="580" y="143" font-size="11" fill="#166534">• 在瀏覽器直接測試請求</text>
+  <text x="580" y="159" font-size="11" fill="#166534">• 查看請求 / 回應結構</text>
+  <text x="580" y="175" font-size="11" fill="#166534">• 版本升級後自動同步</text>
+  <text x="580" y="191" font-size="11" fill="#166534">• 匯出規格給前端 / QA</text>
+  <text x="580" y="207" font-size="11" fill="#166534">• 零額外文件維護成本</text>
+
+  <!-- ── Version compatibility table ── -->
+  <rect x="16" y="260" width="768" height="84" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="400" y="278" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">版本對應（選錯版本啟動時報錯）</text>
+
+  <line x1="272" y1="264" x2="272" y2="340" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="538" y1="264" x2="538" y2="340" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="144" y="295" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">Spring Boot</text>
+  <text x="405" y="295" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">springdoc-openapi</text>
+  <text x="663" y="295" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">底層環境</text>
+
+  <line x1="16" y1="299" x2="784" y2="299" stroke="#f1f5f9" stroke-width="1"/>
+
+  <text x="144" y="314" text-anchor="middle" font-size="11" fill="#94a3b8">Boot 2.x</text>
+  <text x="405" y="314" text-anchor="middle" font-size="11" fill="#94a3b8">v1.x（1.8.0）</text>
+  <text x="663" y="314" text-anchor="middle" font-size="11" fill="#94a3b8">Spring 5 + javax + Servlet</text>
+
+  <text x="144" y="329" text-anchor="middle" font-size="11" fill="#64748b">Boot 3.x</text>
+  <text x="405" y="329" text-anchor="middle" font-size="11" fill="#64748b">v2.x（2.8.0）</text>
+  <text x="663" y="329" text-anchor="middle" font-size="11" fill="#64748b">Spring 6 + Jakarta EE 10</text>
+
+  <rect x="18" y="333" width="763" height="8" fill="#eff6ff" rx="2"/>
+  <text x="144" y="344" text-anchor="middle" font-size="11" fill="#2563eb" font-weight="700">Boot 4.x ← 本專案</text>
+  <text x="405" y="344" text-anchor="middle" font-size="11" fill="#2563eb" font-weight="700">v3.x（3.0.3）← 使用此版</text>
+  <text x="663" y="344" text-anchor="middle" font-size="11" fill="#2563eb" font-weight="700">Spring 7 + Jakarta EE + VT</text>
+</svg>

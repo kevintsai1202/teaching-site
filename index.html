@@ -889,9 +889,75 @@
             background: color-mix(in oklab, var(--warning-soft) 54%, var(--surface));
         }
 
+        .callout.info {
+            border-color: color-mix(in oklab, var(--success) 30%, var(--border));
+            background: color-mix(in oklab, var(--success-soft) 54%, var(--surface));
+        }
+
         .callout strong {
             display: block;
             margin-bottom: 8px;
+        }
+
+        /* Tag-list：用於 AOP 功能清單等需要 badge 呈現的條列 */
+        .tag-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tag-list-item {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+            line-height: 1.65;
+        }
+
+        .tag-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1.5;
+        }
+
+        .tag-chip.chapter {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tag-chip.anno {
+            background: var(--code-bg);
+            color: var(--code-fg);
+            font-family: monospace;
+            border-radius: 6px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        .tag-chip.aop-proxy {
+            background: var(--success-soft);
+            color: var(--success);
+            border: 1px solid color-mix(in oklab, var(--success) 28%, var(--border));
+        }
+
+        .tag-chip.aop-concept {
+            background: var(--surface-2);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .tag-item-desc {
+            color: var(--muted);
+            font-size: 13px;
         }
 
         .inline-visual {
@@ -1326,6 +1392,35 @@
                 createElement('strong', { text: '排查重點' }),
                 createElement('p', { text: '這一段列的是最容易卡住的地方。若結果不符預期，優先對照這些症狀再往下查。' })
             ]), stack.firstChild);
+        }
+
+        if (section.callout) {
+            const { type = 'info', title: calloutTitle, body } = section.callout;
+            stack.appendChild(createElement('div', { className: `callout ${type}` }, [
+                calloutTitle ? createElement('strong', { text: calloutTitle }) : null,
+                createElement('p', { text: body })
+            ]));
+        }
+
+        if (section.tagBullets && section.tagBullets.length) {
+            const ul = createElement('ul', { className: 'tag-list' });
+            section.tagBullets.forEach(item => {
+                const li = createElement('li', { className: 'tag-list-item' });
+                li.appendChild(createElement('span', { className: 'tag-chip chapter', text: item.chapter }));
+                (item.tags || []).forEach(tag => {
+                    li.appendChild(createElement('span', { className: 'tag-chip anno', text: tag }));
+                });
+                if (item.aopType) {
+                    const isProxy = item.aopType === 'proxy';
+                    li.appendChild(createElement('span', {
+                        className: `tag-chip ${isProxy ? 'aop-proxy' : 'aop-concept'}`,
+                        text: isProxy ? 'Spring AOP Proxy' : 'AOP 概念'
+                    }));
+                }
+                li.appendChild(createElement('span', { className: 'tag-item-desc', text: `→ ${item.description}` }));
+                ul.appendChild(li);
+            });
+            stack.appendChild(ul);
         }
 
         if (section.bullets && section.bullets.length) {

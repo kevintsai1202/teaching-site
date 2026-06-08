@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 408" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ef4444"/>
+    </marker>
+    <marker id="arr-grn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="408" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">全域例外處理（@RestControllerAdvice）</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">Controller 不需要 try-catch，例外統一往上傳播由一個地方攔截處理</text>
+
+  <!-- ══════════════ LEFT: Without advice ══════════════ -->
+  <rect x="16" y="52" width="368" height="240" rx="8" fill="#fff5f5" stroke="#fca5a5" stroke-width="1.5"/>
+  <rect x="16" y="52" width="368" height="34" rx="8" fill="#ef4444"/>
+  <rect x="16" y="72" width="368" height="14" fill="#ef4444"/>
+  <text x="200" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="white">❌ 沒有全域例外處理</text>
+
+  <!-- Code block -->
+  <rect x="26" y="96" width="348" height="112" rx="6" fill="#1e293b"/>
+  <text x="36" y="112" font-size="9.5" fill="#94a3b8" font-family="monospace">// 每個 Controller 方法都要寫</text>
+  <text x="36" y="126" font-size="9.5" fill="#fcd34d" font-family="monospace">@DeleteMapping("/{id}")</text>
+  <text x="36" y="140" font-size="9.5" fill="#86efac" font-family="monospace">public ResponseEntity&lt;?&gt; delete(@PathVariable Long id) {</text>
+  <text x="36" y="154" font-size="9.5" fill="#f87171" font-family="monospace">  try {</text>
+  <text x="36" y="168" font-size="9.5" fill="#94a3b8" font-family="monospace">    productService.deleteById(id);</text>
+  <text x="36" y="182" font-size="9.5" fill="#f87171" font-family="monospace">  } catch (NotFoundException e) {</text>
+  <text x="36" y="196" font-size="9.5" fill="#f87171" font-family="monospace">    return ResponseEntity.status(404).body(...);</text>
+  <text x="36" y="200" font-size="9.5" fill="#f87171" font-family="monospace">  }</text>
+
+  <!-- Problems -->
+  <text x="34" y="228" font-size="11" fill="#b91c1c" font-weight="700">問題：</text>
+  <text x="34" y="244" font-size="11" fill="#7f1d1d">• 每個方法都需要 try-catch，程式碼重複</text>
+  <text x="34" y="260" font-size="11" fill="#7f1d1d">• 不同方法回傳格式各自定義，前端難解析</text>
+  <text x="34" y="276" font-size="11" fill="#7f1d1d">• 新增例外類型要改每一個 Controller</text>
+
+  <!-- VS arrow -->
+  <text x="400" y="176" text-anchor="middle" font-size="18" font-weight="700" fill="#94a3b8">→</text>
+
+  <!-- ══════════════ RIGHT: With @RestControllerAdvice ══════════════ -->
+  <rect x="416" y="52" width="368" height="240" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <rect x="416" y="52" width="368" height="34" rx="8" fill="#16a34a"/>
+  <rect x="416" y="72" width="368" height="14" fill="#16a34a"/>
+  <text x="600" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="white">✅ 使用 @RestControllerAdvice</text>
+
+  <!-- Flow boxes -->
+  <!-- HTTP Request -->
+  <rect x="490" y="96" width="156" height="28" rx="5" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="568" y="114" text-anchor="middle" font-size="11" fill="#1d4ed8">HTTP 請求進入</text>
+
+  <line x1="568" y1="124" x2="568" y2="138" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-grn)"/>
+
+  <!-- Controller -->
+  <rect x="476" y="142" width="184" height="34" rx="5" fill="white" stroke="#86efac" stroke-width="1"/>
+  <text x="568" y="157" text-anchor="middle" font-size="11" fill="#14532d" font-weight="700">Controller</text>
+  <text x="568" y="170" text-anchor="middle" font-size="10" fill="#166534">throws ResourceNotFoundException</text>
+
+  <!-- "no try-catch needed" note -->
+  <text x="426" y="163" font-size="10" fill="#64748b">不需</text>
+  <text x="426" y="175" font-size="10" fill="#64748b">try-catch</text>
+
+  <line x1="568" y1="176" x2="568" y2="190" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-grn)"/>
+  <text x="578" y="186" font-size="9.5" fill="#64748b">往上傳播</text>
+
+  <!-- RestControllerAdvice -->
+  <rect x="452" y="194" width="232" height="36" rx="5" fill="#dcfce7" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="568" y="208" text-anchor="middle" font-size="11" fill="#14532d" font-weight="700">@RestControllerAdvice</text>
+  <text x="568" y="222" text-anchor="middle" font-size="10" fill="#166534">GlobalExceptionHandler</text>
+
+  <line x1="568" y1="230" x2="568" y2="244" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-grn)"/>
+
+  <!-- ProblemDetail box -->
+  <rect x="430" y="248" width="276" height="36" rx="5" fill="#16a34a"/>
+  <text x="568" y="263" text-anchor="middle" font-size="11" fill="white" font-weight="700">HTTP 404 + ProblemDetail JSON</text>
+  <text x="568" y="277" text-anchor="middle" font-size="10" fill="#bbf7d0">統一格式，所有例外皆適用</text>
+
+  <!-- ══════════════ BOTTOM: ProblemDetail format ══════════════ -->
+  <rect x="16" y="306" width="768" height="90" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="400" y="324" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">ProblemDetail 標準格式（RFC 9457）— Spring Boot 3+ 採用，Boot 4 延續支援</text>
+
+  <!-- JSON content -->
+  <rect x="26" y="332" width="356" height="56" rx="5" fill="#1e293b"/>
+  <text x="36" y="348" font-size="9.5" fill="#e2e8f0" font-family="monospace">{</text>
+  <text x="36" y="362" font-size="9.5" fill="#86efac" font-family="monospace">  "type": "about:blank",</text>
+  <text x="36" y="376" font-size="9.5" fill="#fcd34d" font-family="monospace">  "status": 404, "title": "Not Found",</text>
+  <text x="36" y="390" font-size="9.5" fill="#7dd3fc" font-family="monospace">  "detail": "商品 id=999 不存在"</text>
+
+  <!-- Field explanations -->
+  <text x="400" y="348" font-size="11" fill="#475569">• type：錯誤類型 URI（預設 about:blank）</text>
+  <text x="400" y="364" font-size="11" fill="#475569">• status：HTTP 狀態碼</text>
+  <text x="400" y="380" font-size="11" fill="#475569">• title：狀態碼對應的通用描述</text>
+  <text x="400" y="396" font-size="11" fill="#475569">• detail：具體原因（自訂訊息）</text>
+</svg>
