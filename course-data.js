@@ -2273,6 +2273,137 @@ window.COURSE = {
               ]
             }
           ]
+        },
+        {
+          id: 'd2-u5',
+          chapter: '2-5',
+          title: 'React 聊天室與 SSE 串流式對話實戰',
+          summary: '使用 React 串接後端 Server-Sent Events (SSE) 串流 API，利用原生 EventSource 與狀態管理實現即時打字機對話效果。',
+          source: 'docs/Day2-5-React-SSE.md',
+          heroImage: 'assets/teaching-site/05-ch05-api-docs.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解 SSE 與 WebSockets 的區別與選型',
+            '使用 React 的 EventSource 實作後端 API 串接',
+            '利用 React 狀態 (State) 實作流式打字渲染效果',
+            '掌握流式對話中對話 Session 的前端管理與清除'
+          ],
+          tasks: [
+            { id: 'd2-u5-t1', text: '理解 SSE (Server-Sent Events) 單向串流原理' },
+            { id: 'd2-u5-t2', text: '使用 React 實作 EventSource 監聽與狀態更新' },
+            { id: 'd2-u5-t3', text: '完成前端對話 Session 清除與重建邏輯' }
+          ],
+          sections: [
+            {
+              title: '為什麼選擇 SSE (Server-Sent Events)',
+              type: 'text',
+              paragraphs: [
+                '在 AI 聊天應用中，模型的回應是單向且持續產生的，後端需要持續把資料推給前端，而前端不需要在過程中頻繁向後端傳送資料。',
+                '相較於 WebSockets 的雙向複雜協定，SSE 是基於標準 HTTP 的單向推播協定，開發簡單、開銷小，且天生支援斷線重連。Spring AI 的 `.stream()` 預設就是輸出標準的 `text/event-stream` 格式，與 SSE 完美搭配。'
+              ],
+              bullets: [
+                'WebSockets：雙向通道，適用於多人遊戲、協作工具，但協定較為繁重。',
+                'SSE (Server-Sent Events)：單向推送，基於 HTTP，最適合大模型流式生成 (Streaming)。',
+                'React 連線方式：使用瀏覽器內建的 `EventSource` 物件即可建立連線，不需要引入第三方 WebSocket 庫。'
+              ]
+            },
+            {
+              title: 'React EventSource 串接核心代碼',
+              type: 'code',
+              paragraphs: [
+                '這是在 React 中透過 `useEffect` 監聽後端 SSE 流的典型寫法。每次後端傳來新的字元片斷，我們就將其追加到當前最新的一筆訊息中。'
+              ],
+              code: {
+                language: 'javascript',
+                title: 'ChatRoom.jsx — 串流接收與狀態更新',
+                content: 'const handleSend = (text) => {\n  // 1. 新增使用者的發問訊息\n  const userMsg = { id: Date.now(), sender: "user", text };\n  const assistantMsg = { id: Date.now() + 1, sender: "assistant", text: "" };\n  setMessages(prev => [...prev, userMsg, assistantMsg]);\n\n  // 2. 建立 SSE 連線\n  const eventSource = new EventSource(\n    `/api/ai/stream?message=${encodeURIComponent(text)}&sessionId=${sessionId}`\n  );\n\n  // 3. 監聽後端推播事件\n  eventSource.onmessage = (event) => {\n    // [注意] Spring AI 預設可能回傳字元片段，需要持續追加到最後一筆 assistant 訊息中\n    setMessages(prev => {\n      const updated = [...prev];\n      const lastIndex = updated.length - 1;\n      updated[lastIndex] = {\n        ...updated[lastIndex],\n        text: updated[lastIndex].text + event.data // 追加新收到的字元\n      };\n      return updated;\n    });\n  };\n\n  eventSource.onerror = (err) => {\n    console.error("SSE 串流連線中斷或結束：", err);\n    eventSource.close(); // 發生錯誤或傳輸完畢時關閉連線\n  };\n};'
+              }
+            },
+            {
+              title: '流式打字機效果與自動滾動',
+              type: 'code',
+              paragraphs: [
+                '為了提升使用者體驗，聊天室通常需要具備「打字機流式輸出」與「新訊息自動滾動到底部」的功能。我們可以使用 React 的 `useRef` 與 `useEffect` 來追蹤對話列表的長度並進行滾動。'
+              ],
+              code: {
+                language: 'javascript',
+                title: 'ChatRoom.jsx — 自動滾動到底部',
+                content: 'const messageEndRef = useRef(null);\n\n// 監聽訊息陣列變動，若有新訊息或新字元，自動滾動到底部\nuseEffect(() => {\n  messageEndRef.current?.scrollIntoView({ behavior: "smooth" });\n}, [messages]);\n\nreturn (\n  <div className="chat-container">\n    <div className="messages-list">\n      {messages.map(msg => (\n        <div key={msg.id} className={`message-bubble ${msg.sender}`}>\n          {msg.text || "▍"}\n        </div>\n      ))}\n      <div ref={messageEndRef} />\n    </div>\n  </div>\n);'
+              }
+            }
+          ]
+        },
+        {
+          id: 'd2-u6',
+          chapter: '2-6',
+          title: '對話歷史向量化與 RAG 檢索',
+          summary: '將聊天室的對話紀錄（User Prompt 與 AI Response）非同步向量化儲存，並在發問時透過多路 RAG 同時檢索商品庫與歷史對話，打造具備長效語意記憶的 AI 助手。',
+          source: 'docs/Day2-6-ChatHistory-RAG.md',
+          heroImage: 'assets/teaching-site/07-ch07-logging.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解對話歷史向量化的重要性與長期記憶挑戰',
+            '實作在 Spring Boot 串流結束時非同步寫入向量庫',
+            '使用 Metadata 進行對話歷史隔離與精確過濾',
+            '設計雙路 RAG 檢索：同時查詢知識庫與歷史記憶並進行內容合併'
+          ],
+          tasks: [
+            { id: 'd2-u6-t1', text: '設計非同步向量化儲存 Service 邏輯' },
+            { id: 'd2-u6-t2', text: '在 SSE 串流完成時 (doOnComplete) 觸發歷史寫入' },
+            { id: 'd2-u6-t3', text: '實作多路檢索與上下文合併邏輯' }
+          ],
+          sections: [
+            {
+              title: '為什麼需要對話歷史 RAG',
+              type: 'text',
+              paragraphs: [
+                '基本的 ChatMemory (對話記憶) 只能儲存最近幾次對話（短期記憶），且受限於大模型上下文窗口 (Context Window) 的長度與 Token 開銷。當用戶問到「幾天前我們討論過的那個方案」時，短期記憶無能為力。',
+                '藉由將「歷史問答」向量化寫入資料庫，我們可以使用 RAG 搜尋「語意相似的過去對話」，動態將相關記憶塞入 Prompt，使 AI 具備橫跨數週甚至數月的長期語意記憶。'
+              ],
+              bullets: [
+                '短期記憶 (ChatMemory)：儲存於記憶體，限制 N 筆對話，成本高且會隨重啟消失。',
+                '長期記憶 (History RAG)：向量化存入 PostgreSQL (pgvector)，需要時以語意搜尋檢索，開銷小且永久保存。'
+              ]
+            },
+            {
+              title: '串流結束時非同步寫入向量庫',
+              type: 'code',
+              paragraphs: [
+                '我們不能在對話進行中阻塞 SSE 串流，否則前端會有嚴重的卡頓感。正確的做法是監聽 `Flux` 的 `doOnComplete()` 事件，並利用非同步執行緒將「完整對話紀錄」送去向量化寫入。'
+              ],
+              code: {
+                language: 'java',
+                title: 'RAGController.java — 監聽串流完成並非同步寫入',
+                content: '@GetMapping(value = "/stream-chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<String> streamChatWithHistory(\n        @RequestParam String message,\n        @RequestParam String sessionId) {\n\n    StringBuilder fullResponse = new StringBuilder();\n\n    return this.chatClient.prompt()\n            .user(message)\n            .stream()\n            .content()\n            .doOnNext(fullResponse::append) // 持續收集模型生成的字元片段\n            .doOnComplete(() -> {\n                // 串流傳輸完成後，非同步將對話紀錄寫入向量庫\n                CompletableFuture.runAsync(() -> {\n                    chatHistoryService.saveToVectorStore(sessionId, message, fullResponse.toString());\n                });\n            });\n}'
+              }
+            },
+            {
+              title: '對話歷史向量化 Service 實作',
+              type: 'code',
+              paragraphs: [
+                '利用 `VectorStore` 的 `add` 方法，我們把 User 問句與 AI 答句組合，並加上 metadata 以利日後查詢時，能透過 `sessionId` 隔離不同使用者的隱私。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ChatHistoryService.java — 寫入向量庫與 Metadata 過濾',
+                content: '@Service\n@Slf4j\npublic class ChatHistoryService {\n    private final VectorStore vectorStore;\n\n    public ChatHistoryService(VectorStore vectorStore) {\n        this.vectorStore = vectorStore;\n    }\n\n    public void saveToVectorStore(String sessionId, String prompt, String response) {\n        String content = "使用者提問：" + prompt + "\\n助手回答：" + response;\n        \n        Document doc = new Document(\n            content,\n            Map.of(\n                "sessionId", sessionId,\n                "type", "chat_history",\n                "created_at", System.currentTimeMillis()\n            )\n        );\n        \n        vectorStore.add(List.of(doc));\n        log.info("[長期記憶] 已成功向量化存入對話歷史，sessionId={}", sessionId);\n    }\n}'
+              }
+            },
+            {
+              title: '雙路 RAG 檢索與上下文合併',
+              type: 'code',
+              paragraphs: [
+                '在使用者提問時，我們同時發起兩路檢索：一路查「商品知識表（type = \'product_doc\'）」，另一路查「該用戶的對話歷史（type = \'chat_history\' AND sessionId = \'xxx\'）」，最後將兩者合併作為 Context 提供給大模型。'
+              ],
+              code: {
+                language: 'java',
+                title: 'RAGController.java — 雙路 RAG 合併檢索',
+                content: 'public List<Document> retrieveDoubleRoad(String query, String sessionId) {\n    // 第一路：商品文件檢索\n    SearchRequest productReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'product_doc\'")\n            .topK(3)\n            .build();\n    List<Document> products = vectorStore.similaritySearch(productReq);\n\n    // 第二路：該使用者歷史對話語意檢索\n    SearchRequest historyReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'chat_history\' && sessionId == \'" + sessionId + "\'")\n            .topK(2)\n            .build();\n    List<Document> histories = vectorStore.similaritySearch(historyReq);\n\n    // 合併結果並回傳\n    List<Document> combined = new ArrayList<>();\n    combined.addAll(products);\n    combined.addAll(histories);\n    return combined;\n}'
+              }
+            }
+          ]
         }
       ]
     }
