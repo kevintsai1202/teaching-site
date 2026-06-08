@@ -2261,7 +2261,7 @@ window.COURSE = {
               code: {
                 language: 'powershell',
                 title: '終端機 1：MCP Server　|　終端機 2：MCP Client',
-                content: '# ===== 終端機 1：啟動 MCP Server (port 8080) =====\ndocker-compose up -d\n$env:JAVA_HOME = "D:\\java\\jdk-21"; $env:Path = "D:\\java\\jdk-21\\bin;$env:Path"\n$env:GROQ_API_KEY = "your-groq-key"; $env:VOYAGE_API_KEY = "your-voyage-key"\nmvn spring-boot:run\n# 看到「Started LearnSpringApplication」後，再開終端機 2\n\n# ===== 終端機 2：啟動 MCP Client (port 8081) =====\nSet-Location "D:\\GitHub\\learn-spring\\mcp-client-demo"\n$env:JAVA_HOME = "D:\\java\\jdk-21"; $env:Path = "D:\\java\\jdk-21\\bin;$env:Path"\n$env:GROQ_API_KEY = "your-groq-key"\nmvn spring-boot:run\n\n# ===== 測試 AI 跨服務工具呼叫 =====\nInvoke-RestMethod -Uri "http://localhost:8081/api/mcp/chat?message=有哪些商品"\n# AI 透過 MCP 呼叫 MCP Server 的 getProducts，回傳即時商品清單'
+                content: '# ===== 終端機 1：啟動 MCP Server (port 8080) =====\nSet-Location "D:\\GitHub\\learn-spring\\backend"\ndocker-compose up -d\n$env:JAVA_HOME = "D:\\java\\jdk-21"; $env:Path = "D:\\java\\jdk-21\\bin;$env:Path"\n$env:GROQ_API_KEY = "your-groq-key"; $env:VOYAGE_API_KEY = "your-voyage-key"\nmvn spring-boot:run\n# 看到「Started LearnSpringApplication」後，再開終端機 2\n\n# ===== 終端機 2：啟動 MCP Client (port 8081) =====\nSet-Location "D:\\GitHub\\learn-spring\\mcp"\n$env:JAVA_HOME = "D:\\java\\jdk-21"; $env:Path = "D:\\java\\jdk-21\\bin;$env:Path"\n$env:GROQ_API_KEY = "your-groq-key"\nmvn spring-boot:run\n\n# ===== 測試 AI 跨服務工具呼叫 =====\nInvoke-RestMethod -Uri "http://localhost:8081/api/mcp/chat?message=有哪些商品"\n# AI 透過 MCP 呼叫 MCP Server 的 getProducts，回傳即時商品清單'
               }
             },
             {
