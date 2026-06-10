@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <!-- 箭頭標記 -->
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blu" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-grn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#059669"/>
+    </marker>
+    <!-- 陰影效果 -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="800" height="450" fill="#f8fafc" rx="12"/>
+  <text x="400" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">大模型「記憶」的本質：AI 上下文 (Context) 組成圖</text>
+  <text x="400" y="52" text-anchor="middle" font-size="11" fill="#64748b">大模型本身是無狀態的，有記憶是因為 Advisor 在背後自動拼接了歷史對話並送給 AI</text>
+
+  <!-- ════════ LEFT: Context Container ════════ -->
+  <rect x="24" y="80" width="360" height="346" rx="8" fill="white" stroke="#cbd5e1" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="24" y="80" width="360" height="36" rx="8" fill="#475569"/>
+  <rect x="24" y="100" width="360" height="16" fill="#475569"/>
+  <text x="204" y="103" text-anchor="middle" font-size="12" font-weight="700" fill="white">AI 上下文容器 (Request Context)</text>
+
+  <!-- 1. System Prompt Block -->
+  <rect x="40" y="132" width="328" height="64" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="40" y="132" width="100" height="20" rx="4" fill="#f59e0b"/>
+  <text x="90" y="146" text-anchor="middle" font-size="10" font-weight="700" fill="white">System Message</text>
+  <text x="50" y="168" font-size="11" fill="#78350f" font-weight="700">「你是一個親切的 Antigravity 商城智慧助手...」</text>
+  <text x="50" y="184" font-size="9" fill="#b45309">（來自 defaultSystem 設定，定義角色規則）</text>
+
+  <!-- 2. Chat History Block -->
+  <rect x="40" y="212" width="328" height="106" rx="6" fill="#f0fdf4" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="40" y="212" width="100" height="20" rx="4" fill="#10b981"/>
+  <text x="90" y="226" text-anchor="middle" font-size="10" font-weight="700" fill="white">Chat History</text>
+  
+  <rect x="50" y="238" width="130" height="20" rx="4" fill="#dcfce7" stroke="#86efac"/>
+  <text x="56" y="252" font-size="9" fill="#14532d">User:「我想買耳機」</text>
+  
+  <rect x="190" y="262" width="168" height="20" rx="4" fill="#dcfce7" stroke="#86efac"/>
+  <text x="196" y="276" font-size="9" fill="#14532d">Assistant:「您的預算大概是多少？」</text>
+  
+  <text x="50" y="306" font-size="9" fill="#047857">（從 ChatMemory 撈出 sessionId = "user_A" 的對話）</text>
+
+  <!-- 3. Current User Message Block -->
+  <rect x="40" y="334" width="328" height="76" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <rect x="40" y="334" width="100" height="20" rx="4" fill="#3b82f6"/>
+  <text x="90" y="348" text-anchor="middle" font-size="10" font-weight="700" fill="white">User Message</text>
+  <text x="50" y="370" font-size="11" fill="#1e3a8a" font-weight="700">「預算大概 2000 元左右。」</text>
+  <text x="50" y="392" font-size="9" fill="#2563eb">（本次當前使用者的提問）</text>
+
+  <!-- ════════ MIDDLE: Dispatch & Advisor ════════ -->
+  <!-- 合併發送 -->
+  <path d="M 384,253 L 476,253" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arr)" stroke-dasharray="1,0"/>
+  <text x="430" y="244" text-anchor="middle" font-size="10" font-weight="700" fill="#475569">組裝打包發送</text>
+
+  <!-- ════════ RIGHT: LLM & Memory DB ════════ -->
+  <!-- LLM Box -->
+  <rect x="486" y="196" width="130" height="114" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="551" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#0369a1">大語言模型</text>
+  <text x="551" y="260" text-anchor="middle" font-size="12" font-weight="700" fill="#0369a1">(LLM)</text>
+  <text x="551" y="282" text-anchor="middle" font-size="9" fill="#0284c7">根據上下文預測下個字</text>
+
+  <!-- LLM Answer -->
+  <path d="M 616,253 L 702,253" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  
+  <rect x="636" y="146" width="144" height="90" rx="6" fill="#f8fafc" stroke="#bfdbfe"/>
+  <text x="642" y="166" font-size="10" font-weight="700" fill="#1e3a8a">助理回覆 (Assistant)</text>
+  <text x="642" y="186" font-size="10" fill="#1e40af">「在此預算下，推薦您</text>
+  <text x="642" y="202" font-size="10" fill="#1e40af">選擇『反重力耳機 Lite』</text>
+  <text x="642" y="218" font-size="10" fill="#1e40af">，目前特價 1800 元。」</text>
+
+  <!-- ════════ BOTTOM: Memory Persistence ════════ -->
+  <!-- Chat Memory DB -->
+  <rect x="486" y="356" width="130" height="60" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <!-- Database Cylinder Icon -->
+  <ellipse cx="506" cy="374" rx="10" ry="4" fill="none" stroke="#059669" stroke-width="1.5"/>
+  <path d="M 496,374 L 496,398 A 10,4 0 0 0 516,398 L 516,374" fill="none" stroke="#059669" stroke-width="1.5"/>
+  <ellipse cx="506" cy="382" rx="10" ry="4" fill="none" stroke="#059669" stroke-width="1.5"/>
+  <ellipse cx="506" cy="390" rx="10" ry="4" fill="none" stroke="#059669" stroke-width="1.5"/>
+  <text x="566" y="384" text-anchor="middle" font-size="11" font-weight="700" fill="#065f46">對話記憶庫</text>
+  <text x="566" y="398" text-anchor="middle" font-size="8" fill="#059669">(ChatMemory)</text>
+
+  <!-- Save Path 1: User Message to DB -->
+  <path d="M 204,414 L 204,432 L 440,432 L 440,386 L 478,386" fill="none" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-grn)" stroke-dasharray="3,2"/>
+  <text x="312" y="426" text-anchor="middle" font-size="8" fill="#047857">1. 自動儲存使用者當前問題</text>
+
+  <!-- Save Path 2: Assistant Message to DB -->
+  <path d="M 708,244 L 708,326 L 551,326 L 551,348" fill="none" stroke="#059669" stroke-width="1.5" marker-end="url(#arr-grn)" stroke-dasharray="3,2"/>
+  <text x="630" y="318" text-anchor="middle" font-size="8" fill="#047857">2. 自動儲存 AI 最新回應</text>
+  
+  <text x="551" y="340" text-anchor="middle" font-size="9" font-weight="700" fill="#059669">寫入記憶庫 ✓</text>
+
+</svg>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新一代全端 AI 開發流程實戰</title>
+    <title>2026最新AI協作開發流程（前端/後端/AI 整合 ─ Spring Boot + Spring AI + React）</title>
     <script src="./course-data.js"></script>
     <style>
         :root {
@@ -83,6 +83,18 @@
 
         a {
             color: inherit;
+        }
+
+        .accent-link {
+            color: var(--accent) !important;
+            text-decoration: underline !important;
+            cursor: pointer !important;
+            transition: color 0.2s ease;
+        }
+
+        .accent-link:hover {
+            color: var(--accent-deep) !important;
+            text-decoration: none !important;
         }
 
         .shell {
@@ -970,6 +982,14 @@
             border: 1px solid var(--border);
         }
 
+        .inline-visual svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--r-lg);
+            border: 1px solid var(--border);
+        }
+
         .code-block {
             overflow: hidden;
             border-radius: var(--r-lg);
@@ -994,6 +1014,24 @@
             letter-spacing: 0.08em;
         }
 
+        .copy-code-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid color-mix(in oklab, white 24%, transparent);
+            background: color-mix(in oklab, white 6%, transparent);
+            color: oklch(88% 0.01 250);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-code-btn:hover {
+            background: color-mix(in oklab, white 16%, transparent);
+            color: white;
+            border-color: oklch(88% 0.01 250);
+        }
+
         .code-block pre {
             margin: 0;
             padding: 18px 20px;
@@ -1001,6 +1039,8 @@
             color: var(--code-fg);
             font-size: 0.94rem;
             line-height: 1.75;
+            user-select: text !important;
+            -webkit-user-select: text !important;
         }
 
         .task-panel {
@@ -1193,6 +1233,35 @@
         return node;
     }
 
+    /** 將 [文字](連結) 格式解析為 HTML 超連結。 */
+    function formatMarkdownLinks(text) {
+        if (typeof text !== 'string') return { text };
+        
+        // 檢測是否已經包含 HTML 標籤，如果包含，直接以 HTML 方式渲染
+        if (/<[a-z][\s\S]*>/i.test(text)) {
+            return { html: text };
+        }
+        
+        let html = text;
+        
+        // 解析連結 [text](url)
+        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        html = html.replace(linkRegex, '<a href="$2" target="_blank" class="accent-link">$1</a>');
+        
+        // 解析粗體 **text**
+        const boldRegex = /\*\*([^*]+)\*\*/g;
+        html = html.replace(boldRegex, '<strong>$1</strong>');
+        
+        // 解析程式碼區塊 `text`
+        const codeRegex = /`([^`]+)`/g;
+        html = html.replace(codeRegex, '<code>$1</code>');
+        
+        if (html !== text) {
+            return { html };
+        }
+        return { text };
+    }
+
     /** 讀取本機狀態，集中管理主題與學習進度。 */
     function loadState() {
         try {
@@ -1295,12 +1364,12 @@
             createElement('div', { className: 'section-header' }, [
                 createElement('div', {}, [
                     createElement('h3', { text: '課程總覽' }),
-                    createElement('p', { text: '這門課不是把 8 章排成清單而已，而是用工程主線把每一章的責任邊界與驗證方式串起來。' })
+                    createElement('p', { text: '這門課不是把章節排成清單而已，而是補齊一個完整應用所需的前後端開發，用工程主線把每一章的責任邊界與驗證方式串起來。' })
                 ])
             ]),
             createElement('div', { className: 'overview-lead' }, [
                 createElement('h4', { text: '兩天的課程主線不是技術堆疊清單，而是一條完整的系統建置路徑。' }),
-                createElement('p', { text: 'Day 1 先把 Spring Boot、REST、資料庫容器化與 JPA 的工程底盤搭穩；Day 2 再把對話模型、工具呼叫與知識檢索接回同一個應用。總覽區應該先讓學員看到這條主線，而不是立刻掉進細節卡片。' }),
+                createElement('p', { text: 'Day 1 先把 Spring Boot、REST、資料庫容器化與 JPA 的工程底盤搭穩；Day 2 再把對話模型、工具呼叫、知識檢索與 React 串流介面接回同一個應用，完成一個具備前後端的完整系統。總覽區應該先讓學員看到這條主線，而不是立刻掉進細節卡片。' }),
                 createElement('p', { text: '因此首頁總覽的目標不是「列出資訊」，而是先把課程的節奏、成果與學習順序建立成一個有記憶點的入口。' }),
                 createElement('div', { className: 'pill-row overview-pills' }, stackPills)
             ]),
@@ -1349,10 +1418,75 @@
 
     /** 建立程式碼區塊。 */
     function renderCodeBlock(code) {
+        const copyBtn = createElement('button', { 
+            className: 'copy-code-btn', 
+            text: '複製' 
+        });
+        copyBtn.addEventListener('click', () => {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code.content).then(() => {
+                    showSuccess();
+                }).catch(() => {
+                    fallbackCopy();
+                });
+            } else {
+                fallbackCopy();
+            }
+
+            function showSuccess() {
+                copyBtn.textContent = '已複製！';
+                copyBtn.style.color = '#10b981'; // 亮綠色
+                setTimeout(() => {
+                    copyBtn.textContent = '複製';
+                    copyBtn.style.color = '';
+                }, 1500);
+            }
+
+            function fallbackCopy() {
+                try {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = code.content;
+                    textArea.style.position = 'fixed';
+                    textArea.style.top = '0';
+                    textArea.style.left = '0';
+                    textArea.style.width = '2em';
+                    textArea.style.height = '2em';
+                    textArea.style.padding = '0';
+                    textArea.style.border = 'none';
+                    textArea.style.outline = 'none';
+                    textArea.style.boxShadow = 'none';
+                    textArea.style.background = 'transparent';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    if (successful) {
+                        showSuccess();
+                    } else {
+                        showFailure();
+                    }
+                } catch (err) {
+                    console.error('Fallback 複製失敗:', err);
+                    showFailure();
+                }
+            }
+
+            function showFailure() {
+                copyBtn.textContent = '失敗';
+                setTimeout(() => {
+                    copyBtn.textContent = '複製';
+                }, 1500);
+            }
+        });
+
         return createElement('div', { className: 'code-block' }, [
             createElement('div', { className: 'code-head' }, [
                 createElement('span', { text: code.title }),
-                createElement('span', { text: code.language })
+                createElement('div', { style: 'display: flex; align-items: center; gap: 10px;' }, [
+                    createElement('span', { text: code.language, style: 'margin-right: 4px;' }),
+                    copyBtn
+                ])
             ]),
             createElement('pre', {}, [
                 createElement('code', { text: code.content })
@@ -1377,7 +1511,7 @@
         const stack = createElement('div', { className: 'content-stack' });
 
         (section.paragraphs || []).forEach((item) => {
-            stack.appendChild(createElement('p', { text: item }));
+            stack.appendChild(createElement('p', formatMarkdownLinks(item)));
         });
 
         if (variant === 'verification') {
@@ -1424,7 +1558,7 @@
         }
 
         if (section.bullets && section.bullets.length) {
-            stack.appendChild(createElement('ul', {}, section.bullets.map((item) => createElement('li', { text: item }))));
+            stack.appendChild(createElement('ul', {}, section.bullets.map((item) => createElement('li', formatMarkdownLinks(item)))));
         }
 
         if (section.image) {
@@ -1620,6 +1754,32 @@
         sections.forEach((section) => observer.observe(section));
     }
 
+    /**
+     * 將頁面中所有 .inline-visual img[src$=".svg"] 替換為 inline SVG。
+     * inline SVG 可繼承頁面字體、不受跨來源限制，也讓圖形與頁面成為同一份 DOM。
+     * 使用 DOMParser 解析 SVG，避免 innerHTML 帶來的 XSS 風險。
+     */
+    async function inlineSvgImages() {
+        const parser = new DOMParser();
+        const imgs = document.querySelectorAll('.inline-visual img[src$=".svg"]');
+        await Promise.all([...imgs].map(async (img) => {
+            try {
+                const res = await fetch(img.src);
+                const text = await res.text();
+                const svgDoc = parser.parseFromString(text, 'image/svg+xml');
+                const svgEl = svgDoc.documentElement;
+                if (svgEl && svgEl.tagName.toLowerCase() === 'svg') {
+                    // 移除固定像素尺寸，保留 viewBox，由 CSS width:100% 控制實際大小
+                    svgEl.removeAttribute('width');
+                    svgEl.removeAttribute('height');
+                    img.replaceWith(document.adoptNode(svgEl));
+                }
+            } catch {
+                // fetch 失敗時保留原 <img> 作為 fallback
+            }
+        }));
+    }
+
     /** 主程式入口。 */
     function init() {
         const course = window.COURSE;
@@ -1647,7 +1807,7 @@
         setupScrollSpy();
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => { init(); inlineSvgImages(); });
 </script>
 </body>
 </html>

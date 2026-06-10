@@ -1237,8 +1237,8 @@ window.COURSE = {
           summary: '透過 springdoc-openapi 自動產生互動式 API 文件，讓前端與測試人員不需要看程式碼就能理解與呼叫 API。',
           source: 'docs/Day1-5-API-Docs.md',
           heroImage: 'assets/teaching-site/05-ch05-api-docs.png',
-          diagramImage: '',
-          diagramCaption: '',
+          diagramImage: 'assets/teaching-site/05-api-diagram.svg',
+          diagramCaption: 'SpringDoc OpenAPI 自動掃描 Controller 端點並渲染 Swagger UI 的運作架構',
           goals: [
             '理解 OpenAPI 規範與 Swagger UI 的關係',
             '加入 springdoc-openapi 並確認 Swagger UI 可正常存取',
@@ -1335,8 +1335,8 @@ window.COURSE = {
           summary: '用 @RestControllerAdvice 統一攔截應用程式例外，回傳格式一致的錯誤回應，讓前端不再猜測錯誤格式。',
           source: 'docs/Day1-6-GlobalException.md',
           heroImage: 'assets/teaching-site/06-ch06-global-exception.png',
-          diagramImage: '',
-          diagramCaption: '',
+          diagramImage: 'assets/teaching-site/06-exception-diagram.svg',
+          diagramCaption: 'Spring MVC 機制攔截異常並轉換為標準錯誤回應的流向圖解',
           goals: [
             '理解沒有全域例外處理的系統有什麼問題',
             '建立統一的 ErrorResponse 回應格式',
@@ -1428,11 +1428,11 @@ window.COURSE = {
           id: 'd1-u7',
           chapter: '1-7',
           title: '結構化 Log 與動態調整',
-          summary: '善用 @Slf4j 建立有語意的結構化日誌，透過 application.yml 設定 Log 層級，再用 Spring Actuator 在不重啟應用的情況下動態調整。',
+          summary: '善用 @Slf4j 建立有語意的結構化日誌，透過 application.yml 設定 Log層級，再用 Spring Actuator 在不重啟應用的情況下動態調整。',
           source: 'docs/Day1-7-Logging.md',
           heroImage: 'assets/teaching-site/07-ch07-logging.png',
-          diagramImage: '',
-          diagramCaption: '',
+          diagramImage: 'assets/teaching-site/07-logging-diagram.svg',
+          diagramCaption: 'Slf4j 與 Logback 攔截應用程式各層日誌並輸出至結構化目標的流程',
           goals: [
             '理解 Spring Boot 預設 Log 機制與層級',
             '用 @Slf4j 寫出結構化、有語意的 Log',
@@ -1667,14 +1667,167 @@ window.COURSE = {
               }
             }
           ]
+        },
+        {
+          id: 'd1-u9',
+          chapter: '1-9',
+          title: 'Spring Security 基礎認證與授權',
+          summary: '引導學員透過 AI Agent 為後端 REST API 加上安全防護。引入 Spring Security 與 JWT（JSON Web Token）進行身分驗證與端點授權控管，並以角色區分「管理員」與「一般用戶」，保護敏感 API 資源與 Swagger 文件。',
+          source: 'docs/Day1-9-Security.md',
+          heroImage: 'assets/teaching-site/09-ch09-spring-security.png',
+          diagramImage: '',
+          diagramCaption: '',
+          goals: [
+            '理解 Spring Security 的 Authentication（認證）與 Authorization（授權）核心概念',
+            '學會以 AI 輔助建立 JWT 過濾器並在 Token 內寫入使用者角色（ADMIN/USER）',
+            '實作角色基礎存取控制（RBAC），商品查詢 API 供用戶使用，商品寫入 API 僅限管理員',
+            '保護 Swagger API 文件，限定僅能透過認證身分存取'
+          ],
+          tasks: [
+            { id: 'd1-u9-t1', text: '透過 AI 提示詞引入 Security 與 JWT 相關依賴' },
+            { id: 'd1-u9-t2', text: '實作 JwtUtils 產生包含角色資訊的 Token，並完成認證過濾器與 SecurityConfig 配置' },
+            { id: 'd1-u9-t3', text: '實作 /api/auth/login 登入 API，並為商品 API 設定角色權限控制（ADMIN 限制新增/修改/刪除）' }
+          ],
+          sections: [
+            {
+              title: '安全防護重點',
+              type: 'text',
+              paragraphs: [
+                '在生產環境中，API 不能是完全公開的。本章將引入 Spring Security 與 JWT (JSON Web Token)，為我們的 REST API 建立安全防護底盤。',
+                '我們將實作「無狀態 (Stateless)」認證：使用者透過 `/api/auth/login` 登入成功後取得 JWT，後續請求都必須在 Header 攜帶此 Token 進行驗證。此外，我們將簡單區分角色：「管理員 (ADMIN)」與「一般用戶 (USER)」，以實作更精細的權限控管。'
+              ],
+              bullets: [
+                'Authentication 認證：確認「你是誰」（透過帳號密碼登入並簽發 JWT）',
+                'Authorization 授權：確認「你能做什麼」（例如管理員能修改商品，普通用戶端只能查詢）',
+                '無狀態認證：伺服器不儲存 Session，每次請求均由 JWT 驗證身分與角色'
+              ],
+              image: 'assets/teaching-site/09-spring-security-jwt-flow.svg',
+              imageAlt: 'Spring Security JWT 認證與授權流程圖',
+              imageCaption: '圖中展示了請求在經過 Security Filter Chain 時，JwtAuthenticationFilter 與 AuthorizationFilter 如何攜手完成認證與角色授權。'
+            },
+            {
+              title: '請 AI Agent 幫你安裝 Security 與 JWT 依賴',
+              type: 'code',
+              paragraphs: [
+                '在 `pom.xml` 中引入 Spring Security Starter 與 JWT 套件。我們使用目前主流且穩定的 `io.jsonwebtoken` (jjwt) 套件來進行 Token 的簽署與解析。'
+              ],
+              code: {
+                language: 'xml',
+                title: 'pom.xml 依賴配置',
+                content: '<!-- Spring Security Starter -->\n<dependency>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-security</artifactId>\n</dependency>\n\n<!-- JWT (jjwt) \u76f8\u95dc\u4f9d\u8cf4 -->\n<dependency>\n    <groupId>io.jsonwebtoken</groupId>\n    <artifactId>jjwt-api</artifactId>\n    <version>0.12.5</version>\n</dependency>\n<dependency>\n    <groupId>io.jsonwebtoken</groupId>\n    <artifactId>jjwt-impl</artifactId>\n    <version>0.12.5</version>\n    <scope>runtime</scope>\n</dependency>\n<dependency>\n    <groupId>io.jsonwebtoken</groupId>\n    <artifactId>jjwt-jackson</artifactId>\n    <version>0.12.5</version>\n    <scope>runtime</scope>\n</dependency>'
+              }
+            },
+            {
+              title: 'AI Agent 提示詞 — 身分驗證與角色授權實作',
+              type: 'code',
+              paragraphs: [
+                '將以下提示詞複製給 AI Agent，讓它幫你生成完整的安全驗證配置。此提示詞特別強調了角色定義。'
+              ],
+              bullets: [
+                '在 JWT 內寫入使用者角色（簡單區分管理員 ADMIN 與用戶 USER）',
+                '限制商品新增、修改、刪除 API 僅限管理員角色存取，商品查詢 API 需登入身分即可',
+                '保護 Swagger UI 與 OpenAPI 網頁與端點，需登入才能瀏覽'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '\u8acb\u5728\u73fe\u6709\u5c08\u6848\u4e2d\uff0c\u4f7f\u7528 Spring Security \u8207 JWT \u5be6\u4f5c\u5b89\u5168\u9632\u8b77\u8207\u767b\u5165\u9a57\u8b49\u529f\u80fd\uff1a\n1. \u5f15\u5165\u5b89\u5168\u9632\u8b77\u5957\u4ef6\uff08Spring Security\uff09\u8207 JWT \u4f9d\u8cf4\uff0c\u9650\u5236\u9664\u4e86\u767b\u5165\u76f8\u95dc\u7684 API \u4e4b\u5916\uff0c\u5176\u9918\u6240\u6709\u7684 API \u90fd\u9700\u8981\u651c\u5e36 JWT Token \u9032\u884c\u9a57\u8b49\u624d\u80fd\u5b58\u53d6\u3002\n2. \u5be6\u4f5c\u4e00\u500b\u767b\u5165 API\uff08\u4f8b\u5982 POST /api/auth/login\uff09\uff0c\u4f9b\u4f7f\u7528\u8005\u50b3\u5165\u5e33\u865f\u5bc6\u78bc\u9032\u884c\u8eab\u5206\u9a57\u8b49\u3002\u767b\u5165\u6210\u529f\u5f8c\uff0c\u8acb\u5728 JWT Token \u4e2d\u5beb\u5165\u4f7f\u7528\u8005\u7684\u89d2\u8272\uff08\u7c21\u55ae\u5340\u5206\u300c\u7ba1\u7406\u54e1 ADMIN\u300d\u8207\u300c\u4e00\u822c\u7528\u6236 USER\u300d\uff09\uff0c\u4e26\u5c07 Token \u56de\u50b3\u7d66\u524d\u7aef\u3002\n3. \u5be6\u4f5c\u89d2\u8272\u6b0a\u9650\u63a7\u5236\uff1a\u9650\u5236\u5546\u54c1\u7ba1\u7406 API \u7684\u65b0\u589e\u3001\u4fee\u6539\u8207\u522a\u9664\u529f\u80fd\u5fc5\u9808\u5177\u5099\u300c\u7ba1\u7406\u54e1 ADMIN\u300d\u89d2\u8272\u624d\u80fd\u57f7\u884c\uff0c\u800c\u4e00\u822c\u67e5\u8a62\u529f\u80fd\u5247\u50c5\u9700\u4e00\u822c\u300c\u7528\u6236 USER\u300d\u6216\u5df2\u767b\u5165\u8eab\u5206\u5373\u53ef\u3002\n4. \u4fdd\u8b77\u6211\u5011\u7684 API \u6587\u4ef6\uff08Swagger UI \u7db2\u9801\u8207\u76f8\u95dc\u7aef\u9ede\uff09\uff0c\u8a2d\u5b9a\u5fc5\u9808\u5728\u767b\u5165\u9a57\u8b49\u4e26\u651c\u5e36 JWT Token \u5f8c\u624d\u80fd\u6b63\u5e38\u700f\u89bd\u8207\u6e2c\u8a66\u3002'
+              }
+            },
+            {
+              title: '後端安全設定範例 (SecurityConfig.java)',
+              type: 'code',
+              paragraphs: [
+                'Spring Security 核心設定。我們配置雙重 `SecurityFilterChain`：第一個專門保護 Swagger 文件，限制使用 Basic Auth 登入；第一個保護一般系統 API，採用 JWT 驗證與無狀態 Session 策略，並限制商品寫入為 ADMIN。'
+              ],
+              code: {
+                language: 'java',
+                title: 'SecurityConfig.java 範例',
+                content: '@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n    private final JwtAuthenticationFilter jwtAuthenticationFilter;\n\n    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {\n        this.jwtAuthenticationFilter = jwtAuthenticationFilter;\n    }\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n\n    @Bean\n    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {\n        return config.getAuthenticationManager();\n    }\n\n    /** 1. Swagger UI \u8207 API \u6587\u4ef6\u5b89\u5168\u9632\u8b77\u93c8 (\u4ee5 HTTP Basic \u8a8d\u8b49\u4fdd\u8b77) */\n    @Bean\n    @Order(1)\n    public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {\n        http\n                .securityMatcher(\"/swagger-ui/**\", \"/v3/api-docs/**\", \"/swagger-ui.html\")\n                .csrf(csrf -> csrf.disable())\n                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())\n                .httpBasic(Customizer.withDefaults());\n        return http.build();\n    }\n\n    /** 2. REST APIs \u5b89\u5168\u9632\u8b77\u93c8 (\u4ee5 JWT \u8a8d\u8b49\u8207\u89d2\u8272\u6b0a\u9650\u63a7\u5236\u4fdd\u8b77) */\n    @Bean\n    @Order(2)\n    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {\n        http\n                .csrf(csrf -> csrf.disable())\n                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n                .authorizeHttpRequests(authorize -> authorize\n                        .requestMatchers(\"/api/auth/login\").permitAll() // \u767b\u5165 API \u516c\u958b\n                        .requestMatchers(org.springframework.http.HttpMethod.POST, \"/api/products/**\").hasRole(\"ADMIN\") // \u65b0\u589e\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .requestMatchers(org.springframework.http.HttpMethod.PUT, \"/api/products/**\").hasRole(\"ADMIN\")  // \u4fee\u6539\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, \"/api/products/**\").hasRole(\"ADMIN\") // \u522a\u9664\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .anyRequest().authenticated() // \u5176\u9918\u5747\u9700\u9a57\u8b49\n                )\n                .exceptionHandling(exception -> exception\n                        .authenticationEntryPoint((request, response, authException) -> {\n                            response.setContentType(\"application/json;charset=UTF-8\");\n                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);\n                            response.getWriter().write(\"{\\\"error\\\": \\\"\u672a\u6388\u6b0a\uff1a\u8acb\u5148\u767b\u5165\u4e26\u651c\u5e36\u6709\u6548\u7684 JWT Token\\\"}\");\n                        })\n                )\n                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);\n        return http.build();\n    }\n}'
+              }
+            },
+            {
+              title: 'JWT 工具類別範例 (JwtUtils.java)',
+              type: 'code',
+              paragraphs: [
+                'JWT 產生、解析與驗證工具。在產生 Token 時，將使用者的角色 (role) 寫入 Claim 中；解析時可將其取出。'
+              ],
+              code: {
+                language: 'java',
+                title: 'JwtUtils.java 範例',
+                content: '@Component\npublic class JwtUtils {\n\n    private static final String SECRET_STRING = \"v9y$B&E)H@McQfTjWnZr4u7x!A%C*F-JaNdRgUkXp2s5v8y/B?D(G+KbPeShVmYq\";\n    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_STRING.getBytes(StandardCharsets.UTF_8));\n    private final long expirationMs = 24 * 60 * 60 * 1000L; // 24\u5c0f\u6642\n\n    /** \u751f\u6210 Token \u6642\u5beb\u5165\u89d2\u8272\u8cc7\u8a0a */\n    public String generateToken(String username) {\n        String role = username.equals(\"admin\") ? \"ROLE_ADMIN\" : \"ROLE_USER\"; // \u7c21\u55ae\u6839\u64da\u5e33\u865f\u6307\u6d3e\u89d2\u8272\n        return Jwts.builder()\n                .subject(username)\n                .claim(\"role\", role) // \u5beb\u5165\u89d2\u8272 Claim\n                .issuedAt(new Date())\n                .expiration(new Date(System.currentTimeMillis() + expirationMs))\n                .signWith(key)\n                .compact();\n    }\n\n    public String getUsernameFromToken(String token) {\n        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();\n    }\n\n    public String getRoleFromToken(String token) {\n        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().get(\"role\", String.class);\n    }\n\n    public boolean validateToken(String token) {\n        try {\n            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);\n            return true;\n        } catch (Exception e) {\n            return false;\n        }\n    }\n}'
+              }
+            },
+            {
+              title: 'JWT 身分驗證過濾器範例 (JwtAuthenticationFilter.java)',
+              type: 'code',
+              paragraphs: [
+                '過濾器會攔截每個 API 請求。從 Authorization Header 中讀取 token 並進行身分認證。'
+              ],
+              code: {
+                language: 'java',
+                title: 'JwtAuthenticationFilter.java 範例',
+                content: '@Component\npublic class JwtAuthenticationFilter extends OncePerRequestFilter {\n\n    private final JwtUtils jwtUtils;\n    private final CustomUserDetailsService userDetailsService;\n\n    public JwtAuthenticationFilter(JwtUtils jwtUtils, CustomUserDetailsService userDetailsService) {\n        this.jwtUtils = jwtUtils;\n        this.userDetailsService = userDetailsService;\n    }\n\n    @Override\n    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)\n            throws ServletException, IOException {\n        try {\n            String jwt = parseJwt(request);\n            if (jwt != null && jwtUtils.validateToken(jwt)) {\n                String username = jwtUtils.getUsernameFromToken(jwt);\n                String role = jwtUtils.getRoleFromToken(jwt);\n                \n                // \u8f09\u5165\u4f7f\u7528\u8005\u8a73\u7d30\u8cc7\u6599\u8207\u6388\u6b0a\u89d2\u8272\n                UserDetails userDetails = userDetailsService.loadUserByUsername(username);\n                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(\n                        userDetails, null, List.of(new SimpleGrantedAuthority(role)));\n                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));\n                \n                // \u7d81\u5b9a\u81f3\u5b89\u5168\u4e0a\u4e0b\u6587\n                SecurityContextHolder.getContext().setAuthentication(authentication);\n            }\n        } catch (Exception e) {\n            logger.error(\"Security context binding failed\", e);\n        }\n        filterChain.doFilter(request, response);\n    }\n\n    private String parseJwt(HttpServletRequest request) {\n        // \u5f9e Header \u8b80\u53d6 Authorization Bearer Token\n        String headerAuth = request.getHeader(\"Authorization\");\n        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(\"Bearer \")) {\n            return headerAuth.substring(7);\n        }\n        return null;\n    }\n}'
+              }
+            },
+            {
+              title: '登入控制器範例 (AuthController.java)',
+              type: 'code',
+              paragraphs: [
+                '提供登入端點，傳入帳號密碼並呼叫 `AuthenticationManager` 進行身分驗證。驗證成功後生成 JWT Token 並回傳。'
+              ],
+              code: {
+                language: 'java',
+                title: 'AuthController.java 範例',
+                content: '@RestController\n@RequestMapping(\"/api/auth\")\n@Tag(name = \"\u8a8d\u8b49\u7ba1\u7406\")\npublic class AuthController {\n\n    private final AuthenticationManager authenticationManager;\n    private final JwtUtils jwtUtils;\n\n    public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {\n        this.authenticationManager = authenticationManager;\n        this.jwtUtils = jwtUtils;\n    }\n\n    @PostMapping(\"/login\")\n    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {\n        Authentication authentication = authenticationManager.authenticate(\n                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())\n        );\n        SecurityContextHolder.getContext().setAuthentication(authentication);\n        String token = jwtUtils.generateToken(loginRequest.getUsername());\n        return ResponseEntity.ok(new LoginResponse(token));\n    }\n}'
+              }
+            },
+            {
+              title: 'Swagger 網頁驗證步驟（推薦）',
+              type: 'text',
+              paragraphs: [
+                '後端啟動後，我們可以透過 Swagger UI 網頁進行 API 測試，視覺化地驗證登入、JWT 簽發與角色基礎授權控制（RBAC）是否正常運作。',
+                '<div style="margin-top: 16px;">' +
+                  '<ul style="list-style-type: decimal; margin-left: 20px; margin-bottom: 16px; line-height: 1.8;">' +
+                    '<li style="margin-bottom: 6px;"><strong>開啟 Swagger 網頁</strong>：在瀏覽器中輸入 <a href="http://localhost:8080/swagger-ui/index.html" target="_blank" class="accent-link">http://localhost:8080/swagger-ui/index.html</a>。</li>' +
+                    '<li style="margin-bottom: 6px;"><strong>安全登入 (HTTP Basic)</strong>：由於設定了安全防護，瀏覽器會彈出登入對話框。請輸入管理員帳密（帳號：<code>admin</code>，密碼：<code>password</code>）完成登入。</li>' +
+                    '<li style="margin-bottom: 6px;"><strong>取得 JWT Token</strong>：展開 <code>POST /api/auth/login</code>，點選 <strong>Try it out</strong>，傳入使用者資料（如：<code>{"username": "user", "password": "password"}</code>）執行並複製回傳的 token。</li>' +
+                    '<li style="margin-bottom: 6px;"><strong>點擊 Authorize 帶入 Token</strong>：回到頁面最上方點選 <strong>Authorize</strong> 按鈕，在 <code>BearerAuth</code> 欄位填入剛剛複製的 JWT Token，點擊 Authorize 啟用。</li>' +
+                    '<li style="margin-bottom: 6px;"><strong>驗證角色存取控制 (RBAC)</strong>：在授權為 <code>user</code> 狀態下呼叫新增商品 API，預期應收到 <strong>403 Forbidden</strong>；以同樣方式更換為 <code>admin</code> 的 Token 後呼叫則應成功回傳 <strong>201 Created</strong>。</li>' +
+                  '</ul>' +
+                '</div>'
+              ],
+              image: 'assets/teaching-site/09-swagger-ui-dashboard.png',
+              imageAlt: 'Swagger UI 儀表板',
+              imageCaption: '登入成功後的 Swagger UI 儀表板，可在此進行 Token 授權與 API 存取控制測試。'
+            },
+            {
+              title: 'PowerShell 驗證命令（可選）',
+              type: 'code',
+              paragraphs: [
+                '若您偏好命令列測試，可在 PowerShell 7+ 中依序執行以下命令進行登入與 API 安全性存取測試。'
+              ],
+              bullets: [
+                '管理員帳號：`admin`，密碼為資料庫已加密儲存值',
+                '一般用戶帳號：`user`，密碼為資料庫已加密儲存值',
+                '1. 使用 `user` 登入取得 Token，測試呼叫新增商品 API，預期應回傳 403 Forbidden',
+                '2. 使用 `admin` 登入取得 Token，測試呼叫新增商品 API，預期應回傳 201 Created'
+              ],
+              code: {
+                language: 'powershell',
+                title: '驗證 API 存取控制',
+                content: '# 1. \u4ee5\u666e\u901a\u7528\u6236\u767b\u5165\n$loginUser = Invoke-RestMethod -Uri \"http://localhost:8080/api/auth/login\" -Method Post -ContentType \"application/json\" -Body \'{\"username\":\"user\",\"password\":\"password\"}\'\n$userToken = $loginUser.token\n\n# 2. \u6e2c\u8a66\u666e\u901a\u7528\u6236\u65b0\u589e\u5546\u54c1 (\u61c9\u88ab\u62d2\u7d55\u56de\u50b3 403)\ntry {\n    Invoke-RestMethod -Uri \"http://localhost:8080/api/products\" -Method Post -Headers @{Authorization=\"Bearer $userToken\"} -ContentType \"application/json\" -Body \'{\"name\":\"\u6e2c\u8a66\u5546\u54c1\",\"price\":100,\"stock\":10}\'\n} catch {\n    $_.Exception.Response.StatusCode # \u8f38\u51fa: Forbidden (403)\n}\n\n# 3. \u4ee5\u7ba1\u7406\u54e1\u767b\u5165\n$loginAdmin = Invoke-RestMethod -Uri \"http://localhost:8080/api/auth/login\" -Method Post -ContentType \"application/json\" -Body \'{\"username\":\"admin\",\"password\":\"password\"}\'\n$adminToken = $loginAdmin.token\n\n# 4. \u6e2c\u8a66\u7ba1\u7406\u54e1\u65b0\u589e\u5546\u54c1 (\u61c9\u6210\u529f\u56de\u50b3 201)\n$newProduct = Invoke-RestMethod -Uri \"http://localhost:8080/api/products\" -Method Post -Headers @{Authorization=\"Bearer $adminToken\"} -ContentType \"application/json\" -Body \'{\"name\":\"\u53cd\u91cd\u529b\u8033\u6a5f\",\"price\":2999,\"stock\":20}\'\n$newProduct.id # \u8f38\u51fa\u5546\u54c1 ID'
+              }
+            }
+          ]
         }
       ]
     },
     {
       id: 'day2',
       label: 'Day 2',
-      title: 'Spring AI 與企業級 RAG 應用',
-      lead: '在穩定後端基礎上接入對話模型、工具呼叫與知識庫檢索，完成可驗證的 AI 應用流程。',
+      title: 'Spring AI、企業級 RAG 與 React 全端整合',
+      lead: '在穩定後端基礎上接入對話模型、工具呼叫與知識庫檢索，再以 React 完成串流對話介面，組成可驗證的全端 AI 應用。',
       units: [
         {
           id: 'd2-u1',
@@ -1693,7 +1846,7 @@ window.COURSE = {
           tasks: [
             { id: 'd2-u1-t1', text: '確認模型端點與金鑰配置' },
             { id: 'd2-u1-t2', text: '完成 ChatClient 串流流程閱讀' },
-            { id: 'd2-u1-t3', text: '整理 sessionId 設計原則' }
+            { id: 'd2-u1-t3', text: '整合 Spring Security 透過 Principal 隔離對話 Session' }
           ],
           sections: [
             {
@@ -1713,7 +1866,10 @@ window.COURSE = {
               paragraphs: [
                 '對使用者來說，串流輸出最大的價值不是技術炫耀，而是等待感受不同。模型可以一邊生成一邊顯示，前端不需要等整段文字全部完成才開始呈現。',
                 '在這個課程範例中，前端使用 SSE 讀取後端串流結果，這也為後面的 Demo 頁面奠定互動感。'
-              ]
+              ],
+              image: 'assets/teaching-site/19-diagram-sse-vs-blocking.svg',
+              imageAlt: '一次性回應與 SSE 串流輸出的時序對比圖',
+              imageCaption: '同樣生成 500 字：一次性回應讓使用者面對 8 秒空白；SSE 串流 0.5 秒就看到第一個字。'
             },
             {
               title: '對話記憶設計',
@@ -1759,21 +1915,42 @@ window.COURSE = {
               paragraphs: [
                 '大模型本身是無狀態的，不記得上一句說什麼。`MessageChatMemoryAdvisor` 會在發送請求前自動帶入歷史訊息，並在回覆後存入記憶。`sessionId` 讓不同使用者的對話記憶互相隔離。'
               ],
+              image: 'assets/teaching-site/15-diagram-ai-context-memory.svg',
+              imageAlt: 'AI 上下文與對話記憶組成圖',
+              imageCaption: '圖中展示了 Advisor 如何自動將系統訊息、對話歷史與當前提問組裝打包發送給 LLM，並於回覆後將最新問答存回記憶庫。',
               code: {
                 language: 'java',
                 title: 'SSE 串流 + 對話記憶',
-                content: 'private final InMemoryChatMemory chatMemory = new InMemoryChatMemory();\n\n@GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<String> streamChat(\n        @RequestParam String message,\n        @RequestParam(defaultValue = "default") String sessionId) {\n    return this.chatClient.prompt()\n            .user(message)\n            // 載入對話記憶 Advisor\n            .advisors(MessageChatMemoryAdvisor.builder(this.chatMemory).build())\n            // 傳入會話 ID，不同 sessionId 的記憶彼此隔離\n            .advisors(spec -> spec.param("chat_memory_conversation_id", sessionId))\n            .stream()\n            .content();  // 回傳 Flux<String> 供 SSE 串流'
+                content: 'private final InMemoryChatMemory chatMemory = new InMemoryChatMemory();\n\n@GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<String> streamChat(\n        @RequestParam String message,\n        java.security.Principal principal) {\n    String username = principal.getName(); // 從 Spring Security 取得當前登入的使用者名稱\n    return this.chatClient.prompt()\n            .user(message)\n            // 載入對話記憶 Advisor\n            .advisors(MessageChatMemoryAdvisor.builder(this.chatMemory).build())\n            // 傳入會話 ID，不同 sessionId 的記憶彼此隔離\n            .advisors(spec -> spec.param("chat_memory_conversation_id", username))\n            .stream()\n            .content();  // 回傳 Flux<String> 供 SSE 串流'
               }
             },
             {
-              title: 'AI 提示詞練習',
+              title: 'ChatClient 與 Advisor 深入解析',
               type: 'text',
               paragraphs: [
-                '試著向 AI 助手詢問以下問題，加深對 ChatClient 設計的理解：'
-              ],
-              bullets: [
-                '「在 Spring AI 2.0 中，InMemoryChatMemory 與 JDBC ChatMemory 有何不同？如果要在重啟服務後保留對話歷史，應該如何重構？」',
-                '「ChatClient.Builder 還能設定哪些 default 屬性？例如 defaultAdvisors、defaultOptions。」'
+                '本節為您整理 ChatClient 與 Advisor 的關鍵配置與內建元件說明，幫助您深入理解架構：',
+                '<div style="margin-top: 16px;">' +
+                  '<strong style="color: var(--primary-color); display: block; margin-bottom: 8px;">1. ChatClient.Builder 常用預設設定：</strong>' +
+                  '<ul style="list-style-type: disc; margin-left: 20px; margin-bottom: 16px; line-height: 1.8;">' +
+                    '<li style="margin-bottom: 6px;"><code>defaultSystem(String)</code>：設定預設的系統提示詞，定義 AI 角色與回覆風格（如親切的智慧助手）。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>defaultUser(String)</code>：設定預設的使用者輸入提示詞。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>defaultOptions(ChatOptions)</code>：設定預設的對話參數，例如溫度值（temperature）、使用的模型等。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>defaultAdvisors(Advisor...)</code>：設定預設的攔截增強器，例如記憶元件（MessageChatMemoryAdvisor）或 RAG 元件（QuestionAnswerAdvisor），使所有對話自動啟用該功能。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>defaultFunctions(String...)</code>：設定預設啟用的 Tool/Function Calling 工具 Bean 名稱。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>defaultTools(Object...)</code> / <code>defaultToolCallbacks(ToolCallback...)</code>：設定預設啟用的工具物件或回呼。</li>' +
+                  '</ul>' +
+                '</div>',
+                '<div style="margin-top: 16px;">' +
+                  '<strong style="color: var(--primary-color); display: block; margin-bottom: 8px;">2. Spring AI 最新的內建 Advisor：</strong>' +
+                  '<ul style="list-style-type: disc; margin-left: 20px; margin-bottom: 16px; line-height: 1.8;">' +
+                    '<li style="margin-bottom: 6px;"><code>MessageChatMemoryAdvisor</code>：最常用的對話記憶 Advisor，負責自動讀取指定 sessionId 的對話歷史並注入上下文，且在回答後自動將新問答存回記憶庫。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>PromptChatMemoryAdvisor</code>：文字範本式對話記憶 Advisor，將對話歷史格式化為一段文字並透過 Prompt 變數填入，適用於不支援多輪 Message 格式的特殊模型。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>QuestionAnswerAdvisor</code>：RAG 檢索增強生成 Advisor，自動將使用者提問向量化並至 VectorStore 檢索相關知識片段，作為上下文注入 Prompt 以降低幻覺。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>SimpleLoggerAdvisor</code>：日誌記錄 Advisor，在調試時可自動將完整 Prompt、參數配置與模型回應印出至 Log。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>VectorStoreChatMemoryAdvisor</code>：基於向量資料庫的持久化對話記憶 Advisor，適合極大規模或長期對話歷史的語意檢索與儲存。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>SafeGuardAdvisor</code>：內容安全防護 Advisor，用於在發送給 LLM 前或回應給用戶前，攔截與過濾敏感詞或不當發言。</li>' +
+                  '</ul>' +
+                '</div>'
               ]
             },
             {
@@ -1783,6 +1960,18 @@ window.COURSE = {
                 language: 'java',
                 title: 'ChatClient 鏈式呼叫示意',
                 content: 'return chatClient.prompt()\n    .user(message)\n    .advisors(memoryAdvisor)\n    .stream()\n    .content();'
+              }
+            },
+            {
+              title: 'AI Agent 提示詞 — 建立 ChatClient 對話入口',
+              type: 'code',
+              paragraphs: [
+                '理解上述原理後，複製以下提示詞給 AI Agent，引導它在 Day 1 完成的電商後端上，加入本章的 AI 對話與串流功能。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '請在現有的 Spring Boot 電商專案中加入 AI 對話功能\n\n1. 請在現有的 Spring Boot 電商專案中加入 AI 對話功能\n2. 設定 Groq 的 base-url，模型用 openai/gpt-oss-120b，API Key 為 "xxxxxxx"。\n3. 系統提示詞：「你是一個親切的商城智慧助手」。\n4. 使用 SSE串流回覆的API，並掛上記憶，以 sessionId 參數隔離不同使用者的對話記憶。'
               }
             },
             {
@@ -1924,11 +2113,26 @@ window.COURSE = {
               }
             },
             {
+              title: 'AI Agent 提示詞 — 加入工具呼叫能力',
+              type: 'code',
+              paragraphs: [
+                '理解工具呼叫原理與兩種宣告方式後，複製以下提示詞給 AI Agent，讓它把 Day 1 寫好的 Service 包裝成 AI 可呼叫的工具，AI 就能查到資料庫的即時資料。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '請為商城 AI 助手加入工具呼叫（Tool Calling）能力，讓 AI 能查詢資料庫的即時資料：\n1. 建立 ProductTools 類別，用 @Tool 註解包裝既有的 ProductService：\n   - getProducts(query)：查詢商品列表，支援關鍵字搜尋，query 為空時回傳全部商品\n   - getProductDetail(id)：依商品 ID 查詢庫存與價格\n2. 建立 OrderTools 類別，用 @Tool 包裝既有的 OrderService：\n   - getUserOrders(username)：查詢該使用者的所有訂單\n3. 每個 @Tool 的 description 請用中文清楚描述「什麼情況下該呼叫這個工具」，這段文字是寫給大模型看的。\n4. 在 ChatController 的 ChatClient 呼叫鏈中，用 .tools() 掛上這兩個工具類別。\n完成後請示範一句測試提問（例如「無線耳機 Pro 還有多少庫存？」），並說明如何從後端日誌確認工具真的被呼叫。'
+              }
+            },
+            {
               title: '工具呼叫驗證範例',
               type: 'code',
               paragraphs: [
                 '這一章的成功標準，不是模型有回話而已，而是模型確實在回答過程中呼叫了工具，並帶回即時資料。'
               ],
+              image: 'assets/teaching-site/20-diagram-tool-calling-sequence.svg',
+              imageAlt: '工具呼叫五步驟時序圖',
+              imageCaption: '對照這張時序圖驗證：後端日誌要看得到步驟 3 的工具呼叫，回答要帶回步驟 4 的即時數字。',
               code: {
                 language: 'text',
                 title: '可接受的驗證情境',
@@ -2019,6 +2223,9 @@ window.COURSE = {
               paragraphs: [
                 '上傳文件到向量庫要經過 Extract → Transform → Load 三步驟。`TokenTextSplitter` 把長文切成小塊，讓每塊語意聚焦，檢索時相關度才會精準。'
               ],
+              image: 'assets/teaching-site/21-diagram-rag-etl.svg',
+              imageAlt: 'RAG 文件入庫 ETL 三步驟圖解',
+              imageCaption: '注意 Transform 階段相鄰 Chunk 的重疊帶——它防止關鍵語意剛好被切在邊界上。',
               bullets: [
                 'Extract — 用 `TextReader` 讀取檔案，封裝成 `Document` 物件',
                 'Transform — 用 `TokenTextSplitter` 切分，預設每塊約 800 tokens，相鄰塊重疊 100 tokens 防止語意被截斷',
@@ -2060,6 +2267,18 @@ window.COURSE = {
               }
             },
             {
+              title: 'AI Agent 提示詞 — 建立 RAG 知識庫',
+              type: 'code',
+              paragraphs: [
+                '理解 RAG 流程與向量檢索原理後，複製以下提示詞給 AI Agent，引導它完成文件上傳、向量化與知識庫問答兩支 API。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '請為專案加入 RAG 知識庫功能，使用 PostgreSQL pgvector 儲存向量：\n1. 在 pom.xml 加入 spring-ai-starter-vector-store-pgvector 依賴，並確認 application.yml 已設定 Voyage AI 的 embedding 端點（環境變數 VOYAGE_API_KEY）。\n2. 建立 RAGController，提供兩支 API：\n   - POST /api/rag/upload：接收上傳的文字檔，用 TextReader 讀取、TokenTextSplitter 切分成小段，最後用 vectorStore.accept() 向量化寫入資料庫\n   - GET /api/rag/query：掛上 QuestionAnswerAdvisor，讓 AI 先檢索相關文件片段再回答\n3. 程式碼需有中文函式註解。\n完成後請示範驗證流程：先上傳一份「退貨政策」文件，再提問「商城退貨政策是什麼？」，確認 AI 是根據文件內容回答，而不是自由發揮。'
+              }
+            },
+            {
               title: 'RAG 上傳與問答驗證範例',
               type: 'code',
               paragraphs: [
@@ -2092,72 +2311,24 @@ window.COURSE = {
         {
           id: 'd2-u4',
           chapter: '2-4',
-          title: 'MCP 與課程總結',
-          summary: '整合前兩天成果，說明 MCP 在 AI 系統中的標準化接口角色，並回到完整系統驗證。',
+          title: '擴充AI能力：MCP 與 Skills',
+          summary: '補充說明 MCP 在 AI 系統中的標準化接口角色與 Spring AI 的接入方式，並介紹 Skills 開放標準與 Spring AI Community 官方的 spring-ai-agent-utils 套件（SkillsTool 與 Agent 工具集）。',
           source: 'docs/Day2-4-WrapUp-MCP.md',
           heroImage: 'assets/teaching-site/08-ch08-mcp-wrapup.png',
           diagramImage: 'assets/teaching-site/18-diagram-mcp-hub.png',
-          diagramCaption: '前端、後端、資料庫、工具與知識庫透過一致接口整合為完整系統。',
+          diagramCaption: '不同 AI 客戶端透過 MCP 標準接口接入同一批工具與上下文能力。',
           goals: [
-            '能完成專案啟動、驗證與展示流程',
-            '理解 MCP 對跨工具 AI 生態的價值',
-            '建立後續延伸學習與擴充方向'
+            '理解 MCP 對跨工具 AI 生態的價值與 Spring AI 的接入方式',
+            '理解 Skills 開放標準與 MCP 的角色差異',
+            '認識 Spring AI Community 的 spring-ai-agent-utils 與其 Agent 工具集',
+            '知道如何在 Spring Boot 中以 SkillsTool 為應用加入 Skills'
           ],
           tasks: [
-            { id: 'd2-u4-t1', text: '啟動資料庫與應用服務' },
-            { id: 'd2-u4-t2', text: '完成客服模式與 RAG 模式驗證' },
-            { id: 'd2-u4-t3', text: '整理 MCP 與後續延伸方向' }
+            { id: 'd2-u4-t1', text: '理解 MCP Server / Client 在 Spring AI 的接入方式與呼叫流程' },
+            { id: 'd2-u4-t2', text: '理解 MCP 與 Skills 的角色差異與適用場景' },
+            { id: 'd2-u4-t3', text: '瀏覽 spring-ai-agent-utils 專案與工具清單，評估導入 SkillsTool 的版本前置條件' }
           ],
           sections: [
-            {
-              title: '完整系統驗證流程',
-              type: 'text',
-              paragraphs: [
-                '最後一章不是收尾而已，而是把前面所有章節重新串起來驗證。資料庫要能起、Flyway 要能跑、聊天模式要能查商品、RAG 模式要能回答文件問題。',
-                '如果這裡驗證不過，通常表示前面某一層責任邊界還沒有真正理解。'
-              ],
-              image: 'assets/teaching-site/18-diagram-mcp-hub.png',
-              imageAlt: 'MCP 與系統整合架構圖',
-              imageCaption: '這一章的任務，是把前面所有零件組成完整系統。'
-            },
-            {
-              title: '環境啟動指令',
-              type: 'code',
-              paragraphs: [
-                '這裡是整套課程的總驗證，因此不只要給啟動命令，也要讓學員知道最低前置條件是否已滿足。'
-              ],
-              bullets: [
-                '最低需求：資料庫容器已啟動',
-                '最低需求：`.env` 中已提供可用 API Key',
-                '最低需求：JDK 21 與 Maven 3.9+ 已完成版本驗證'
-              ],
-              code: {
-                language: 'powershell',
-                title: '啟動資料庫與應用',
-                content: 'docker-compose up -d\nGet-Content .env | ForEach-Object { $line = $_.Trim(); if ($line -and !$line.StartsWith(\"#\") -and $line.Contains(\"=\")) { $key, $value = $line -split \"=\", 2; Set-Item -Path \"env:$($key.Trim())\" -Value $value.Trim() } }\nmvn spring-boot:run'
-              }
-            },
-            {
-              title: '整體成果驗證清單',
-              type: 'text',
-              bullets: [
-                '資料庫容器正常啟動，`docker ps` 可看到 `pgvector/pgvector:pg18` 為 `Up` 狀態',
-                'Spring Boot 啟動日誌包含 Flyway 成功驗證與應用啟動完成訊息',
-                '聊天 Demo 可正確回答商品價格與庫存，且後端可看到工具呼叫紀錄',
-                'RAG 模式可根據上傳文件回答，不是只輸出泛泛知識',
-                '完成以上四項，才算這套課程真正落地成一個可驗證的智慧商城客服系統'
-              ]
-            },
-            {
-              title: '常見錯誤與排查',
-              type: 'warning',
-              bullets: [
-                '若聊天模式正常但 RAG 模式失敗，優先回頭檢查向量寫入與檢索流程',
-                '若資料庫與應用都啟動成功，但 Demo 頁面無法互動，先檢查 API 路徑與瀏覽器 console',
-                '若只有部分功能可用，不要直接判定整體完成，必須逐項對照驗證清單',
-                '整體驗證要按順序做：資料庫 -> 應用 -> 工具呼叫 -> RAG -> 延伸能力'
-              ]
-            },
             {
               title: 'MCP 應該怎麼理解',
               type: 'text',
@@ -2172,70 +2343,18 @@ window.COURSE = {
               ]
             },
             {
-              title: 'MCP Server 實作：用 @Tool 定義遠端工具（ProductTools.java）',
-              type: 'code',
+              title: 'MCP 在 Spring AI 的接入方式（補充說明）',
+              type: 'text',
               paragraphs: [
-                '這就是 MCP Server 的核心：原本 Day 2-2 就存在的 `@Tool` Bean，加上 `spring-ai-starter-mcp-server-webmvc` 依賴後，Spring AI 會自動掃描並透過 `/sse` 端點對外發布為 MCP 工具。**程式碼本身完全不需要修改。**'
+                'Spring AI 已內建 MCP 支援，接入成本非常低，本章以補充說明的方式帶過即可：Day 2-2 寫好的 `@Tool` Bean 完全不需要修改程式碼，Server 端加一個依賴就會自動透過 `/sse` 端點對外發布為 MCP 工具；另一個應用加上 Client 依賴，啟動時就會自動取回遠端工具清單交給 ChatClient 使用。',
+                '想完整動手做的學員，可參考專案中的 `mcp/` 目錄（mcp-client-demo），其中已包含可直接執行的 MCP Client 範例與設定檔。'
               ],
-              code: {
-                language: 'java',
-                title: 'ProductTools.java（@Tool Bean 自動成為 MCP 工具）',
-                content: 'package com.example.tutorial.ai;\n\nimport com.example.tutorial.model.Product;\nimport com.example.tutorial.service.ProductService;\nimport org.springframework.ai.tool.annotation.Tool;\nimport org.springframework.stereotype.Component;\nimport java.util.List;\n\n/**\n * 加上 spring-ai-starter-mcp-server-webmvc 後，\n * 此 Bean 的 @Tool 方法會自動透過 GET /sse 對外發布\n */\n@Component\npublic class ProductTools {\n\n    private final ProductService productService;\n\n    public ProductTools(ProductService productService) {\n        this.productService = productService;\n    }\n\n    /** 查詢商品列表，query 為關鍵字（可為空值） */\n    @Tool(description = "查詢商品列表。如果使用者詢問有哪些商品或要找特定商品，請呼叫此方法。參數 query 為搜尋關鍵字，可為空值。")\n    public List<Product> getProducts(String query) {\n        if (query == null || query.trim().isEmpty()) {\n            return productService.getAllProducts();\n        }\n        return productService.searchProductsByName(query);\n    }\n\n    /** 根據 ID 查詢單一商品詳細資訊 */\n    @Tool(description = "根據商品 ID 獲取單一商品的詳細資訊，包含價格、描述與庫存。")\n    public Product getProductDetail(Long id) {\n        return productService.getProductById(id).orElse(null);\n    }\n}'
-              }
-            },
-            {
-              title: 'MCP Server 依賴與設定（pom.xml + application.yml）',
-              type: 'code',
-              paragraphs: [
-                '主專案加入一個依賴，設定三行 YAML，MCP Server 即就緒。'
-              ],
-              code: {
-                language: 'xml',
-                title: 'pom.xml — 加入 MCP Server 依賴',
-                content: '<!-- 加入此依賴後，@Tool Bean 自動透過 GET /sse 發布為 MCP 工具 -->\n<dependency>\n    <groupId>org.springframework.ai</groupId>\n    <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>\n</dependency>'
-              }
-            },
-            {
-              title: 'MCP Server application.yml（port 8080）',
-              type: 'code',
-              code: {
-                language: 'yaml',
-                title: 'application.yml — 主專案 MCP Server 設定',
-                content: 'server:\n  port: 8080   # MCP Client 必須使用不同 port（8081）\n\nspring:\n  ai:\n    mcp:\n      server:\n        name: learn-spring-mcp-server\n        version: 1.0.0\n        type: SYNC    # SYNC 對應 WebMVC 阻塞模型'
-              }
-            },
-            {
-              title: 'MCP Client 實作：載入遠端工具並讓 AI 呼叫（McpChatController.java）',
-              type: 'code',
-              paragraphs: [
-                '這是整個 MCP Client 的核心：`SyncMcpToolCallbackProvider`（由 `spring-ai-starter-mcp-client` 自動配置）在啟動時透過 SSE 連線至 MCP Server，取回所有工具定義。將 `getToolCallbacks()` 回傳的陣列傳入 `.tools()`，AI 就能自動選擇並呼叫遠端工具，就像呼叫本地方法一樣。'
-              ],
-              code: {
-                language: 'java',
-                title: 'McpChatController.java（mcp-client-demo 專案）',
-                content: 'package com.example.mcpclient;\n\nimport org.springframework.ai.chat.client.ChatClient;\nimport org.springframework.ai.mcp.SyncMcpToolCallbackProvider;  // org.springframework.ai.mcp\nimport org.springframework.ai.tool.ToolCallback;\nimport org.springframework.web.bind.annotation.*;\n\n@RestController\n@RequestMapping("/api/mcp")\npublic class McpChatController {\n\n    private final ChatClient chatClient;\n    /** 啟動時從遠端 MCP Server（port 8080）自動取得的工具陣列 */\n    private final ToolCallback[] mcpTools;\n\n    /**\n     * SyncMcpToolCallbackProvider 由 spring-ai-starter-mcp-client 自動配置：\n     * 啟動時連線 application.yml 中設定的 MCP Server /sse 端點，\n     * 取回 getProducts、getProductDetail 等所有遠端工具定義\n     */\n    public McpChatController(\n            ChatClient.Builder builder,\n            SyncMcpToolCallbackProvider mcpToolProvider) {\n        this.mcpTools = mcpToolProvider.getToolCallbacks();\n        this.chatClient = builder\n                .defaultSystem("你是智慧商城助手，可透過遠端工具查詢商品資訊。")\n                .build();\n    }\n\n    /**\n     * 使用者問問題 → AI 自動選擇遠端工具 → MCP Server 執行查詢 → AI 組合回答\n     * 範例：GET /api/mcp/chat?message=有哪些商品\n     */\n    @GetMapping("/chat")\n    public String chat(@RequestParam String message) {\n        return this.chatClient.prompt()\n                .user(message)\n                .tools(this.mcpTools)   // 掛載全部遠端工具，AI 自動決定是否呼叫\n                .call()\n                .content();\n    }\n}'
-              }
-            },
-            {
-              title: 'MCP Client 依賴與設定（pom.xml + application.yml）',
-              type: 'code',
-              paragraphs: [
-                'MCP Client 是**獨立的 Spring Boot 專案**（`mcp-client-demo/`），使用 port 8081。若與 MCP Server 共用 port，Client 啟動時 Tomcat 無法綁定，立即報錯。'
-              ],
-              code: {
-                language: 'xml',
-                title: 'mcp-client-demo/pom.xml — 加入 MCP Client 依賴',
-                content: '<!-- SyncMcpToolCallbackProvider 由此依賴自動配置 -->\n<dependency>\n    <groupId>org.springframework.ai</groupId>\n    <artifactId>spring-ai-starter-mcp-client</artifactId>\n</dependency>'
-              }
-            },
-            {
-              title: 'MCP Client application.yml（port 8081）',
-              type: 'code',
-              code: {
-                language: 'yaml',
-                title: 'mcp-client-demo/application.yml（port 8081）',
-                content: 'server:\n  port: 8081   # 與 MCP Server (8080) 不同，否則啟動即衝突\n\nspring:\n  ai:\n    openai:\n      chat:\n        base-url: https://api.groq.com/openai/v1\n        api-key: ${GROQ_API_KEY:your_groq_api_key_here}\n        options:\n          model: llama-3.3-70b-versatile\n    mcp:\n      client:\n        sse:\n          connections:\n            learn-spring:              # 自訂識別名稱\n              url: http://localhost:8080  # 指向 MCP Server'
-              }
+              bullets: [
+                'Server 端：加入 `spring-ai-starter-mcp-server-webmvc` 依賴，既有 @Tool Bean 自動發布為 MCP 工具',
+                'Client 端：加入 `spring-ai-starter-mcp-client` 依賴，SyncMcpToolCallbackProvider 啟動時自動連線取回工具',
+                'Server 與 Client 是兩個獨立服務，必須使用不同 port（例如 8080 / 8081），且要先啟動 Server',
+                '工具掛載方式與本地工具一致：把取回的工具陣列傳入 `.tools()`，AI 就會自動選用遠端工具'
+              ]
             },
             {
               title: 'AI 呼叫遠端工具的完整流程',
@@ -2243,6 +2362,9 @@ window.COURSE = {
               paragraphs: [
                 '以「有哪些商品？」為例，說明從使用者輸入到 AI 回答的跨服務執行路徑：'
               ],
+              image: 'assets/teaching-site/22-diagram-mcp-remote-call.svg',
+              imageAlt: 'MCP 跨服務工具呼叫六步驟流程圖',
+              imageCaption: 'Client（8081）透過 SSE 連線呼叫 Server（8080）的工具，@Tool 程式碼完全不用修改。',
               bullets: [
                 '① 使用者呼叫 `GET http://localhost:8081/api/mcp/chat?message=有哪些商品`',
                 '② MCP Client（port 8081）的 ChatClient 收到訊息，交由 LLM 判斷意圖',
@@ -2253,24 +2375,81 @@ window.COURSE = {
               ]
             },
             {
-              title: '雙 Port 啟動順序（終端機 1 → 2）',
+              title: 'Skills 是什麼：把專業知識打包給 AI',
+              type: 'text',
+              paragraphs: [
+                'Skills（Agent Skills）是 Anthropic 於 2025 年提出的開放標準：把某個領域的程序性知識（操作流程、規範、範本、輔助腳本）打包成一個資料夾，核心是一份帶有名稱與描述的 SKILL.md 說明檔。AI 平時只看到每個 Skill 的一行描述，judged 相關時才載入完整內容，這種「漸進式載入」讓模型能掛上大量專業知識而不撐爆上下文。',
+                '如果說 Tool Calling 與 MCP 解決的是「AI 能呼叫什麼工具、拿到什麼資料」，Skills 解決的則是「AI 應該照什麼流程與規範做事」。兩者互補，不是替代關係。'
+              ],
+              bullets: [
+                'Skill = 資料夾 + SKILL.md（frontmatter 描述）+ 選配的範本與腳本',
+                '平時只載入描述，被點名才載入全文 — 漸進式揭露（progressive disclosure）',
+                'MCP 擴充「能力與資料」，Skills 擴充「知識與流程」'
+              ]
+            },
+            {
+              title: 'MCP vs Skills：擴充 AI 能力的兩條路',
+              type: 'text',
+              bullets: [
+                'MCP：標準化「連接」— 讓 AI 客戶端以一致方式接上工具與資料來源，重點在執行能力',
+                'Skills：標準化「知識」— 讓 AI 依描述按需載入工作流程與規範，重點在做事方法',
+                '判斷方式：要讓 AI「查得到、做得到」用 MCP / Tool Calling；要讓 AI「做得對、有章法」用 Skills',
+                '實務上常見組合：Skill 內的流程指示 AI 在特定步驟呼叫 MCP 工具完成查詢或寫入'
+              ]
+            },
+            {
+              title: 'Spring AI 如何加入 Skills：spring-ai-agent-utils',
+              type: 'text',
+              paragraphs: [
+                'Skills 是 Claude、Claude Code 等 AI 客戶端原生支援的標準，但 Spring AI 核心框架尚未內建 Skills 概念。在 Spring Boot 應用中要讓 AI 具備 Skills 能力，目前的推薦做法是引用 Spring AI Community（Spring AI 官方社群組織）維護的 spring-ai-agent-utils 套件 — 它把 Claude Code 風格的 Agent 工具與 Skills 機制帶進 Java 應用。',
+                '版本注意：spring-ai-agent-utils 0.9.0 要求 Spring AI 2.0.0-RC1 以上、Java 17+、Spring Boot 3.x / 4.x。本課程專案使用 Spring AI 2.0.0-M8，導入前需先把 Spring AI 升到 RC1 以上版本。'
+              ],
+              bullets: [
+                '路線一（推薦）：引用 spring-ai-agent-utils 的 SkillsTool，以 Markdown + YAML frontmatter 定義可重用知識模組',
+                '路線二：自行實作最小核心 — 掃描 skills/ 目錄、解析 SKILL.md、把描述注入 system prompt（原理與套件相同）',
+                'Skill 檔案本身是純 Markdown、與平台無關，可在 Claude Code 與 Spring Boot 應用間共用同一份'
+              ]
+            },
+            {
+              title: 'spring-ai-agent-utils 提供的 Agent 工具總覽',
+              type: 'text',
+              paragraphs: [
+                '這個套件不只有 Skills，而是一整組 Claude Code 啟發的 Agent 工具，皆以 Spring AI 的 Tool 形式提供，可依需求個別掛入 ChatClient，讓你的 Spring Boot 應用具備接近 Coding Agent 的能力。'
+              ],
+              bullets: [
+                'SkillsTool：載入 SKILL.md 知識模組，支援漸進式載入與技能路由',
+                'FileSystemTools / GrepTool / GlobTool：檔案讀寫編輯、純 Java 的內容搜尋與檔名匹配',
+                'ShellTools：讓 AI 執行 Shell 命令（生產環境務必搭配權限控管）',
+                'TaskTool：子代理（subagent）協調，支援 Markdown 定義的本地子代理與 A2A 遠端代理',
+                'AutoMemoryTools：跨對話的持久化長期記憶',
+                'SmartWebFetchTool / BraveWebSearchTool：網頁擷取摘要與網路搜尋',
+                'AskUserQuestionTool / TodoWriteTool：執行期間向使用者提問、結構化任務清單管理',
+                'Skill 檔案來源可搭配 anthropics/skills（Anthropic 官方開源庫）與 VoltAgent/awesome-agent-skills（社群精選 1000+），格式通用可直接取用'
+              ]
+            },
+            {
+              title: '加入 spring-ai-agent-utils 依賴（pom.xml）',
               type: 'code',
               paragraphs: [
-                '必須先啟動 MCP Server（port 8080），Client（port 8081）啟動時立即透過 SSE 連線 Server 取得工具清單，若 Server 尚未就緒會拋出連線錯誤。'
+                '套件發布於 Maven Central（groupId 為 org.springaicommunity），官方建議透過 BOM 統一管理版本，再引入核心函式庫。'
               ],
               code: {
-                language: 'powershell',
-                title: '終端機 1：MCP Server　|　終端機 2：MCP Client',
-                content: '# ===== 終端機 1：啟動 MCP Server (port 8080) =====\nSet-Location "D:\\GitHub\\learn-spring\\backend"\ndocker-compose up -d\n$env:JAVA_HOME = "D:\\java\\jdk-21"; $env:Path = "D:\\java\\jdk-21\\bin;$env:Path"\n$env:GROQ_API_KEY = "your-groq-key"; $env:VOYAGE_API_KEY = "your-voyage-key"\nmvn spring-boot:run\n# 看到「Started LearnSpringApplication」後，再開終端機 2\n\n# ===== 終端機 2：啟動 MCP Client (port 8081) =====\nSet-Location "D:\\GitHub\\learn-spring\\mcp"\n$env:JAVA_HOME = "D:\\java\\jdk-21"; $env:Path = "D:\\java\\jdk-21\\bin;$env:Path"\n$env:GROQ_API_KEY = "your-groq-key"\nmvn spring-boot:run\n\n# ===== 測試 AI 跨服務工具呼叫 =====\nInvoke-RestMethod -Uri "http://localhost:8081/api/mcp/chat?message=有哪些商品"\n# AI 透過 MCP 呼叫 MCP Server 的 getProducts，回傳即時商品清單'
+                language: 'xml',
+                title: 'pom.xml — 引入 spring-ai-agent-utils（BOM + 核心庫）',
+                content: '<!-- 1. dependencyManagement：以 BOM 統一管理 agent-utils 版本 -->\n<dependencyManagement>\n    <dependencies>\n        <dependency>\n            <groupId>org.springaicommunity</groupId>\n            <artifactId>spring-ai-agent-utils-bom</artifactId>\n            <version>0.9.0</version>\n            <type>pom</type>\n            <scope>import</scope>\n        </dependency>\n    </dependencies>\n</dependencyManagement>\n\n<!-- 2. dependencies：引入核心函式庫（版本由 BOM 決定） -->\n<dependency>\n    <groupId>org.springaicommunity</groupId>\n    <artifactId>spring-ai-agent-utils</artifactId>\n</dependency>\n\n<!-- 注意：0.9.0 要求 Spring AI 2.0.0-RC1+ / Java 17+ / Spring Boot 3.x 或 4.x -->'
               }
             },
             {
-              title: '延伸方向',
-              type: 'text',
+              title: 'ChatClient 掛上 SkillsTool 與 Agent 工具',
+              type: 'code',
               paragraphs: [
-                '完成課程後，最自然的下一步是擴充更多即時資料工具，例如會員等級、折扣規則、訂單查詢，或把更多文件來源導入 RAG。',
-                '如果要往企業情境走，則可以把工具層與 MCP 能力拆得更清楚，並加入權限、稽核與多資料來源管理。'
-              ]
+                '把 SkillsTool 與需要的 Agent 工具透過 defaultTools 掛入 ChatClient：SkillsTool 啟動時讀取指定路徑下的 SKILL.md，平時只讓模型看到技能描述，任務匹配時才載入完整內容（漸進式載入）— 與 Claude Code 載入 Skill 的行為一致。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ChatClient 整合 SkillsTool（節錄）',
+                content: '// 建立 ChatClient 時掛上 Skills 與 Agent 工具\n// skillPaths：SKILL.md 所在的資源路徑清單（例如 classpath:/skills/ 下各技能目錄）\nChatClient chatClient = chatClientBuilder\n        .defaultSystem("你是智慧商城助手。")\n        .defaultTools(\n                // Skills：載入 Markdown + YAML frontmatter 定義的知識模組\n                SkillsTool.builder()\n                        .addSkillsResources(skillPaths)\n                        .build(),\n                // 依需求選掛其他 Agent 工具（檔案存取、Shell 執行等）\n                FileSystemTools.builder().build()\n        )\n        .build();'
+              }
             }
           ]
         },
@@ -2280,9 +2459,9 @@ window.COURSE = {
           title: 'React 快速入門與前端優化指引',
           summary: '掌握 Node.js 環境、使用 Vite 建立 React 19 專案、JSX 語法元件結構，並學習如何以 Proxy 串接後端 API 及套用 uiuxpromax 優化前端視覺體驗。',
           source: 'docs/Day2-5-React-Intro.md',
-          heroImage: 'assets/teaching-site/05-ch05-springai-chatclient.png',
-          diagramImage: '',
-          diagramCaption: '',
+          heroImage: 'assets/teaching-site/10-ch10-react-intro.png',
+          diagramImage: 'assets/teaching-site/23-diagram-vite-proxy.svg',
+          diagramCaption: '瀏覽器只跟 5173 對話，跨網域請求由 Vite Proxy 代理轉發到 8080，免除 CORS 限制。',
           goals: [
             '理解 Node.js 與 NPM 相依性套件管理機制',
             '學會使用 Vite 初始化 React 19 專案的指令步驟',
@@ -2353,6 +2532,18 @@ window.COURSE = {
                 '⚡ 微懸停動畫 (Micro-interactions)：滑鼠懸停於商品、訂單卡片時，加入 `transform: translateY(-4px) scale(1.01)` 與 `transition` 讓卡片活起來。',
                 '⏳ 骨架屏載入動畫 (Skeleton Screen)：當 AI 正在思考或呼叫 Tool 時，在對話框中顯示灰白色的骨架屏閃爍 (shimmer keyframe)，極大降地等待期間的無聊感。'
               ]
+            },
+            {
+              title: 'AI Agent 提示詞 — 建立 React 前端專案',
+              type: 'code',
+              paragraphs: [
+                '理解 React 專案結構、Proxy 原理與視覺優化要點後，複製以下提示詞給 AI Agent，從零建立聊天室的前端專案骨架。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '請幫我建立商城智慧客服的 React 前端專案：\n1. 在專案根目錄用 Vite 建立 React 19 專案：npx create-vite@latest frontend --template react，並執行 npm install。\n2. 設定 vite.config.js 的 server.proxy，把所有 /api 開頭的請求代理到 http://localhost:8080，解決前後端分離的 CORS 問題。\n3. 建立 App 頁面骨架：包含漸層色 Header（linear-gradient 靛藍到紫色）、毛玻璃卡片容器（backdrop-filter: blur），以及聊天視窗的占位區塊。\n4. CSS 請加上骨架屏（skeleton shimmer）載入動畫，之後聊天室等待 AI 回覆時會用到。\n5. 元件需有中文註解。\n完成後請告訴我如何啟動開發伺服器，以及如何確認 proxy 代理有生效。'
+              }
             }
           ]
         },
@@ -2362,9 +2553,9 @@ window.COURSE = {
           title: 'React 聊天室與 SSE 串流式對話實戰',
           summary: '使用 React 串接後端 Server-Sent Events (SSE) 串流 API，利用原生 EventSource 與狀態管理實現即時打字機對話效果。',
           source: 'docs/Day2-5-React-SSE.md',
-          heroImage: 'assets/teaching-site/05-ch05-api-docs.png',
-          diagramImage: '',
-          diagramCaption: '',
+          heroImage: 'assets/teaching-site/11-ch11-react-sse-chat.png',
+          diagramImage: 'assets/teaching-site/24-diagram-sse-jwt-flow.svg',
+          diagramCaption: 'EventSource 無法自訂 Header，JWT 改走網址 Query 參數，由升級後的過濾器驗證。',
           goals: [
             '理解 SSE 與 WebSockets 的區別與選型',
             '使用 React 的 EventSource 實作後端 API 串接',
@@ -2372,9 +2563,9 @@ window.COURSE = {
             '掌握流式對話中對話 Session 的前端管理與清除'
           ],
           tasks: [
-            { id: 'd2-u5-t1', text: '理解 SSE (Server-Sent Events) 單向串流原理' },
-            { id: 'd2-u5-t2', text: '使用 React 實作 EventSource 監聽與狀態更新' },
-            { id: 'd2-u5-t3', text: '完成前端對話 Session 清除與重建邏輯' }
+            { id: 'd2-u6-t1', text: '理解 SSE (Server-Sent Events) 單向串流原理與安全限制' },
+            { id: 'd2-u6-t2', text: '升級後端 JwtAuthenticationFilter 支援網址 Query Token' },
+            { id: 'd2-u6-t3', text: '使用 React 實作 EventSource 帶 Token 監聽與狀態更新' }
           ],
           sections: [
             {
@@ -2394,12 +2585,13 @@ window.COURSE = {
               title: 'React EventSource 串接核心代碼',
               type: 'code',
               paragraphs: [
-                '這是在 React 中透過 `useEffect` 監聽後端 SSE 流的典型寫法。每次後端傳來新的字元片斷，我們就將其追加到當前最新的一筆訊息中。'
+                '這是在 React 中透過 `useEffect` 監聽後端 SSE 流的典型寫法。每次後端傳來新的字元片斷，我們就將其追加到當前最新的一筆訊息中。',
+                '**[安全升級指引]**：由於原生 EventSource 串流連線無法直接自訂 HTTP 標頭（Header），這會導致我們在 Day 1-9 實作的 Spring Security JWT 驗證將其阻擋。為了安全地完成連線，我們必須進行漸進式升級：\n1. **修改後端**：升級後端的 `JwtAuthenticationFilter.java` 的 `parseJwt` 方法，使其除了支援從 Header 讀取外，也支援從網址 Query 參數中的 `token` 讀取並驗證 JWT。\n2. **修改前端**：在 React 前端建立 `EventSource` 時，從 `localStorage` 取得儲存的 Token，並以網址參數形式帶入。'
               ],
               code: {
                 language: 'javascript',
                 title: 'ChatRoom.jsx — 串流接收與狀態更新',
-                content: 'const handleSend = (text) => {\n  // 1. 新增使用者的發問訊息\n  const userMsg = { id: Date.now(), sender: "user", text };\n  const assistantMsg = { id: Date.now() + 1, sender: "assistant", text: "" };\n  setMessages(prev => [...prev, userMsg, assistantMsg]);\n\n  // 2. 建立 SSE 連線\n  const eventSource = new EventSource(\n    `/api/ai/stream?message=${encodeURIComponent(text)}&sessionId=${sessionId}`\n  );\n\n  // 3. 監聽後端推播事件\n  eventSource.onmessage = (event) => {\n    // [注意] Spring AI 預設可能回傳字元片段，需要持續追加到最後一筆 assistant 訊息中\n    setMessages(prev => {\n      const updated = [...prev];\n      const lastIndex = updated.length - 1;\n      updated[lastIndex] = {\n        ...updated[lastIndex],\n        text: updated[lastIndex].text + event.data // 追加新收到的字元\n      };\n      return updated;\n    });\n  };\n\n  eventSource.onerror = (err) => {\n    console.error("SSE 串流連線中斷或結束：", err);\n    eventSource.close(); // 發生錯誤或傳輸完畢時關閉連線\n  };\n};'
+                content: 'const handleSend = (text) => {\n  // 1. 新增使用者的發問訊息\n  const userMsg = { id: Date.now(), sender: "user", text };\n  const assistantMsg = { id: Date.now() + 1, sender: "assistant", text: "" };\n  setMessages(prev => [...prev, userMsg, assistantMsg]);\n\n  // 2. 建立 SSE 連線\n  const eventSource = new EventSource(\n    `/api/ai/stream?message=${encodeURIComponent(text)}&token=${encodeURIComponent(token)}`\n  );\n\n  // 3. 監聽後端推播事件\n  eventSource.onmessage = (event) => {\n    // [注意] Spring AI 預設可能回傳字元片段，需要持續追加到最後一筆 assistant 訊息中\n    setMessages(prev => {\n      const updated = [...prev];\n      const lastIndex = updated.length - 1;\n      updated[lastIndex] = {\n        ...updated[lastIndex],\n        text: updated[lastIndex].text + event.data // 追加新收到的字元\n      };\n      return updated;\n    });\n  };\n\n  eventSource.onerror = (err) => {\n    console.error("SSE 串流連線中斷或結束：", err);\n    eventSource.close(); // 發生錯誤或傳輸完畢時關閉連線\n  };\n};'
               }
             },
             {
@@ -2423,7 +2615,7 @@ window.COURSE = {
               code: {
                 language: 'jsx',
                 title: 'ChatRoom.jsx',
-                content: 'import React, { useState, useEffect, useRef } from \'react\';\nimport \'./ChatRoom.css\';\n\n/**\n * 智慧客服聊天室元件\n * 實作與 Spring Boot 後端的 SSE (Server-Sent Events) 串流對話，\n * 支援 AI 工具呼叫狀態提示、快捷對話指令以及自動滾動。\n */\nexport default function ChatRoom() {\n  // 對話歷史紀錄\n  const [messages, setMessages] = useState([]);\n  // 輸入框中的文字內容\n  const [input, setInput] = useState(\'\');\n  // AI 正在思考或呼叫工具的狀態（決定是否顯示載入中提示）\n  const [isThinking, setIsThinking] = useState(false);\n  // AI 正在輸出字元片段的狀態（決定是否鎖定輸入與發送按鈕）\n  const [isGenerating, setIsGenerating] = useState(false);\n  // 對話 Session 識別碼，確保不同使用者與會話的歷史記憶互相隔離\n  const [sessionId] = useState(() => `session_${Math.random().toString(36).substr(2, 9)}`);\n  // 用於控制滾動到底部的 DOM 參照\n  const messagesEndRef = useRef(null);\n\n  // 定義快捷對話指令，方便學員一鍵測試工具呼叫與 RAG 推薦\n  const quickPrompts = [\n    { label: "🔍 詢問所有商品", text: "有哪些商品？" },\n    { label: "📦 查詢 alice 的訂單", text: "我是 alice，我買了哪些東西？" },\n    { label: "☀️ 台北即時天氣", text: "台北今天天氣如何？" },\n    { label: "✨ 長期記憶語意推薦", text: "根據我之前說過的需求，幫我推薦商城裡的商品" }\n  ];\n\n  // 監聽對話紀錄 messages 變化，自動平滑滾動到底部\n  useEffect(() => {\n    messagesEndRef.current?.scrollIntoView({ behavior: \'smooth\' });\n  }, [messages]);\n\n  /**\n   * 處理點擊發送按鈕或在輸入框按下 Enter 鍵的事件\n   */\n  const handleSendClick = () => {\n    if (!input.trim() || isGenerating || isThinking) return;\n    handleSend(input);\n    setInput(\'\');\n  };\n\n  /**\n   * 建立 SSE 連線並發送對話訊息，監聽後端串流推播\n   * @param {string} text - 使用者發送的 Prompt 內容\n   */\n  const handleSend = (text) => {\n    // 1. 新增使用者的提問，以及一個初始空白的 AI 回應物件（作為打字機效果容器）\n    const userMsg = { id: Date.now(), sender: "user", text };\n    const assistantMsg = { id: Date.now() + 1, sender: "assistant", text: "" };\n    setMessages(prev => [...prev, userMsg, assistantMsg]);\n\n    setIsThinking(true);     // 啟動「正在思考/呼叫工具」的載入狀態\n    setIsGenerating(true);   // 鎖定發送與輸入，防止重複提交\n\n    // 2. 建立標準 SSE EventSource 連線（僅支援 GET）\n    const eventSource = new EventSource(\n      `/api/ai/stream?message=${encodeURIComponent(text)}&sessionId=${sessionId}`\n    );\n\n    // 3. 監聽後端推播事件，更新對話文字\n    eventSource.onmessage = (event) => {\n      setIsThinking(false); // 收到第一個字元片段，代表思考/工具呼叫完畢，關閉思考狀態\n      \n      setMessages(prev => {\n        const updated = [...prev];\n        const lastIndex = updated.length - 1;\n        updated[lastIndex] = {\n          ...updated[lastIndex],\n          text: updated[lastIndex].text + event.data // 逐字追加生成內容\n        };\n        return updated;\n      });\n    };\n\n    // 4. 監聽連線結束或錯誤\n    eventSource.onerror = (err) => {\n      setIsThinking(false);\n      setIsGenerating(false);\n      eventSource.close(); // 傳輸完畢或斷線時務必關閉連線，避免瀏覽器無限重連\n    };\n  };\n\n  return (\n    <div className="chat-window">\n      <div className="chat-header">\n        <h3>Antigravity 智慧客服聊天室</h3>\n        <span className="session-badge">Session ID: {sessionId}</span>\n      </div>\n      \n      {/* 對話對話區 */}\n      <div className="messages-container">\n        {messages.map(msg => (\n          <div key={msg.id} className={`msg-row ${msg.sender}`}>\n            <div className="avatar">{msg.sender === \'user\' ? \'👤\' : \'🤖\'}</div>\n            <div className="bubble">\n              {msg.text || <span className="cursor">▍</span>}\n            </div>\n          </div>\n        ))}\n        \n        {/* 展示 AI 呼叫工具或思考中的狀態提示 */}\n        {isThinking && (\n          <div className="msg-row assistant">\n            <div className="avatar">🤖</div>\n            <div className="bubble thinking">\n              <span className="loading-dots">AI 正在搜尋資料庫或呼叫工具中...</span>\n            </div>\n          </div>\n        )}\n        \n        <div ref={messagesEndRef} />\n      </div>\n\n      {/* 快速對話指令區 */}\n      <div className="quick-actions">\n        {quickPrompts.map((p, idx) => (\n          <button \n            key={idx} \n            onClick={() => handleSend(p.text)} \n            disabled={isGenerating || isThinking}\n            className="quick-btn"\n          >\n            {p.label}\n          </button>\n        ))}\n      </div>\n\n      {/* 輸入欄區 */}\n      <div className="chat-input-bar">\n        <input \n          type="text" \n          value={input} \n          disabled={isGenerating || isThinking}\n          onChange={e => setInput(e.target.value)}\n          placeholder={isGenerating || isThinking ? "AI 正在回覆中..." : "請輸入您的問題..."}\n          onKeyDown={e => e.key === \'Enter\' && handleSendClick()}\n        />\n        <button onClick={handleSendClick} disabled={isGenerating || isThinking || !input.trim()}>\n          發送\n        </button>\n      </div>\n    </div>\n  );\n}'
+                content: 'import React, { useState, useEffect, useRef } from \'react\';\nimport \'./ChatRoom.css\';\n\n/**\n * 智慧客服聊天室元件\n * 實作與 Spring Boot 後端的 SSE (Server-Sent Events) 串流對話，\n * 支援 AI 工具呼叫狀態提示、快捷對話指令以及自動滾動。\n */\nexport default function ChatRoom() {\n  // 對話歷史紀錄\n  const [messages, setMessages] = useState([]);\n  // 輸入框中的文字內容\n  const [input, setInput] = useState(\'\');\n  // AI 正在思考或呼叫工具的狀態（決定是否顯示載入中提示）\n  const [isThinking, setIsThinking] = useState(false);\n  // AI 正在輸出字元片段的狀態（決定是否鎖定輸入與發送按鈕）\n  const [isGenerating, setIsGenerating] = useState(false);\n  // 對話 Session 識別碼，確保不同使用者與會話的歷史記憶互相隔離\n  const [sessionId] = useState(() => `session_${Math.random().toString(36).substr(2, 9)}`);\n  // 用於控制滾動到底部的 DOM 參照\n  const messagesEndRef = useRef(null);\n\n  // 定義快捷對話指令，方便學員一鍵測試工具呼叫與 RAG 推薦\n  const quickPrompts = [\n    { label: "🔍 詢問所有商品", text: "有哪些商品？" },\n    { label: "📦 查詢 alice 的訂單", text: "我是 alice，我買了哪些東西？" },\n    { label: "☀️ 台北即時天氣", text: "台北今天天氣如何？" },\n    { label: "✨ 長期記憶語意推薦", text: "根據我之前說過的需求，幫我推薦商城裡的商品" }\n  ];\n\n  // 監聽對話紀錄 messages 變化，自動平滑滾動到底部\n  useEffect(() => {\n    messagesEndRef.current?.scrollIntoView({ behavior: \'smooth\' });\n  }, [messages]);\n\n  /**\n   * 處理點擊發送按鈕或在輸入框按下 Enter 鍵的事件\n   */\n  const handleSendClick = () => {\n    if (!input.trim() || isGenerating || isThinking) return;\n    handleSend(input);\n    setInput(\'\');\n  };\n\n  /**\n   * 建立 SSE 連線並發送對話訊息，監聽後端串流推播\n   * @param {string} text - 使用者發送的 Prompt 內容\n   */\n  const handleSend = (text) => {\n    // 1. 新增使用者的提問，以及一個初始空白的 AI 回應物件（作為打字機效果容器）\n    const userMsg = { id: Date.now(), sender: "user", text };\n    const assistantMsg = { id: Date.now() + 1, sender: "assistant", text: "" };\n    setMessages(prev => [...prev, userMsg, assistantMsg]);\n\n    setIsThinking(true);     // 啟動「正在思考/呼叫工具」的載入狀態\n    setIsGenerating(true);   // 鎖定發送與輸入，防止重複提交\n\n    // 2. 建立標準 SSE EventSource 連線（僅支援 GET）\n    const eventSource = new EventSource(\n      `/api/ai/stream?message=${encodeURIComponent(text)}&token=${encodeURIComponent(token)}`\n    );\n\n    // 3. 監聽後端推播事件，更新對話文字\n    eventSource.onmessage = (event) => {\n      setIsThinking(false); // 收到第一個字元片段，代表思考/工具呼叫完畢，關閉思考狀態\n      \n      setMessages(prev => {\n        const updated = [...prev];\n        const lastIndex = updated.length - 1;\n        updated[lastIndex] = {\n          ...updated[lastIndex],\n          text: updated[lastIndex].text + event.data // 逐字追加生成內容\n        };\n        return updated;\n      });\n    };\n\n    // 4. 監聽連線結束或錯誤\n    eventSource.onerror = (err) => {\n      setIsThinking(false);\n      setIsGenerating(false);\n      eventSource.close(); // 傳輸完畢或斷線時務必關閉連線，避免瀏覽器無限重連\n    };\n  };\n\n  return (\n    <div className="chat-window">\n      <div className="chat-header">\n        <h3>Antigravity 智慧客服聊天室</h3>\n        <span className="session-badge">Session ID: {sessionId}</span>\n      </div>\n      \n      {/* 對話對話區 */}\n      <div className="messages-container">\n        {messages.map(msg => (\n          <div key={msg.id} className={`msg-row ${msg.sender}`}>\n            <div className="avatar">{msg.sender === \'user\' ? \'👤\' : \'🤖\'}</div>\n            <div className="bubble">\n              {msg.text || <span className="cursor">▍</span>}\n            </div>\n          </div>\n        ))}\n        \n        {/* 展示 AI 呼叫工具或思考中的狀態提示 */}\n        {isThinking && (\n          <div className="msg-row assistant">\n            <div className="avatar">🤖</div>\n            <div className="bubble thinking">\n              <span className="loading-dots">AI 正在搜尋資料庫或呼叫工具中...</span>\n            </div>\n          </div>\n        )}\n        \n        <div ref={messagesEndRef} />\n      </div>\n\n      {/* 快速對話指令區 */}\n      <div className="quick-actions">\n        {quickPrompts.map((p, idx) => (\n          <button \n            key={idx} \n            onClick={() => handleSend(p.text)} \n            disabled={isGenerating || isThinking}\n            className="quick-btn"\n          >\n            {p.label}\n          </button>\n        ))}\n      </div>\n\n      {/* 輸入欄區 */}\n      <div className="chat-input-bar">\n        <input \n          type="text" \n          value={input} \n          disabled={isGenerating || isThinking}\n          onChange={e => setInput(e.target.value)}\n          placeholder={isGenerating || isThinking ? "AI 正在回覆中..." : "請輸入您的問題..."}\n          onKeyDown={e => e.key === \'Enter\' && handleSendClick()}\n        />\n        <button onClick={handleSendClick} disabled={isGenerating || isThinking || !input.trim()}>\n          發送\n        </button>\n      </div>\n    </div>\n  );\n}'
               }
             },
             {
@@ -2451,6 +2643,18 @@ window.COURSE = {
                 language: 'javascript',
                 title: 'ChatRoom.jsx — 核心動態識別與元件渲染邏輯',
                 content: '/**\n * 偵測 AI 回覆內容並自動對應卡片數據\n */\nconst detectAndAttachCards = (text) => {\n  // 1. 商品卡片或語意推薦卡片偵測\n  const matchedProducts = storeProducts.filter(p => text.toLowerCase().includes(p.name.toLowerCase()));\n  if (matchedProducts.length > 0) {\n    if (text.includes("推薦") || text.includes("適合您")) {\n      return { cardType: "recommendations", list: matchedProducts };\n    }\n    return { cardType: "products", list: matchedProducts };\n  }\n\n  // 2. 訂單物流卡片偵測\n  if (text.includes("訂單") && (text.includes("alice") || text.includes("Alice"))) {\n    return { cardType: "orders", list: [/* 來自後端查出的訂單明細 */] };\n  }\n  return null;\n};\n\n/**\n * 條件式渲染不同的 React 元件卡片\n */\nconst renderCards = (cards) => {\n  if (!cards) return null;\n  switch (cards.cardType) {\n    case "products":\n      return <div className="products-grid">{/* 渲染商品網格元件 */}</div>;\n    case "orders":\n      return <div className="orders-list">{/* 渲染物流訂單元件 */}</div>;\n    case "recommendations":\n      return <div className="recommendations-list">{/* 渲染推薦商品元件 */}</div>;\n    default:\n      return null;\n  }\n};'
+              }
+            },
+            {
+              title: 'AI Agent 提示詞 — 前端串流與安全認證',
+              type: 'code',
+              paragraphs: [
+                '理解 SSE 原理、EventSource 串接方式與安全限制後，複製以下提示詞給 AI Agent，引導它為你的 React 前端聊天室實作 SSE 串流連線，並升級後端過濾器以支援安全認證。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '請在現有專案中完成以下前端與後端的串流對話安全升級：\n1. 由於原生的 EventSource 無法在 Header 中自訂 Token 進行驗證，請修改後端 `JwtAuthenticationFilter.java` 的 `parseJwt` 方法，使其除了支援從 `Authorization` 標頭讀取 Token 外，也支援從 URL 的 Query 參數（例如 `token`）中取得並驗證 Token。\n2. 在前端 `ChatRoom.jsx` 中，連接後端的 `/api/ai/stream` 串流對話介面。連線時，請從 `localStorage` 中讀取先前儲存的 JWT Token，並以網址參數形式帶入（例如 `/api/ai/stream?message=xxx&token=yyy`），以安全地建立 EventSource 串流對話連線。'
               }
             },
             {
@@ -2501,9 +2705,9 @@ window.COURSE = {
           title: '對話歷史向量化與 RAG 檢索',
           summary: '將聊天室的對話紀錄（User Prompt 與 AI Response）非同步向量化儲存，並在發問時透過多路 RAG 同時檢索商品庫與歷史對話，打造具備長效語意記憶的 AI 助手。',
           source: 'docs/Day2-6-ChatHistory-RAG.md',
-          heroImage: 'assets/teaching-site/07-ch07-logging.png',
-          diagramImage: '',
-          diagramCaption: '',
+          heroImage: 'assets/teaching-site/12-ch12-chat-history-rag.png',
+          diagramImage: 'assets/teaching-site/25-diagram-dual-rag.svg',
+          diagramCaption: '提問時雙路並行檢索商品知識與個人歷史；對話結束後才非同步寫回向量庫，不阻塞串流。',
           goals: [
             '理解對話歷史向量化的重要性與長期記憶挑戰',
             '實作在 Spring Boot 串流結束時非同步寫入向量庫',
@@ -2511,9 +2715,9 @@ window.COURSE = {
             '設計雙路 RAG 檢索：同時查詢知識庫與歷史記憶並進行內容合併'
           ],
           tasks: [
-            { id: 'd2-u6-t1', text: '設計非同步向量化儲存 Service 邏輯' },
-            { id: 'd2-u6-t2', text: '在 SSE 串流完成時 (doOnComplete) 觸發歷史寫入' },
-            { id: 'd2-u6-t3', text: '實作多路檢索與上下文合併邏輯' }
+            { id: 'd2-u7-t1', text: '設計非同步向量化儲存 Service 邏輯' },
+            { id: 'd2-u7-t2', text: '在 SSE 串流完成時 (doOnComplete) 觸發歷史寫入' },
+            { id: 'd2-u7-t3', text: '實作多路檢索與上下文合併邏輯' }
           ],
           sections: [
             {
@@ -2563,6 +2767,138 @@ window.COURSE = {
                 title: 'RAGController.java — 雙路 RAG 合併檢索',
                 content: 'public List<Document> retrieveDoubleRoad(String query, String sessionId) {\n    // 第一路：商品文件檢索\n    SearchRequest productReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'product_doc\'")\n            .topK(3)\n            .build();\n    List<Document> products = vectorStore.similaritySearch(productReq);\n\n    // 第二路：該使用者歷史對話語意檢索\n    SearchRequest historyReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'chat_history\' && sessionId == \'" + sessionId + "\'")\n            .topK(2)\n            .build();\n    List<Document> histories = vectorStore.similaritySearch(historyReq);\n\n    // 合併結果並回傳\n    List<Document> combined = new ArrayList<>();\n    combined.addAll(products);\n    combined.addAll(histories);\n    return combined;\n}'
               }
+            },
+            {
+              title: 'AI Agent 提示詞 — 對話歷史長期記憶',
+              type: 'code',
+              paragraphs: [
+                '理解長期記憶的設計原理（非同步寫入、Metadata 隔離、雙路檢索）後，複製以下提示詞給 AI Agent，為聊天室加上「長期記憶」能力。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '請為聊天室加入「長期記憶」功能，把對話歷史向量化存入 pgvector：\n1. 建立 ChatHistoryService，提供 saveToVectorStore(sessionId, prompt, response) 方法：把使用者問句與 AI 回答組成一份 Document，metadata 加上 sessionId、type 為 chat_history 與建立時間，再寫入 VectorStore。\n2. 修改 SSE 串流介面：用 doOnNext 收集完整回覆內容，並在 doOnComplete 時用 CompletableFuture.runAsync 非同步寫入向量庫，避免阻塞串流回應。\n3. 實作雙路 RAG 檢索方法：使用者提問時同時查兩路 —— 商品文件（filterExpression 過濾 type 為 product_doc）取前 3 筆、該使用者的歷史對話（type 為 chat_history 且 sessionId 相符）取前 2 筆，合併後作為上下文交給模型。\n4. 程式碼需有中文函式註解。\n完成後請示範驗證流程：先聊「我預算三千、想要重低音耳機」，之後開新對話問「根據我之前說的需求推薦商品」，確認 AI 記得歷史偏好。'
+              }
+            }
+          ]
+        },
+        {
+          id: 'd2-u8',
+          chapter: '2-8',
+          title: '課程總結與完整系統驗證',
+          summary: '整合兩天成果，從資料庫、後端 API、AI 能力到 React 前端逐項驗證完整系統，並整理後續延伸學習方向。',
+          source: 'docs/Day2-8-WrapUp.md',
+          heroImage: 'assets/teaching-site/00-course-overview.png',
+          diagramImage: 'assets/teaching-site/26-diagram-fullstack-overview.svg',
+          diagramCaption: 'Day 1 的工程底盤撐起 Day 2 的 AI 能力與前端介面，五個區塊組成完整的智慧商城系統。',
+          goals: [
+            '能完成前後端專案啟動、驗證與展示流程',
+            '回顧 Day 1 工程底盤與 Day 2 AI 與前端整合的學習路徑',
+            '建立後續延伸學習與擴充方向'
+          ],
+          tasks: [
+            { id: 'd2-u8-t1', text: '啟動資料庫與後端應用服務' },
+            { id: 'd2-u8-t2', text: '完成客服模式與 RAG 模式驗證' },
+            { id: 'd2-u8-t3', text: '啟動 React 前端並完成 SSE 串流對話驗證' },
+            { id: 'd2-u8-t4', text: '整理延伸學習與擴充方向' }
+          ],
+          sections: [
+            {
+              title: '完整系統驗證流程',
+              type: 'text',
+              paragraphs: [
+                '最後一章不是收尾而已，而是把前面所有章節重新串起來驗證。資料庫要能起、Flyway 要能跑、聊天模式要能查商品、RAG 模式要能回答文件問題，React 前端要能即時呈現串流回覆。',
+                '如果這裡驗證不過，通常表示前面某一層責任邊界還沒有真正理解。'
+              ],
+              image: 'assets/teaching-site/00-course-overview.png',
+              imageAlt: '兩天課程總覽圖',
+              imageCaption: '這一章的任務，是把前面所有零件組成完整系統。'
+            },
+            {
+              title: 'Day 1 / Day 2 學習路徑回顧',
+              type: 'text',
+              paragraphs: [
+                'Day 1 解決的是「一個可維護的後端長什麼樣」：REST 分層、資料庫容器化與遷移、JPA 持久化，再用 API 文件、例外處理、Log、AOP 與 Security 補齊工程品質。',
+                'Day 2 解決的是「如何把 AI 與前端接回同一個應用」：ChatClient 對話、工具呼叫、RAG 知識檢索、MCP 與 Skills 擴充，最後以 React 完成 SSE 串流介面與對話歷史長期記憶。'
+              ],
+              bullets: [
+                'Day 1：環境 → REST → Docker/Flyway → JPA → API 文件 → 例外 → Log → AOP → Security',
+                'Day 2：ChatClient → 工具呼叫 → RAG → MCP 與 Skills → React 入門 → SSE 聊天室 → 對話歷史 RAG → 總結',
+                '前後端合起來，正是一個完整應用所需的全端開發路徑'
+              ]
+            },
+            {
+              title: '環境啟動指令（後端）',
+              type: 'code',
+              paragraphs: [
+                '這裡是整套課程的總驗證，因此不只要給啟動命令，也要讓學員知道最低前置條件是否已滿足。'
+              ],
+              bullets: [
+                '最低需求：資料庫容器已啟動',
+                '最低需求：`.env` 中已提供可用 API Key',
+                '最低需求：JDK 21 與 Maven 3.9+ 已完成版本驗證'
+              ],
+              code: {
+                language: 'powershell',
+                title: '啟動資料庫與後端應用',
+                content: 'docker-compose up -d\nGet-Content .env | ForEach-Object { $line = $_.Trim(); if ($line -and !$line.StartsWith(\"#\") -and $line.Contains(\"=\")) { $key, $value = $line -split \"=\", 2; Set-Item -Path \"env:$($key.Trim())\" -Value $value.Trim() } }\nmvn spring-boot:run'
+              }
+            },
+            {
+              title: '環境啟動指令（React 前端）',
+              type: 'code',
+              paragraphs: [
+                '後端就緒後，另開終端機啟動 React 前端，透過 Vite 開發伺服器與 Proxy 代理連回後端 API，驗證 SSE 串流對話介面。'
+              ],
+              code: {
+                language: 'powershell',
+                title: '啟動 React 前端（Vite）',
+                content: 'Set-Location "D:\\GitHub\\learn-spring\\frontend"\nnpm install\nnpm run dev\n# 開啟瀏覽器 http://localhost:5173，登入後測試串流對話'
+              }
+            },
+            {
+              title: 'AI Agent 提示詞 — 完整系統驗證',
+              type: 'code',
+              paragraphs: [
+                '理解驗證流程與啟動步驟後，複製以下提示詞給 AI Agent，讓它幫你逐項驗證兩天課程完成的全端系統，並產出一份驗證報告。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞',
+                content: '請幫我對這個兩天課程完成的全端智慧商城專案做一次完整驗證：\n1. 檢查 docker-compose 的 PostgreSQL（pgvector）容器是否為 Up 狀態。\n2. 啟動 Spring Boot 後端，確認 Flyway migration 成功套用、應用正常啟動（看到 Started 訊息）。\n3. 逐項測試以下功能並回報結果：\n   - 聊天介面能回答商品價格與庫存（後端日誌看得到工具呼叫紀錄）\n   - RAG 介面能根據上傳的文件回答問題，而不是泛泛常識\n   - React 前端能啟動，並透過 SSE 逐字顯示 AI 串流回覆\n4. 把每一項的測試結果整理成一份 Markdown 驗證報告：標出通過與失敗的項目，失敗的項目請附上可能原因與排查建議。'
+              }
+            },
+            {
+              title: '整體成果驗證清單',
+              type: 'text',
+              bullets: [
+                '資料庫容器正常啟動，`docker ps` 可看到 `pgvector/pgvector:pg18` 為 `Up` 狀態',
+                'Spring Boot 啟動日誌包含 Flyway 成功驗證與應用啟動完成訊息',
+                '聊天 Demo 可正確回答商品價格與庫存，且後端可看到工具呼叫紀錄',
+                'RAG 模式可根據上傳文件回答，不是只輸出泛泛知識',
+                'React 前端可啟動並透過 SSE 即時逐字顯示串流回覆',
+                '完成以上五項，才算這套課程真正落地成一個可驗證的全端智慧商城客服系統'
+              ]
+            },
+            {
+              title: '常見錯誤與排查',
+              type: 'warning',
+              bullets: [
+                '若聊天模式正常但 RAG 模式失敗，優先回頭檢查向量寫入與檢索流程',
+                '若資料庫與應用都啟動成功，但 Demo 頁面無法互動，先檢查 API 路徑與瀏覽器 console',
+                '若 React 前端無法連到後端 API，先檢查 vite.config.js 的 server.proxy 代理設定',
+                '若 SSE 串流沒有逐字輸出，檢查 EventSource 連線與 JWT Query Token 是否正確帶上',
+                '若只有部分功能可用，不要直接判定整體完成，必須逐項對照驗證清單',
+                '整體驗證要按順序做：資料庫 -> 後端應用 -> 工具呼叫 -> RAG -> 前端串流 -> 延伸能力'
+              ]
+            },
+            {
+              title: '延伸方向',
+              type: 'text',
+              paragraphs: [
+                '完成課程後，最自然的下一步是擴充更多即時資料工具，例如會員等級、折扣規則、訂單查詢，或把更多文件來源導入 RAG。',
+                '前端方面可以延伸對話介面的功能，例如多 session 切換、訊息搜尋與引用來源呈現；如果要往企業情境走，則可以把工具層、MCP 與 Skills 能力拆得更清楚，並加入權限、稽核與多資料來源管理。'
+              ]
             }
           ]
         }
