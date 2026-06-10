@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blu" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="440" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">兩天課程完成的全端智慧商城系統</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">Day 1 打好工程底盤（藍），Day 2 接上 AI 與前端（紫）</text>
+
+  <!-- Frontend -->
+  <rect x="24" y="60" width="200" height="150" rx="10" fill="white" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="24" y="60" width="200" height="32" rx="10" fill="#7c3aed"/>
+  <rect x="24" y="80" width="200" height="12" fill="#7c3aed"/>
+  <text x="124" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">React 前端 :5173</text>
+  <text x="124" y="114" text-anchor="middle" font-size="10" fill="#6d28d9">聊天室（EventSource SSE）</text>
+  <text x="124" y="134" text-anchor="middle" font-size="10" fill="#6d28d9">商品 / 訂單 / 推薦卡片</text>
+  <text x="124" y="154" text-anchor="middle" font-size="10" fill="#6d28d9">毛玻璃 + 骨架屏 UI</text>
+  <text x="124" y="178" text-anchor="middle" font-size="9" fill="#94a3b8">Vite Proxy 代理 /api → 8080</text>
+  <text x="124" y="196" text-anchor="middle" font-size="9" fill="#8b5cf6">Day 2-5 ~ 2-6</text>
+
+  <!-- Backend -->
+  <rect x="284" y="60" width="232" height="320" rx="10" fill="white" stroke="#2563eb" stroke-width="2"/>
+  <rect x="284" y="60" width="232" height="32" rx="10" fill="#2563eb"/>
+  <rect x="284" y="80" width="232" height="12" fill="#2563eb"/>
+  <text x="400" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">Spring Boot 後端 :8080</text>
+
+  <rect x="302" y="102" width="196" height="40" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="400" y="119" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Security + JWT 過濾器</text>
+  <text x="400" y="134" text-anchor="middle" font-size="9" fill="#3b82f6">Header / Query Token 雙通道（Day 1-9）</text>
+
+  <rect x="302" y="150" width="196" height="40" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="400" y="167" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">ChatClient + 對話記憶</text>
+  <text x="400" y="182" text-anchor="middle" font-size="9" fill="#8b5cf6">串流輸出、Advisor 機制（Day 2-1）</text>
+
+  <rect x="302" y="198" width="196" height="40" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="400" y="215" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">@Tool 工具層</text>
+  <text x="400" y="230" text-anchor="middle" font-size="9" fill="#8b5cf6">ProductTools / OrderTools（Day 2-2）</text>
+
+  <rect x="302" y="246" width="196" height="40" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="400" y="263" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">RAG + 雙路檢索</text>
+  <text x="400" y="278" text-anchor="middle" font-size="9" fill="#8b5cf6">知識庫 + 對話歷史（Day 2-3、2-7）</text>
+
+  <rect x="302" y="294" width="196" height="40" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="400" y="311" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Service / Repository 分層</text>
+  <text x="400" y="326" text-anchor="middle" font-size="9" fill="#3b82f6">REST + JPA + 例外 + Log + AOP（Day 1）</text>
+
+  <text x="400" y="362" text-anchor="middle" font-size="9" fill="#94a3b8">MCP Server 可把 @Tool 發布給其他服務（Day 2-4）</text>
+
+  <!-- External AI -->
+  <rect x="576" y="60" width="200" height="130" rx="10" fill="white" stroke="#16a34a" stroke-width="2"/>
+  <rect x="576" y="60" width="200" height="32" rx="10" fill="#16a34a"/>
+  <rect x="576" y="80" width="200" height="12" fill="#16a34a"/>
+  <text x="676" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">外部 AI 服務</text>
+  <text x="676" y="116" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">Groq（Chat 生成）</text>
+  <text x="676" y="134" text-anchor="middle" font-size="9" fill="#16a34a">llama-3.3-70b-versatile</text>
+  <text x="676" y="158" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">Voyage AI（Embedding）</text>
+  <text x="676" y="176" text-anchor="middle" font-size="9" fill="#16a34a">voyage-3-lite 向量化</text>
+
+  <!-- Database -->
+  <ellipse cx="676" cy="262" rx="100" ry="13" fill="#0e7490"/>
+  <rect x="576" y="262" width="200" height="92" fill="#0e7490"/>
+  <ellipse cx="676" cy="354" rx="100" ry="13" fill="#155e75"/>
+  <text x="676" y="292" text-anchor="middle" font-size="11" font-weight="700" fill="white">PostgreSQL + pgvector</text>
+  <text x="676" y="312" text-anchor="middle" font-size="9" fill="#cffafe">商品表 / 訂單表（Flyway 管理）</text>
+  <text x="676" y="330" text-anchor="middle" font-size="9" fill="#cffafe">vector_store（知識 + 對話歷史）</text>
+  <text x="676" y="348" text-anchor="middle" font-size="9" fill="#cffafe">Docker 容器化（Day 1-3）</text>
+
+  <!-- arrows -->
+  <line x1="224" y1="120" x2="284" y2="120" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  <text x="254" y="112" text-anchor="middle" font-size="9" fill="#1d4ed8">SSE</text>
+  <line x1="284" y1="160" x2="224" y2="160" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr)"/>
+  <text x="254" y="178" text-anchor="middle" font-size="9" fill="#64748b">逐字推播</text>
+
+  <line x1="516" y1="130" x2="576" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="546" y="122" text-anchor="middle" font-size="9" fill="#475569">API 呼叫</text>
+  <line x1="516" y1="300" x2="576" y2="300" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="546" y="292" text-anchor="middle" font-size="9" fill="#475569">JPA / 向量</text>
+
+  <text x="400" y="416" text-anchor="middle" font-size="10" fill="#94a3b8">總驗證順序：資料庫 → 後端啟動 → 工具呼叫 → RAG → 前端串流，五項全過才算系統落地</text>
+</svg>

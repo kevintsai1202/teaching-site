@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blu" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-grn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="420" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">EventSource 串流 + JWT 認證流程</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">EventSource 無法自訂 Header，所以 Token 改走網址 Query 參數</text>
+
+  <!-- React side -->
+  <rect x="24" y="64" width="300" height="222" rx="10" fill="white" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="24" y="64" width="300" height="32" rx="10" fill="#7c3aed"/>
+  <rect x="24" y="84" width="300" height="12" fill="#7c3aed"/>
+  <text x="174" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="white">React 前端（ChatRoom.jsx）</text>
+
+  <rect x="44" y="110" width="260" height="44" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="174" y="128" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">① localStorage 取出登入時存的 JWT</text>
+  <text x="174" y="145" text-anchor="middle" font-size="9" fill="#8b5cf6">const token = localStorage.getItem('token')</text>
+
+  <rect x="44" y="166" width="260" height="58" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="174" y="185" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">② 建立 EventSource，Token 帶在網址</text>
+  <text x="174" y="202" text-anchor="middle" font-size="9" fill="#8b5cf6">/api/ai/stream?message=...&amp;token=eyJh...</text>
+  <text x="174" y="217" text-anchor="middle" font-size="9" fill="#b91c1c">✕ 無法寫 Authorization Header</text>
+
+  <rect x="44" y="236" width="260" height="38" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="174" y="252" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">⑤ onmessage 逐字追加到對話泡泡</text>
+  <text x="174" y="267" text-anchor="middle" font-size="9" fill="#3b82f6">打字機效果 + 自動滾動到底部</text>
+
+  <!-- Backend side -->
+  <rect x="476" y="64" width="300" height="222" rx="10" fill="white" stroke="#2563eb" stroke-width="2"/>
+  <rect x="476" y="64" width="300" height="32" rx="10" fill="#2563eb"/>
+  <rect x="476" y="84" width="300" height="12" fill="#2563eb"/>
+  <text x="626" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="white">Spring Boot 後端</text>
+
+  <rect x="496" y="110" width="260" height="76" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="626" y="128" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">③ JwtAuthenticationFilter.parseJwt()</text>
+  <text x="626" y="146" text-anchor="middle" font-size="9" fill="#3b82f6">先看 Authorization Header → 沒有</text>
+  <text x="626" y="162" text-anchor="middle" font-size="9" fill="#16a34a">再看 Query 參數 token → 找到 ✓ 驗證通過</text>
+  <text x="626" y="178" text-anchor="middle" font-size="9" fill="#94a3b8">（Day 1-9 過濾器的漸進式升級）</text>
+
+  <rect x="496" y="198" width="260" height="76" rx="6" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="626" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">④ ChatClient.stream() 開始生成</text>
+  <text x="626" y="236" text-anchor="middle" font-size="9" fill="#16a34a">Flux&lt;String&gt; 持續推送字元片段</text>
+  <text x="626" y="252" text-anchor="middle" font-size="9" fill="#16a34a">Content-Type: text/event-stream</text>
+
+  <!-- arrows between -->
+  <line x1="324" y1="150" x2="476" y2="150" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  <text x="400" y="142" text-anchor="middle" font-size="10" fill="#1d4ed8">GET（SSE 連線）</text>
+  <line x1="476" y1="240" x2="324" y2="240" stroke="#16a34a" stroke-width="2" marker-end="url(#arr-grn)"/>
+  <text x="400" y="232" text-anchor="middle" font-size="10" fill="#15803d">data: 字元片段（持續推播）</text>
+
+  <!-- bottom comparison -->
+  <rect x="24" y="306" width="368" height="96" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="208" y="330" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">SSE（本課程採用）</text>
+  <text x="208" y="350" text-anchor="middle" font-size="10" fill="#475569">單向推送、基於標準 HTTP、自動斷線重連</text>
+  <text x="208" y="368" text-anchor="middle" font-size="10" fill="#475569">瀏覽器內建 EventSource，零依賴</text>
+  <text x="208" y="388" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="700">✓ 最適合 AI 逐字生成的單向場景</text>
+
+  <rect x="408" y="306" width="368" height="96" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="592" y="330" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">WebSockets</text>
+  <text x="592" y="350" text-anchor="middle" font-size="10" fill="#475569">雙向通道、獨立協定、需自行處理重連</text>
+  <text x="592" y="368" text-anchor="middle" font-size="10" fill="#475569">適合多人協作、即時遊戲等雙向場景</text>
+  <text x="592" y="388" text-anchor="middle" font-size="10" fill="#b45309" font-weight="700">△ 對單向串流而言過重</text>
+</svg>

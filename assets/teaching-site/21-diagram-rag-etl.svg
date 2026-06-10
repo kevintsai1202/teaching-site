@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="400" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">RAG 文件入庫的 ETL 三步驟</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">Extract 讀取 → Transform 切分 → Load 向量化寫入 pgvector</text>
+
+  <!-- Stage 1: Extract -->
+  <rect x="20" y="60" width="232" height="240" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <rect x="20" y="60" width="232" height="34" rx="8" fill="#0f172a"/>
+  <rect x="20" y="80" width="232" height="14" fill="#0f172a"/>
+  <text x="136" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">① Extract 讀取</text>
+
+  <rect x="56" y="116" width="160" height="100" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="136" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">📄 faq.txt</text>
+  <line x1="70" y1="156" x2="202" y2="156" stroke="#cbd5e1"/>
+  <line x1="70" y1="172" x2="202" y2="172" stroke="#cbd5e1"/>
+  <line x1="70" y1="188" x2="180" y2="188" stroke="#cbd5e1"/>
+  <text x="136" y="208" text-anchor="middle" font-size="9" fill="#94a3b8">退貨政策、運費規則…</text>
+
+  <text x="136" y="244" text-anchor="middle" font-size="10" fill="#475569">TextReader 讀取檔案</text>
+  <text x="136" y="262" text-anchor="middle" font-size="10" fill="#475569">封裝成 Document 物件</text>
+
+  <!-- Stage 2: Transform -->
+  <rect x="284" y="60" width="232" height="240" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <rect x="284" y="60" width="232" height="34" rx="8" fill="#7c3aed"/>
+  <rect x="284" y="80" width="232" height="14" fill="#7c3aed"/>
+  <text x="400" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">② Transform 切分</text>
+
+  <!-- chunks with overlap -->
+  <rect x="312" y="116" width="176" height="30" rx="5" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="400" y="135" text-anchor="middle" font-size="10" fill="#6d28d9">Chunk 1（~800 tokens）</text>
+  <rect x="312" y="158" width="176" height="30" rx="5" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="400" y="177" text-anchor="middle" font-size="10" fill="#6d28d9">Chunk 2（~800 tokens）</text>
+  <rect x="312" y="200" width="176" height="30" rx="5" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="400" y="219" text-anchor="middle" font-size="10" fill="#6d28d9">Chunk 3（~800 tokens）</text>
+
+  <!-- overlap indicators -->
+  <rect x="312" y="146" width="176" height="12" fill="#7c3aed" opacity="0.18"/>
+  <rect x="312" y="188" width="176" height="12" fill="#7c3aed" opacity="0.18"/>
+  <text x="498" y="156" font-size="9" fill="#7c3aed">↕ 重疊</text>
+  <text x="498" y="198" font-size="9" fill="#7c3aed">↕ 重疊</text>
+
+  <text x="400" y="252" text-anchor="middle" font-size="10" fill="#475569">TokenTextSplitter 切成小塊</text>
+  <text x="400" y="268" text-anchor="middle" font-size="10" fill="#475569">相鄰塊重疊，防止語意被切斷</text>
+  <text x="400" y="286" text-anchor="middle" font-size="9" fill="#94a3b8">每塊語意聚焦，檢索才會精準</text>
+
+  <!-- Stage 3: Load -->
+  <rect x="548" y="60" width="232" height="240" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <rect x="548" y="60" width="232" height="34" rx="8" fill="#0e7490"/>
+  <rect x="548" y="80" width="232" height="14" fill="#0e7490"/>
+  <text x="664" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">③ Load 向量化寫入</text>
+
+  <rect x="576" y="112" width="176" height="48" rx="6" fill="#ecfeff" stroke="#a5f3fc"/>
+  <text x="664" y="132" text-anchor="middle" font-size="10" font-weight="700" fill="#0e7490">EmbeddingModel</text>
+  <text x="664" y="148" text-anchor="middle" font-size="9" fill="#0e7490">文字 → [0.12, -0.83, 0.45, …]</text>
+
+  <line x1="664" y1="160" x2="664" y2="180" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- db cylinder -->
+  <ellipse cx="664" cy="196" rx="74" ry="12" fill="#0e7490"/>
+  <rect x="590" y="196" width="148" height="64" fill="#0e7490"/>
+  <ellipse cx="664" cy="260" rx="74" ry="12" fill="#155e75"/>
+  <text x="664" y="226" text-anchor="middle" font-size="11" font-weight="700" fill="white">PostgreSQL</text>
+  <text x="664" y="242" text-anchor="middle" font-size="10" fill="#cffafe">pgvector：vector_store 表</text>
+
+  <text x="664" y="288" text-anchor="middle" font-size="10" fill="#475569">vectorStore.accept(chunks)</text>
+
+  <!-- arrows between stages -->
+  <line x1="252" y1="180" x2="284" y2="180" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="516" y1="180" x2="548" y2="180" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- bottom note -->
+  <rect x="20" y="318" width="760" height="62" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="400" y="344" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">查詢時走反向流程：問題 → 向量化 → 相似度搜尋出最相關的 Chunks → 連同問題一起交給模型回答</text>
+  <text x="400" y="364" text-anchor="middle" font-size="10" fill="#3b82f6">這就是「開卷考試」：模型先翻到相關頁面，再根據內容作答（QuestionAnswerAdvisor 自動完成）</text>
+</svg>

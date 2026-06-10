@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-pur" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7c3aed"/>
+    </marker>
+    <marker id="arr-grn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="420" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">工具呼叫（Tool Calling）五步驟時序</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">模型自己不執行程式，而是決定「何時」與「用什麼參數」呼叫工具</text>
+
+  <!-- Lane headers -->
+  <rect x="30" y="58" width="120" height="32" rx="6" fill="#0f172a"/>
+  <text x="90" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="white">使用者</text>
+  <rect x="230" y="58" width="150" height="32" rx="6" fill="#7c3aed"/>
+  <text x="305" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="white">ChatClient + 模型</text>
+  <rect x="450" y="58" width="150" height="32" rx="6" fill="#2563eb"/>
+  <text x="525" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="white">@Tool 工具方法</text>
+  <rect x="660" y="58" width="120" height="32" rx="6" fill="#0e7490"/>
+  <text x="720" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="white">PostgreSQL</text>
+
+  <!-- Lifelines -->
+  <line x1="90" y1="90" x2="90" y2="390" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="305" y1="90" x2="305" y2="390" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="525" y1="90" x2="525" y2="390" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="720" y1="90" x2="720" y2="390" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Step 1 -->
+  <circle cx="110" cy="118" r="9" fill="#0f172a"/>
+  <text x="110" y="122" text-anchor="middle" font-size="10" font-weight="700" fill="white">1</text>
+  <line x1="90" y1="118" x2="305" y2="118" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="200" y="110" text-anchor="middle" font-size="10" fill="#475569">「無線耳機 Pro 庫存多少？」</text>
+
+  <!-- Step 2: model decision -->
+  <circle cx="325" cy="158" r="9" fill="#7c3aed"/>
+  <text x="325" y="162" text-anchor="middle" font-size="10" font-weight="700" fill="white">2</text>
+  <rect x="180" y="142" width="250" height="56" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="305" y="162" text-anchor="middle" font-size="10" fill="#6d28d9" font-weight="700">模型比對工具的 description</text>
+  <text x="305" y="178" text-anchor="middle" font-size="10" fill="#6d28d9">決定呼叫 getProductDetail(id=2)</text>
+  <text x="305" y="192" text-anchor="middle" font-size="9" fill="#8b5cf6">（模型只輸出「指令」，不執行程式）</text>
+
+  <!-- Step 3 -->
+  <circle cx="415" cy="226" r="9" fill="#2563eb"/>
+  <text x="415" y="230" text-anchor="middle" font-size="10" font-weight="700" fill="white">3</text>
+  <line x1="305" y1="226" x2="525" y2="226" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arr-pur)"/>
+  <text x="415" y="218" text-anchor="middle" font-size="10" fill="#6d28d9">Spring AI 攔截指令，執行對應 Java 方法</text>
+
+  <line x1="525" y1="254" x2="720" y2="254" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="622" y="246" text-anchor="middle" font-size="10" fill="#475569">SELECT 庫存、價格</text>
+
+  <!-- Step 4 -->
+  <circle cx="620" cy="290" r="9" fill="#0e7490"/>
+  <text x="620" y="294" text-anchor="middle" font-size="10" font-weight="700" fill="white">4</text>
+  <line x1="720" y1="290" x2="525" y2="290" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="622" y="282" text-anchor="middle" font-size="10" fill="#475569">庫存 120、NT$2,999</text>
+  <line x1="525" y1="318" x2="305" y2="318" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arr-pur)"/>
+  <text x="415" y="310" text-anchor="middle" font-size="10" fill="#1d4ed8">工具執行結果回傳給模型</text>
+
+  <!-- Step 5 -->
+  <circle cx="110" cy="356" r="9" fill="#16a34a"/>
+  <text x="110" y="360" text-anchor="middle" font-size="10" font-weight="700" fill="white">5</text>
+  <line x1="305" y1="356" x2="90" y2="356" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-grn)"/>
+  <text x="200" y="348" text-anchor="middle" font-size="10" fill="#15803d">「無線耳機 Pro 目前庫存 120 件」</text>
+
+  <text x="400" y="408" text-anchor="middle" font-size="10" fill="#94a3b8">驗證重點：後端日誌要看得到步驟 3 的工具呼叫紀錄，回答要包含資料庫的即時數字</text>
+</svg>

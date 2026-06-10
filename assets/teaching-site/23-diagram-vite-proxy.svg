@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blu" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="400" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Vite Proxy：前後端分離開發的 CORS 解法</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">瀏覽器只跟 5173 講話，跨網域的事交給 Vite 開發伺服器代理轉發</text>
+
+  <!-- Browser -->
+  <rect x="30" y="100" width="180" height="130" rx="10" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
+  <rect x="30" y="100" width="180" height="30" rx="10" fill="#0f172a"/>
+  <rect x="30" y="118" width="180" height="12" fill="#0f172a"/>
+  <text x="120" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="white">瀏覽器</text>
+  <circle cx="50" cy="115" r="4" fill="#f87171"/>
+  <circle cx="64" cy="115" r="4" fill="#fbbf24"/>
+  <circle cx="78" cy="115" r="4" fill="#34d399"/>
+  <text x="120" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">React 聊天室頁面</text>
+  <text x="120" y="178" text-anchor="middle" font-size="10" fill="#64748b">fetch('/api/products')</text>
+  <text x="120" y="196" text-anchor="middle" font-size="10" fill="#64748b">只寫相對路徑</text>
+  <text x="120" y="216" text-anchor="middle" font-size="9" fill="#94a3b8">來源：localhost:5173</text>
+
+  <!-- Vite -->
+  <rect x="310" y="100" width="200" height="130" rx="10" fill="white" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="310" y="100" width="200" height="30" rx="10" fill="#7c3aed"/>
+  <rect x="310" y="118" width="200" height="12" fill="#7c3aed"/>
+  <text x="410" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="white">Vite 開發伺服器 :5173</text>
+  <text x="410" y="156" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">server.proxy 規則</text>
+  <rect x="328" y="168" width="164" height="46" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="410" y="187" text-anchor="middle" font-size="10" fill="#6d28d9">'/api' 開頭的請求</text>
+  <text x="410" y="204" text-anchor="middle" font-size="10" fill="#6d28d9">→ 轉發到 localhost:8080</text>
+
+  <!-- Spring Boot -->
+  <rect x="610" y="100" width="170" height="130" rx="10" fill="white" stroke="#2563eb" stroke-width="2"/>
+  <rect x="610" y="100" width="170" height="30" rx="10" fill="#2563eb"/>
+  <rect x="610" y="118" width="170" height="12" fill="#2563eb"/>
+  <text x="695" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="white">Spring Boot :8080</text>
+  <text x="695" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">REST API</text>
+  <text x="695" y="178" text-anchor="middle" font-size="10" fill="#3b82f6">/api/products</text>
+  <text x="695" y="196" text-anchor="middle" font-size="10" fill="#3b82f6">/api/ai/stream（SSE）</text>
+  <text x="695" y="216" text-anchor="middle" font-size="9" fill="#94a3b8">不需設定 CORS</text>
+
+  <!-- proxy path arrows -->
+  <line x1="210" y1="150" x2="310" y2="150" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  <text x="260" y="142" text-anchor="middle" font-size="10" fill="#1d4ed8">同源請求 ✓</text>
+  <line x1="510" y1="150" x2="610" y2="150" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  <text x="560" y="142" text-anchor="middle" font-size="10" fill="#1d4ed8">伺服器間轉發</text>
+  <line x1="610" y1="190" x2="510" y2="190" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr)"/>
+  <line x1="310" y1="190" x2="210" y2="190" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr)"/>
+  <text x="410" y="246" text-anchor="middle" font-size="9" fill="#94a3b8">回應沿原路返回（瀏覽器全程以為在跟 5173 對話）</text>
+
+  <!-- blocked direct path -->
+  <path d="M 120 230 Q 130 320 400 320 Q 670 320 695 230" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7,5" marker-end="url(#arr-red)"/>
+  <rect x="300" y="296" width="200" height="46" rx="8" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="400" y="316" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">✕ 直接跨網域請求</text>
+  <text x="400" y="333" text-anchor="middle" font-size="10" fill="#dc2626">被同源政策（CORS）阻擋</text>
+
+  <text x="400" y="376" text-anchor="middle" font-size="10" fill="#94a3b8">5173 ≠ 8080 即視為不同來源；開發環境用 Proxy 繞過，正式環境通常由反向代理或同網域部署解決</text>
+</svg>

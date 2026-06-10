@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 430" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blu" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-pur" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#7c3aed"/>
+    </marker>
+    <marker id="arr-amb" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#d97706"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="430" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">雙路 RAG 檢索 + 對話歷史非同步寫入</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">提問時同時查「商品知識」與「個人歷史」；對話結束後才非同步存檔，不阻塞串流</text>
+
+  <!-- Question -->
+  <rect x="40" y="64" width="200" height="52" rx="8" fill="#0f172a"/>
+  <text x="140" y="86" text-anchor="middle" font-size="11" font-weight="700" fill="white">使用者提問</text>
+  <text x="140" y="104" text-anchor="middle" font-size="9" fill="#cbd5e1">「根據我之前說的需求推薦商品」</text>
+
+  <!-- Route 1 -->
+  <rect x="40" y="160" width="300" height="92" rx="8" fill="white" stroke="#2563eb" stroke-width="2"/>
+  <rect x="40" y="160" width="300" height="30" rx="8" fill="#2563eb"/>
+  <rect x="40" y="178" width="300" height="12" fill="#2563eb"/>
+  <text x="190" y="180" text-anchor="middle" font-size="11" font-weight="700" fill="white">第一路：商品知識檢索</text>
+  <text x="190" y="212" text-anchor="middle" font-size="10" fill="#1d4ed8">filterExpression: type == 'product_doc'</text>
+  <text x="190" y="232" text-anchor="middle" font-size="10" fill="#3b82f6">取相似度最高的 3 筆（topK = 3）</text>
+
+  <!-- Route 2 -->
+  <rect x="40" y="270" width="300" height="92" rx="8" fill="white" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="40" y="270" width="300" height="30" rx="8" fill="#7c3aed"/>
+  <rect x="40" y="288" width="300" height="12" fill="#7c3aed"/>
+  <text x="190" y="290" text-anchor="middle" font-size="11" font-weight="700" fill="white">第二路：個人對話歷史檢索</text>
+  <text x="190" y="320" text-anchor="middle" font-size="9" fill="#6d28d9">type == 'chat_history' &amp;&amp; sessionId == '我的'</text>
+  <text x="190" y="338" text-anchor="middle" font-size="10" fill="#8b5cf6">取 2 筆（topK = 2），sessionId 隔離隱私</text>
+
+  <!-- pgvector -->
+  <ellipse cx="190" cy="396" rx="120" ry="11" fill="#0e7490"/>
+  <rect x="70" y="386" width="240" height="11" fill="#0e7490"/>
+  <text x="190" y="400" text-anchor="middle" font-size="10" font-weight="700" fill="white">PostgreSQL pgvector（同一張向量表）</text>
+
+  <!-- Merge -->
+  <rect x="430" y="220" width="160" height="86" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+  <text x="510" y="248" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">合併 Context</text>
+  <text x="510" y="268" text-anchor="middle" font-size="10" fill="#d97706">3 筆商品知識</text>
+  <text x="510" y="285" text-anchor="middle" font-size="10" fill="#d97706">+ 2 筆個人記憶</text>
+
+  <!-- LLM -->
+  <rect x="650" y="200" width="130" height="126" rx="10" fill="white" stroke="#16a34a" stroke-width="2"/>
+  <rect x="650" y="200" width="130" height="30" rx="10" fill="#16a34a"/>
+  <rect x="650" y="218" width="130" height="12" fill="#16a34a"/>
+  <text x="715" y="220" text-anchor="middle" font-size="11" font-weight="700" fill="white">大模型</text>
+  <text x="715" y="252" text-anchor="middle" font-size="9" fill="#475569">「您之前提過預算三千</text>
+  <text x="715" y="268" text-anchor="middle" font-size="9" fill="#475569">想要重低音，推薦</text>
+  <text x="715" y="284" text-anchor="middle" font-size="9" fill="#475569">無線耳機 Pro…」</text>
+  <text x="715" y="310" text-anchor="middle" font-size="9" fill="#16a34a" font-weight="700">帶著記憶的精準推薦</text>
+
+  <!-- arrows -->
+  <line x1="140" y1="116" x2="178" y2="160" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  <path d="M 120 116 Q 90 200 80 270" fill="none" stroke="#7c3aed" stroke-width="2" marker-end="url(#arr-pur)"/>
+  <text x="68" y="142" font-size="10" fill="#64748b" font-weight="700">同時並行</text>
+  <line x1="190" y1="252" x2="190" y2="266" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="190" y1="362" x2="190" y2="382" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="340" y1="226" x2="430" y2="246" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  <line x1="340" y1="306" x2="430" y2="282" stroke="#7c3aed" stroke-width="2" marker-end="url(#arr-pur)"/>
+  <line x1="590" y1="262" x2="650" y2="262" stroke="#d97706" stroke-width="2" marker-end="url(#arr-amb)"/>
+
+  <!-- async write-back -->
+  <path d="M 715 326 Q 715 396 330 396" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,5" marker-end="url(#arr)"/>
+  <rect x="430" y="350" width="290" height="40" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="575" y="366" text-anchor="middle" font-size="10" font-weight="700" fill="#475569">串流結束 doOnComplete → CompletableFuture 非同步</text>
+  <text x="575" y="382" text-anchor="middle" font-size="9" fill="#64748b">把這輪問答向量化寫回（不阻塞 SSE 回應）</text>
+
+  <text x="510" y="120" text-anchor="middle" font-size="10" fill="#94a3b8">短期記憶（ChatMemory）記最近幾句；</text>
+  <text x="510" y="138" text-anchor="middle" font-size="10" fill="#94a3b8">長期記憶（History RAG）跨天、跨週仍找得回來</text>
+</svg>

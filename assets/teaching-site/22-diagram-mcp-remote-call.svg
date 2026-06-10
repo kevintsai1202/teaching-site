@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blu" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-grn" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="420" fill="#f8fafc" rx="12"/>
+  <text x="400" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">MCP 跨服務工具呼叫：「有哪些商品？」的完整旅程</text>
+  <text x="400" y="42" text-anchor="middle" font-size="11" fill="#64748b">Day 2-2 寫好的 @Tool 完全不用改，加上依賴就自動發布為 MCP 工具</text>
+
+  <!-- User -->
+  <rect x="20" y="170" width="110" height="60" rx="8" fill="#0f172a"/>
+  <text x="75" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="white">使用者</text>
+  <text x="75" y="214" text-anchor="middle" font-size="9" fill="#cbd5e1">瀏覽器 / curl</text>
+
+  <!-- MCP Client box -->
+  <rect x="190" y="80" width="240" height="250" rx="10" fill="white" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="190" y="80" width="240" height="36" rx="10" fill="#7c3aed"/>
+  <rect x="190" y="102" width="240" height="14" fill="#7c3aed"/>
+  <text x="310" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="white">MCP Client（Port 8081）</text>
+
+  <rect x="210" y="132" width="200" height="50" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="310" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">ChatClient + LLM</text>
+  <text x="310" y="170" text-anchor="middle" font-size="9" fill="#8b5cf6">判斷意圖：需要查商品</text>
+
+  <rect x="210" y="196" width="200" height="50" rx="6" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="310" y="217" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">MCP Client 依賴</text>
+  <text x="310" y="234" text-anchor="middle" font-size="9" fill="#8b5cf6">啟動時自動取回遠端工具清單</text>
+
+  <rect x="210" y="260" width="200" height="50" rx="6" fill="#fafafa" stroke="#e2e8f0"/>
+  <text x="310" y="281" text-anchor="middle" font-size="10" fill="#475569">spring-ai-starter-mcp-client</text>
+  <text x="310" y="298" text-anchor="middle" font-size="9" fill="#94a3b8">SyncMcpToolCallbackProvider</text>
+
+  <!-- MCP Server box -->
+  <rect x="500" y="80" width="280" height="250" rx="10" fill="white" stroke="#2563eb" stroke-width="2"/>
+  <rect x="500" y="80" width="280" height="36" rx="10" fill="#2563eb"/>
+  <rect x="500" y="102" width="280" height="14" fill="#2563eb"/>
+  <text x="640" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="white">MCP Server（Port 8080）</text>
+
+  <rect x="520" y="132" width="240" height="50" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="640" y="153" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">/sse 端點（自動發布）</text>
+  <text x="640" y="170" text-anchor="middle" font-size="9" fill="#3b82f6">spring-ai-starter-mcp-server-webmvc</text>
+
+  <rect x="520" y="196" width="240" height="50" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="640" y="217" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">ProductTools（@Tool 原樣不動）</text>
+  <text x="640" y="234" text-anchor="middle" font-size="9" fill="#3b82f6">getProducts("")</text>
+
+  <!-- db -->
+  <ellipse cx="640" cy="272" rx="70" ry="10" fill="#0e7490"/>
+  <rect x="570" y="272" width="140" height="34" fill="#0e7490"/>
+  <ellipse cx="640" cy="306" rx="70" ry="10" fill="#155e75"/>
+  <text x="640" y="294" text-anchor="middle" font-size="10" font-weight="700" fill="white">PostgreSQL 商品表</text>
+
+  <!-- arrows -->
+  <line x1="130" y1="188" x2="190" y2="158" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="152" y="156" text-anchor="middle" font-size="9" fill="#475569">① GET /api/mcp/chat</text>
+  <text x="152" y="169" text-anchor="middle" font-size="9" fill="#475569">?message=有哪些商品</text>
+
+  <text x="310" y="190" text-anchor="middle" font-size="9" fill="#6d28d9">② 交由 LLM 判斷</text>
+
+  <line x1="430" y1="158" x2="500" y2="158" stroke="#2563eb" stroke-width="2" marker-end="url(#arr-blu)"/>
+  <text x="465" y="148" text-anchor="middle" font-size="9" fill="#1d4ed8">③ SSE 連線</text>
+  <text x="465" y="172" text-anchor="middle" font-size="9" fill="#1d4ed8">工具呼叫請求</text>
+
+  <line x1="640" y1="246" x2="640" y2="262" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="700" y="256" text-anchor="middle" font-size="9" fill="#475569">④ 查詢</text>
+
+  <line x1="500" y1="222" x2="430" y2="222" stroke="#16a34a" stroke-width="2" marker-end="url(#arr-grn)"/>
+  <text x="465" y="214" text-anchor="middle" font-size="9" fill="#15803d">⑤ 商品 JSON 回傳</text>
+
+  <line x1="190" y1="290" x2="130" y2="222" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-grn)"/>
+  <text x="142" y="262" text-anchor="middle" font-size="9" fill="#15803d">⑥ 自然語言回答</text>
+
+  <!-- bottom note -->
+  <rect x="20" y="348" width="760" height="56" rx="8" fill="#fffbeb" stroke="#fde68a"/>
+  <text x="400" y="372" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">⚠ Server 與 Client 是兩個獨立服務，要用不同 Port（8080 / 8081），且必須先啟動 Server</text>
+  <text x="400" y="392" text-anchor="middle" font-size="10" fill="#d97706">把取回的遠端工具陣列傳入 .tools()，掛載方式與本地工具完全一致</text>
+</svg>
