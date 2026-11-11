@@ -3,7 +3,7 @@ window.COURSE = {
     title: '新一代全端 AI 開發流程實戰',
     subtitle: '結合 Spring Boot 4 與 React 19，從後端分層、向量資料庫到前端 uiuxpromax 客服介面，完成具備 RAG 長期記憶與 MCP 工具鏈的智慧電商客服系統。',
     audience: '具備 Java 基礎，想建立 Spring Boot 與 AI 應用整合能力的開發者',
-    totalHours: '2 天 × 6 小時',
+    totalHours: '共 12 小時（Day 0 開場導覽 + Day 1 + Day 2）',
     projectName: '智慧商城客服系統',
     heroImage: 'assets/teaching-site/09-home-hero-overview.png',
     overviewImage: 'assets/teaching-site/00-course-overview.png',
@@ -14,7 +14,8 @@ window.COURSE = {
       'Maven 3.9+',
       'Docker Desktop',
       'VS Code 與 Java / Spring 外掛',
-      'Groq API Key 或其他相容模型金鑰'
+      'Groq API Key（免費）或 Meta Muse Spark API Key（成本價）',
+      'Voyage AI API Key（voyage-4 向量 / rerank-3 重排序）'
     ],
     outcomes: [
       '建立 Spring Boot 三層式 REST API 與資料持久化流程',
@@ -24,7 +25,7 @@ window.COURSE = {
     ],
     techStack: [
       'Spring Boot 4.0.0',
-      'Spring AI 2.0.0-M8',
+      'Spring AI 2.0.2',
       'Spring Data JPA',
       'PostgreSQL / pgvector',
       'Flyway',
@@ -57,6 +58,281 @@ window.COURSE = {
   },
   days: [
     {
+      id: 'day0',
+      label: 'Day 0',
+      title: '開場導覽：AI 協作工具與作品展示',
+      lead: '正式寫程式前，先把 AI 助手、長期記憶與版本控制準備好，再看幾個用同一套方法做出來的 AI 應用。',
+      units: [
+        {
+          id: 'd0-u1',
+          chapter: '0-1',
+          title: 'VS Code 的 Claude Code、插件、deep-memory 記憶、Git / gh 與 Playwright',
+          summary: '安裝與管理 Claude Code 插件，用 deep-memory 技能讓 AI 累積經驗、去蕪存菁，越做越好；再用 Git 與 gh 把每一步成果安全地保存與分享。',
+          source: 'docs/Day0-1-ClaudeCode-Memory-Git.md',
+          heroImage: 'assets/teaching-site/14-ch0-1-claude-code-memory-git.png',
+          diagramImage: 'assets/teaching-site/14-ch0-1-claude-code-memory-git.png',
+          diagramCaption: '插件擴充 AI 的能力，記憶讓 AI 記得做過的事，Git 讓每一步都能回頭。',
+          goals: [
+            '認識 Claude Code 的幾種使用方式，安裝並登入 VS Code 的 Claude Code 延伸模組',
+            '會用 /plugin 加入 marketplace、安裝、停用與更新插件',
+            '理解 deep-memory 的冷庫 → 精煉 → 熱庫流程，以及為什麼能讓任務越做越好',
+            '會用 git 建立版本、分支與推送，並用 gh 建立 repo 與 Pull Request',
+            '會用 Playwright 腳本驗證畫面，讓 AI 的「改好了」有實跑證據'
+          ],
+          tasks: [
+            { id: 'd0-u1-t0', text: '在 VS Code 安裝 Claude Code 延伸模組並登入，選取一段程式碼用 Alt+K 引用後提問' },
+            { id: 'd0-u1-t1', text: '用 `/plugin` 安裝一個官方插件（例如 context7），並確認 `/plugin` 清單中已啟用' },
+            { id: 'd0-u1-t2', text: '安裝 deep-memory 技能，完成一次任務後確認 `~/.deep-memory/cold-notes/raw.jsonl` 有新紀錄' },
+            { id: 'd0-u1-t3', text: '執行 `gh auth login` 登入，並用 `gh repo create` 把課程專案推上 GitHub' },
+            { id: 'd0-u1-t4', text: '安裝 Playwright，請 AI 寫一支開網頁並截圖的腳本放進 `e2e/` 並實際執行' }
+          ],
+          sections: [
+            {
+              title: 'Claude Code 的幾種使用方式：本課用 VS Code 延伸模組',
+              type: 'text',
+              paragraphs: [
+                'Claude Code 是會讀專案、改檔案、跑指令、看測試結果再自己修正的 AI 開發助手。同一個 Claude Code 有好幾種入口，帳號、設定（<code>~/.claude/settings.json</code>）、插件與技能都共用：',
+                '<strong>本課程統一使用 VS Code 的 Claude Code 延伸模組</strong>：程式碼、終端機、AI 對話都在同一個視窗，AI 改了哪幾行會直接用 diff 顯示，逐處決定接受或拒絕，最適合邊學邊看懂 AI 做了什麼。',
+                '<a href="assets/vscode/vs-code-extension-interface.jpg" target="_blank"><img src="assets/vscode/vs-code-extension-interface.jpg" alt="VS Code 右側開啟 Claude Code 面板與 Claude 對話" style="width:100%;max-width:760px;border-radius:12px;border:1px solid var(--border);"></a><br><small>VS Code 右側為 Claude Code 面板（圖片來源：Claude Code 官方文件）</small>'
+              ],
+              bullets: [
+                '<strong>VS Code 延伸模組（本課使用）</strong>：圖形化對話面板，支援 diff 審核、@ 引用檔案與選取行、Plan 模式、對話歷史。Cursor 等 VS Code 分支也能裝。',
+                '<strong>終端機 CLI</strong>：在任何終端機輸入 <code>claude</code>，適合 SSH 遠端主機與自動化腳本；需另外安裝 CLI（延伸模組不會把 <code>claude</code> 加進 PATH）。',
+                '<strong>JetBrains 外掛</strong>：IntelliJ IDEA 等 IDE 的整合，習慣 IntelliJ 寫 Java 的人可用。',
+                '<strong>桌面 App 與網頁版</strong>：claude.ai/code 在雲端執行，不必開電腦；雲端對話也能在 VS Code 接續。'
+              ]
+            },
+            {
+              title: '安裝與使用 VS Code 的 Claude Code 延伸模組',
+              type: 'text',
+              paragraphs: [
+                '需求：VS Code 1.94 以上，以及 Claude 付費訂閱（Pro / Max / Team / Enterprise）或 Claude Console 帳號，不需要自己填 API Key。',
+                '<a href="assets/vscode/vs-code-editor-icon.png" target="_blank"><img src="assets/vscode/vs-code-editor-icon.png" alt="編輯器右上角的 Spark 圖示" style="width:100%;max-width:760px;border-radius:12px;border:1px solid var(--border);"></a><br><small>開啟任一檔案後，編輯器右上角的 Spark 圖示可開啟 Claude Code</small>',
+                '<a href="assets/vscode/vs-code-send-prompt.png" target="_blank"><img src="assets/vscode/vs-code-send-prompt.png" alt="選取程式碼後用 @ 引用並提問" style="width:100%;max-width:760px;border-radius:12px;border:1px solid var(--border);"></a><br><small>選取第 2～3 行後提問，面板自動帶入 @檔名#行號 引用</small>',
+                '<a href="assets/vscode/vs-code-edits.png" target="_blank"><img src="assets/vscode/vs-code-edits.png" alt="Claude 提出修改的 diff 與權限詢問" style="width:100%;max-width:760px;border-radius:12px;border:1px solid var(--border);"></a><br><small>AI 要改檔時先顯示 diff，按接受才會寫入</small>'
+              ],
+              bullets: [
+                '安裝：按 <kbd>Ctrl+Shift+X</kbd> 開延伸模組，搜尋「Claude Code」（發行者 Anthropic）按 Install；找不到就重新載入視窗。',
+                '開啟面板：點編輯器右上角的 Spark 圖示、左側活動列，或狀態列的「✻ Claude Code」。',
+                '登入：按 Sign in，在瀏覽器完成授權。',
+                '提問時按 <kbd>Alt+K</kbd> 插入目前選取範圍的 @ 引用（例如 <code>@ChatController.java#20-35</code>），也能用 <code>@terminal</code> 引用終端機輸出。',
+                '權限模式可在輸入框切換：Manual（每次改檔都問，初學建議）、Edit automatically、Plan（先出計畫給你批註再動手）、Auto。',
+                '課程中所有「AI Agent 提示詞」都貼到這個面板執行；<code>/plugin</code>、<code>/model</code> 等斜線指令也在這裡輸入。'
+              ]
+            },
+            {
+              title: 'Claude Code 是什麼，插件又是什麼',
+              type: 'text',
+              paragraphs: [
+                '整門課的「AI Agent 提示詞」都交給 VS Code 裡的 Claude Code 執行。',
+                '<strong>插件（Plugin）</strong>是把一組能力打包好的擴充套件，裡面可以有<strong>技能（Skills）</strong>、斜線指令、子代理（Agents）、Hooks 與 MCP 伺服器。插件從 <strong>Marketplace</strong>（通常是一個 GitHub repo）安裝，就像手機從 App Store 裝 App。'
+              ]
+            },
+            {
+              title: '插件的常用操作',
+              type: 'code',
+              paragraphs: [
+                '以下指令都在 Claude Code 的對話框輸入（不是 PowerShell）。直接輸入 <code>/plugin</code> 會開啟互動式管理畫面，可以瀏覽、安裝、啟用或停用。'
+              ],
+              bullets: [
+                '插件裝在使用者層級，所有專案共用；技能也可以手動放在 <code>~/.claude/skills/&lt;技能名&gt;/SKILL.md</code>。',
+                '課程推薦：<code>context7</code>（查最新框架文件）、<code>code-review</code>（審查程式）、<code>commit-commands</code>（產生 commit）、<code>document-skills</code>（產生 Word / PPT / PDF）。',
+                '只裝信任來源的插件：插件可以執行指令與連線外部服務，安裝前先看它的 repo。'
+              ],
+              code: {
+                language: 'text',
+                title: 'Claude Code 對話框 — 插件管理',
+                content: '# 加入 Marketplace（GitHub repo 格式：擁有者/倉庫）\n/plugin marketplace add anthropics/claude-plugins-official\n\n# 安裝插件：插件名稱@marketplace 名稱\n/plugin install context7@claude-plugins-official\n\n# 開啟互動管理畫面：瀏覽、啟用、停用、移除\n/plugin\n\n# 更新 marketplace 的插件清單\n/plugin marketplace update claude-plugins-official\n\n# 也可以用 Skills CLI 從 GitHub 直接安裝技能包（PowerShell 執行）\n# npx skills add kevintsai1202/law-powers -g --all'
+              }
+            },
+            {
+              title: 'deep-memory：讓 AI 有長期記憶',
+              type: 'text',
+              paragraphs: [
+                'Claude Code 每開一個新對話就會忘記上一次學到的事：上週踩過的坑、某個指令的正確參數、你偏好的寫法。<strong>deep-memory</strong> 技能把這些經驗存到本機 <code>~/.deep-memory</code>，下次開工時自動找出相關的紀錄帶進對話。',
+                '它採<strong>冷熱兩層</strong>設計：每個回合結束都先快速寫一筆到<strong>冷庫</strong>（不挑、不判斷，原始紀錄全留）；累積一段時間後，說一聲「幫我精煉冷庫」，AI 會把重複的合併、過時的淘汰、真正有用的整理成<strong>熱庫</strong>的知識條目（<code>knowledge-base/</code>）與技能經驗（<code>experience/</code>）。'
+              ],
+              bullets: [
+                '<strong>冷庫</strong> <code>cold-notes/raw.jsonl</code>：每回合自動寫入，什麼都記，事後才篩。',
+                '<strong>熱庫</strong> <code>knowledge-base/*.md</code>、<code>experience/skill-*.md</code>：精煉後的結論，經你確認才寫入。',
+                '<strong>檢索</strong>：先用關鍵字比對熱庫分類，比不到再用 ChromaDB 向量＋關鍵字混合搜尋（就是 Day 2 教的 RAG）。',
+                '<strong>備份</strong>：記憶可以推到自己的 GitHub 私有 repo，換電腦也帶得走。',
+                '介紹與文件：[deep-memory 官方網站](https://kevintsai1202.github.io/deep-memory/) · [GitHub](https://github.com/kevintsai1202/deep-memory)'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell — 安裝 deep-memory 技能',
+                content: '# 以 Skills CLI 安裝到使用者層級（所有專案共用）\nnpx skills add kevintsai1202/deep-memory --all -g\n\n# 安裝後重開 Claude Code，第一次觸發時會提示安裝種子知識庫\n# 記憶資料預設存放在 ~/.deep-memory（純本機、可離線）'
+              }
+            },
+            {
+              title: '為什麼記憶會讓任務越做越好：去蕪存菁',
+              type: 'text',
+              paragraphs: [
+                '記憶不是越多越好。全部塞給 AI 只會讓它分心，所以 deep-memory 的重點在<strong>精煉</strong>：把一百筆零散紀錄濃縮成十條可以直接照做的經驗，錯的刪掉、過時的更新、重複的合併。',
+                '這形成一個正向循環：做任務 → 記下踩的坑與解法 → 精煉成經驗 → 下次同類任務一開始就載入 → 少走冤枉路 → 再記下新的發現。用得越久，AI 越懂你的專案、你的環境與你的偏好。'
+              ],
+              bullets: [
+                '實例：某次背景測試因 IDE 的 Java 語言伺服器常駐，被誤判為「測試還在跑」而空等 2 小時。這件事記進經驗後，往後都改看 log 行數有沒有增加，不再誤判。',
+                '實例：本課程網站的深色模式對比、手機版溢出問題修好後，修法寫回設計系統技能，下一個教學網站一開始就不會再犯。',
+                '你的角色：AI 問「要不要寫進熱庫」時，只確認真正值得重用的；這一步的品質決定記憶的品質。'
+              ],
+              code: {
+                language: 'text',
+                title: '常用口令（直接對 Claude Code 說）',
+                content: '幫我精煉冷庫          # 冷庫 → 熱庫，去重、合併、淘汰\n幫我精煉經驗          # 把技能使用心得整理進 experience/\n產生記憶儀表板        # 輸出可離線開啟的記憶視覺化 HTML\n有沒有關於 Flyway 的紀錄  # 主動檢索過去的經驗'
+              }
+            },
+            {
+              title: 'Git：替程式存檔，隨時可以回頭',
+              type: 'code',
+              paragraphs: [
+                'AI 一次可能改十幾個檔，改壞了要能一鍵回到上一個好的狀態。Git 就是程式的存檔系統：每個 <strong>commit</strong> 是一個存檔點，<strong>branch</strong> 讓你在不影響主線的情況下試新做法。',
+                '和 AI 協作的建議節奏：<strong>開新功能先開分支 → AI 改完先跑測試 → 通過才 commit</strong>。這樣 AI 改錯時，最多只損失一個小步驟。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell — Git 日常操作',
+                content: '# 第一次使用：設定身分（1-1 章已做過可略過）\ngit config --global user.name "Your Name"\ngit config --global user.email "you@example.com"\n\n# 建立版本庫並做第一個存檔點\ngit init\ngit add .\ngit commit -m "初始化課程專案"\n\n# 開分支做新功能，完成後合併回主線\ngit switch -c feature/ai-chat\ngit add .\ngit commit -m "新增 AI 對話端點"\ngit switch main\ngit merge feature/ai-chat\n\n# 看歷史、看差異、放棄尚未 commit 的修改\ngit log --oneline -10\ngit diff\ngit restore .'
+              }
+            },
+            {
+              title: 'gh：在終端機操作 GitHub',
+              type: 'code',
+              paragraphs: [
+                '<code>gh</code> 是 GitHub 官方 CLI，讓你不用開瀏覽器就能建 repo、開 Pull Request、看 Issue。Claude Code 也會用 <code>gh</code> 幫你送 PR、讀 review 意見，所以先登入好，AI 才能代勞。'
+              ],
+              bullets: [
+                '安裝：<code>winget install --id GitHub.cli</code>，重開終端機後執行 <code>gh auth login</code>，選 GitHub.com → HTTPS → 用瀏覽器登入。',
+                '<code>.env</code>、API Key 一定要放進 <code>.gitignore</code>；推上公開 repo 的金鑰要立即作廢重發。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell — gh 常用指令',
+                content: '# 登入 GitHub（只需一次）\ngh auth login\n\n# 把目前資料夾建成 GitHub 私有 repo 並推上去\ngh repo create learn-spring-demo --private --source . --push\n\n# 推分支並開 Pull Request\ngit push -u origin feature/ai-chat\ngh pr create --title "新增 AI 對話端點" --body "完成 2-1 章 ChatClient 串流"\n\n# 查看 PR 狀態與 Issue\ngh pr status\ngh issue list'
+              }
+            },
+            {
+              title: 'Playwright：讓 AI 幫你操作瀏覽器、驗證畫面',
+              type: 'text',
+              paragraphs: [
+                'Playwright 是微軟開源的瀏覽器自動化工具，可以用程式開網頁、點按鈕、填表單、截圖、檢查畫面上有沒有出現預期的文字。後端 API 用 PowerShell 就能測，但「商品卡片有沒有出現」「聊天室有沒有逐字顯示」這種畫面上的結果，就要靠 Playwright。',
+                '和 AI 協作時它特別重要：AI 說「改好了」不算數，<strong>讓它寫一支 Playwright 腳本實際跑過、截圖給你看</strong>才算。本課程 2-8 章的完整系統驗證，就是用 Playwright 腳本自動檢查商城展示、商品上架與 AI 客服。'
+              ],
+              bullets: [
+                '<strong>先寫成腳本檔再執行</strong>：不要讓 AI 用一次性的互動指令點來點去。腳本放在專案的 <code>e2e/</code> 或 <code>scripts/</code> 並加中文註解，下次能直接重跑、失敗時能逐行檢查，慢慢就累積成自動化測試。',
+                '<strong>用系統內建 Edge</strong>：<code>chromium.launch({ channel: \'msedge\' })</code> 不必另外下載瀏覽器，公司電腦也比較容易過。',
+                '<strong>錄製產生程式</strong>：<code>npx playwright codegen 網址</code> 會開瀏覽器記錄你的操作並即時產生程式碼，適合拿來給 AI 當起點。',
+                '<strong>給 Claude Code 用</strong>：安裝 <code>chrome-devtools-mcp</code> 插件或 Playwright MCP 後，AI 可以直接開頁面看畫面、讀 console 錯誤，除錯前端時非常好用。'
+              ]
+            },
+            {
+              title: '安裝與第一支 Playwright 腳本',
+              type: 'code',
+              code: {
+                language: 'powershell',
+                title: 'PowerShell 安裝 ＋ e2e/verify-home.mjs 範例',
+                content: '# ── 安裝（在前端專案目錄執行）──\nnpm install -D playwright\n# 若不用系統 Edge，才需要下載 Playwright 自帶的瀏覽器\n# npx playwright install chromium\n\n# ── e2e/verify-home.mjs：驗證商城首頁看得到商品 ──\n// 用途：開啟首頁，確認商品卡片出現並截圖存證\n// 執行：node e2e/verify-home.mjs（先啟動前端 npm run dev）\nimport { chromium } from \'playwright\';\nimport assert from \'node:assert\';\n\nconst browser = await chromium.launch({ channel: \'msedge\' });\nconst page = await browser.newPage();\ntry {\n  await page.goto(\'http://localhost:5173/\', { waitUntil: \'networkidle\' });\n  // 等商品卡片出現，最多 10 秒\n  await page.waitForSelector(\'.product-card\', { timeout: 10000 });\n  const count = await page.locator(\'.product-card\').count();\n  assert.ok(count > 0, \'首頁應至少有一張商品卡片\');\n  await page.screenshot({ path: \'e2e/home.png\', fullPage: true });\n  console.log(`✅ 首頁商品卡片 ${count} 張，截圖已存 e2e/home.png`);\n} finally {\n  await browser.close();\n}\n\n# ── 對 AI 下指令的範例 ──\n# 「請寫一支 Playwright 腳本放在 e2e/，用 user 登入後在聊天視窗問\n#   『無線耳機 Pro 還有多少庫存？』，確認回覆有出現數字並截圖，執行給我看結果。」'
+              }
+            }
+          ]
+        },
+        {
+          id: 'd0-u2',
+          chapter: '0-2',
+          title: 'AI 應用作品展示',
+          summary: '四個用本課程同一套方法（AI 協作開發 + Spring AI / RAG / MCP / 技能）做出來的真實作品，先看終點長什麼樣，再回頭學怎麼做。',
+          source: 'docs/Day0-2-AI-Showcase.md',
+          heroImage: 'assets/teaching-site/15-ch0-2-ai-showcase.png',
+          diagramImage: 'assets/teaching-site/15-ch0-2-ai-showcase.png',
+          diagramCaption: '標案估價、法律檢索、文件解析、影片剪輯——四種場景，背後都是「資料 + 檢索 + 模型 + 工具」。',
+          goals: [
+            '看懂四個作品各自解決什麼問題',
+            '對應出每個作品用到本課程的哪些章節技術',
+            '想好自己要用課程所學做什麼應用'
+          ],
+          tasks: [
+            { id: 'd0-u2-t1', text: '挑一個作品，寫下它用到的課程技術（例如 RAG、工具呼叫、MCP）' },
+            { id: 'd0-u2-t2', text: '寫下一個你自己工作中可以用 AI 解決的情境' }
+          ],
+          sections: [
+            {
+              title: '四個作品一覽',
+              type: 'text',
+              paragraphs: [
+                '這四個專案都由講師用 Claude Code 協作開發，技術棧與本課程高度重疊。看的時候試著回答：資料從哪來？怎麼檢索？模型做了什麼判斷？哪些事交給工具？'
+              ]
+            },
+            {
+              title: '1. AIBidding — AI 智慧標案估價系統',
+              type: 'text',
+              paragraphs: [
+                '投標廠商最花時間的是估價：每個標案有上百個工程項目，要一項一項查過去的成交價。AIBidding 排程抓取政府電子採購網的新標案，用 AI 解析附件中的工程項目清單（XLS / PDF / XML），比對歷史價格資料庫，自動產出整份標案的參考估價，再透過 Email / LINE 主動通知。',
+                '⚠️ 目前為開發中版本，尚未開放外部使用，以下為系統畫面截圖。'
+              ],
+              image: 'assets/teaching-site/16-showcase-aibidding.png',
+              imageAlt: 'AIBidding 入庫標單畫面截圖',
+              imageCaption: '入庫標單：AI 解析後的標案工項，可展開明細並一鍵估價（needs_review 代表需人工複核）。',
+              bullets: [
+                '技術：Spring Boot + Spring AI、PostgreSQL + pgvector、Flyway、React + TypeScript、MinIO、部署在 Zeabur',
+                '對應課程：1-3 Docker / Flyway、1-4 JPA、2-2 工具呼叫、2-3 RAG（品項名稱用向量做同義詞模糊比對）',
+                '亮點：品項名稱五花八門（「PVC 管 4 吋」vs「4\" PVC 管」），用向量相似度而不是字串比對找歷史價格'
+              ]
+            },
+            {
+              title: '2. Law-powers — 台灣法律技能包',
+              type: 'text',
+              paragraphs: [
+                '讓 AI 助手變成可靠的法律研究助理。最大的風險是 AI 編造條文或判決字號，所以技能包的核心是<strong>信任閘門</strong>：AI 必須先透過 MCP 查到法規或判決原文才能回答，所有結論都附條號或裁判字號，查不到就說查不到。'
+              ],
+              bullets: [
+                '技術：純提示詞技能包（Prompt-Only）＋ MCP（台灣法規資料庫、裁判書語意檢索），可裝在 Claude Code、Codex、Gemini 等工具',
+                '對應課程：0-1 插件與技能、2-7 MCP 與 Skills、2-3 RAG（語意判例檢索）',
+                '安裝：<code>npx skills add kevintsai1202/law-powers -g --all</code>',
+                '[法律網（線上使用）](https://law-graph-webmcp.zeabur.app/) · [宣傳網站](https://kevintsai1202.github.io/law-powers/) · [GitHub](https://github.com/kevintsai1202/law-powers)'
+              ]
+            },
+            {
+              title: '3. Docrefinery（文煉）— 進階 RAG：PDF 變結構化資料庫',
+              type: 'text',
+              paragraphs: [
+                '基礎 RAG 把文件切塊丟進向量庫就好，但遇到政府統計表、掃描檔、跨頁表格就失靈。文煉把 PDF / 掃描文件解析成<strong>可查詢的結構化資料</strong>：版面分析抽出文字、表格與圖片，表格正規化後入庫成可以用條件查詢的數據，文字再做向量與全文雙索引，最後以 MCP Tools 對外提供查詢。'
+              ],
+              bullets: [
+                '技術：Spring AI、Docling 版面解析、PostgreSQL + pgvector + trigram 索引、Muse Spark（LLM）、Voyage（向量化）、Jev（分類與重排）、S3 物件儲存',
+                '對應課程：2-1 模型選擇（Muse Spark / Voyage 就是本課用的組合）、2-3 RAG 與 rerank 兩階段檢索、2-7 MCP',
+                '進階技巧：表格切塊只留說明文字、多層檢索、所有 AI 呼叫可稽核、送出前遮罩敏感資料',
+                '[GitHub](https://github.com/kevintsai1202/docrefinery)'
+              ]
+            },
+            {
+              title: '4. SubTutor（字導字演）— 用逐字稿剪輯錄課影片',
+              type: 'text',
+              paragraphs: [
+                '錄課影片的剪輯大多是「刪掉口誤、改錯字、重錄一句」。SubTutor 把影片、逐字稿和字幕放在同一條時間軸上：<strong>刪掉一段文字，對應的畫面和聲音就一起剪掉</strong>。剪輯、音訊處理與輸出都在本機執行，只有語音辨識、校稿、斷句、聲音替換等步驟呼叫 AI 服務。'
+              ],
+              bullets: [
+                '技術：Windows 桌面應用（Tauri）、本機 Python 引擎、ffmpeg、ONNX 人聲分離、雲端 AI 服務（ASR、校稿、TTS 聲音替換）',
+                '功能：逐字時間戳轉錄、AI 校稿逐項審核、降噪與響度修復、用自己的聲音重生成單字、輸出 MP4 / SRT / DaVinci Resolve 時間軸',
+                '對應課程：2-1 模型 API 串接、2-5 串流回應的使用者體驗、把 AI 當成「建議者」而非「決定者」的設計',
+                '[官方網站與下載](https://subtutor.zeabur.app/)'
+              ]
+            },
+            {
+              title: '共通的設計原則',
+              type: 'text',
+              bullets: [
+                '<strong>AI 負責判斷，程式負責執行</strong>：模型只做理解、分類、生成；計算、存檔、剪輯交給確定性的程式碼。',
+                '<strong>先檢索再回答</strong>：估價查歷史價、法律查原文、文件查結構化資料，都是 RAG 的變形。',
+                '<strong>可驗證</strong>：附來源、附字號、可逐項審核，讓使用者能確認 AI 沒有亂講。',
+                '<strong>都是用 AI 協作開發出來的</strong>：Claude Code + 技能 + 記憶，這正是 0-1 章介紹的工作方式。'
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       id: 'day1',
       label: 'Day 1',
       title: 'Spring Boot 核心與資料庫持久化',
@@ -69,7 +345,7 @@ window.COURSE = {
           summary: '驗證 Java / Maven 環境，透過 Spring Initializr 建立課程初始專案，確認可啟動後再進入後續開發。',
           source: 'docs/Day1-1-AI-Coding-Setup.md',
           heroImage: 'assets/teaching-site/01-ch01-dev-environment-ai-collab.png',
-          diagramImage: 'assets/teaching-site/11-diagram-dev-env-workflow.png',
+          diagramImage: 'assets/diagrams/d1-u1.png',
           diagramCaption: 'VS Code、AI 助手、終端機與提示詞共同構成日常開發流程。',
           goals: [
             '透過 AI 提示詞引導安裝 JDK 21、Maven 3.9+ 與 Git',
@@ -284,7 +560,7 @@ window.COURSE = {
           summary: '理解 Spring MVC 的請求流程與 REST API 設計原則，透過 AI Agent 建立一個不依賴資料庫、可立即啟動的商品 API 示範專案，驗證 Controller / Service 分工正確。',
           source: 'docs/Day1-2-SpringBoot-REST.md',
           heroImage: 'assets/teaching-site/02-ch02-springboot-rest-basics.png',
-          diagramImage: 'assets/teaching-site/12-diagram-rest-architecture.png',
+          diagramImage: 'assets/diagrams/spring-mvc-flow.png',
           diagramCaption: 'HTTP 請求由 DispatcherServlet 統一接收，分發給 Controller，再交由 Service 處理。',
           goals: [
             '理解 Spring MVC 的 DispatcherServlet 請求流程',
@@ -418,6 +694,7 @@ window.COURSE = {
               title: 'Controller / Service 怎麼分工',
               type: 'text',
               paragraphs: [
+                '<a href="assets/diagrams/d1-u2-layers.png" target="_blank"><img src="assets/diagrams/d1-u2-layers.png" alt="Controller / Service 兩層流向與下一章三層架構" style="width:100%;max-width:820px;border-radius:12px;border:1px solid var(--border);"></a>',
                 'Controller 負責接 HTTP 請求、處理輸入參數與決定回傳格式；Service 負責業務邏輯與資料操作。這個分工讓兩層各司其職，也讓日後更換資料來源（從 List 換成 JPA、從 JPA 換成其他 ORM）時，Controller 完全不需要改動。',
                 '本章示範專案刻意只保留 Controller 與 Service 兩層，資料直接放在 Service 的 Java List 裡，讓你先把 Spring MVC 的流程跑通。下一章（1-3、1-4）才會在 Service 下方再加一層 Repository 對接真正的資料庫。'
               ],
@@ -445,7 +722,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 建立 Spring MVC 示範專案',
-                content: '【建立專案】\n我有一個 Spring Boot 專案，只有 spring-boot-starter-web 依賴。\n請幫我建立一個簡單的商品 REST API（資料存在記憶體，不用資料庫）：\n- GET /api/products → 回傳全部商品\n- GET /api/products/{id} → 找不到回傳 404\n- POST /api/products → 新增商品，回傳 201\n請加上中文函式級別註解。\n\n【驗證 API】\n專案啟動後（port 8080），請幫我用 PowerShell Invoke-RestMethod 測試上面三個端點是否正常回應。\n\n【排查錯誤】\n執行 mvn spring-boot:run 出現以下錯誤：\n[貼上錯誤訊息]\n請幫我找出原因並修正。'
+                content: '【建立專案】\n我有一個用 Spring Initializr 建立的 Spring Boot 專案（1-1 章），目前只有 Web 依賴（Spring Boot 4 為 spring-boot-starter-webmvc）。\n請幫我建立「智慧商城」的商品 REST API（資料先存在記憶體，不用資料庫）：\n- Product 欄位：id、name（商品名稱）、description（商品說明）、price（價格）、stock（庫存數量）、imageUrl（商品圖片網址）、category（分類）\n- 啟動時先放 3 筆示範商品（例如：無線耳機 Pro、機械鍵盤、行動電源）\n- GET /api/products → 回傳全部商品\n- GET /api/products/{id} → 找不到回傳 404\n- POST /api/products → 新增商品（上架），回傳 201\n- 分成 ProductController 與 ProductService 兩層\n請加上中文函式級別註解。\n\n【驗證 API】\n專案啟動後（port 8080），請幫我用 PowerShell Invoke-RestMethod 測試上面三個端點是否正常回應。\n\n【排查錯誤（遇到錯誤時才使用）】\n執行 mvn spring-boot:run 出現以下錯誤：\n[貼上錯誤訊息]\n請幫我找出原因並修正。'
               }
             },
             {
@@ -585,7 +862,7 @@ window.COURSE = {
           summary: '安裝 Docker Desktop，透過 AI Agent 產生 PostgreSQL 18（含 pgvector）的 docker-compose.yml 與 application.yml，啟動容器後用 Flyway 管理 Schema 演進。',
           source: 'docs/Day1-3-Docker-Flyway.md',
           heroImage: 'assets/teaching-site/03-ch03-docker-postgres-flyway.png',
-          diagramImage: 'assets/teaching-site/13-diagram-flyway-migration.png',
+          diagramImage: 'assets/diagrams/d1-u3.png',
           diagramCaption: 'Docker Desktop 提供容器環境，AI Agent 負責產生設定檔，Flyway 逐版記錄 Schema 變更。',
           goals: [
             '安裝 Docker Desktop 並確認可執行容器',
@@ -596,7 +873,7 @@ window.COURSE = {
           tasks: [
             { id: 'd1-u3-t1', text: '用 AI Agent 安裝 Docker Desktop 並執行 docker run hello-world 驗證' },
             { id: 'd1-u3-t2', text: '用 AI Agent 建立 docker-compose.yml 並啟動 PostgreSQL 18 容器' },
-            { id: 'd1-u3-t3', text: '用 AI Agent 設定 application.yml，執行 mvn spring-boot:run 確認 Flyway 遷移成功' }
+            { id: 'd1-u3-t3', text: '用 AI Agent 設定資料庫連線並建立 V1 商品資料表與 6 筆示範商品，確認 Flyway 遷移成功' }
           ],
           sections: [
             {
@@ -716,7 +993,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 建立 docker-compose.yml',
-                content: '【提示詞 1 — 請 AI Agent 建立並啟動】\n請在我的 Spring Boot 專案根目錄建立 docker-compose.yml，需求如下：\n- 使用 pgvector/pgvector:pg18 映像（PostgreSQL 18 + pgvector 向量擴充）\n- 資料庫名稱：learn_spring\n- 使用者：postgres，密碼：password\n- 本機 5432 埠對應容器 5432 埠\n- 使用具名卷（named volume）讓資料持久化，容器重建後資料不遺失\n- 每個設定項目加上中文註解\n\n建立完成後請幫我執行 docker-compose up -d，\n再執行 docker ps，確認容器狀態為 Up。\n\n【提示詞 2 — 排查容器啟動失敗】\n我執行 docker-compose up -d 後容器狀態不是 Up，\ndocker logs 顯示：\n[貼上錯誤訊息]\n請幫我找出原因並修正。'
+                content: '【提示詞 1 — 請 AI Agent 建立並啟動】\n請在我的 Spring Boot 專案根目錄建立 docker-compose.yml，需求如下：\n- 使用 pgvector/pgvector:pg18 映像（PostgreSQL 18 + pgvector 向量擴充）\n- 資料庫名稱：learn_spring\n- 使用者：postgres，密碼：password\n- 本機 5432 埠對應容器 5432 埠（若本機 5432 已被其他程式佔用，改用 15432:5432，之後連線字串也要跟著改）\n- 使用具名卷（named volume）讓資料持久化，容器重建後資料不遺失；注意 PostgreSQL 18 映像的卷要掛在 /var/lib/postgresql（不是 /var/lib/postgresql/data，18 版起資料目錄改為版本子目錄，掛錯容器會直接 Exited）\n- 每個設定項目加上中文註解\n\n建立完成後請幫我執行 docker compose up -d，\n再執行 docker ps，確認容器狀態為 Up。\n\n【提示詞 2 — 排查容器啟動失敗（遇到錯誤時才使用）】\n我執行 docker compose up -d 後容器狀態不是 Up，\ndocker logs 顯示：\n[貼上錯誤訊息]\n請幫我找出原因並修正。'
               }
             },
             {
@@ -743,6 +1020,21 @@ window.COURSE = {
               ]
             },
             {
+              title: '示範商品圖片（先下載放進專案）',
+              type: 'text',
+              paragraphs: [
+                '課程準備了 6 張示範商品圖片（AI 生成，600×600 JPG），讓商城首頁一開始就有像樣的畫面。請先下載，2-4 章建立前端後放到 <code>frontend/public/images/products/</code>；資料庫的 <code>image_url</code> 存相對路徑 <code>/images/products/檔名</code>，前端直接當 <code>&lt;img src&gt;</code> 使用。'
+              ],
+              bullets: [
+                '無線耳機 Pro：<a href="assets/products/earphone-pro.jpg" download>earphone-pro.jpg</a><br><img src="assets/products/earphone-pro.jpg" alt="無線耳機 Pro" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                'Bass+ 重低音耳機：<a href="assets/products/bass-headphones.jpg" download>bass-headphones.jpg</a><br><img src="assets/products/bass-headphones.jpg" alt="Bass+ 重低音耳機" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '機械鍵盤：<a href="assets/products/keyboard.jpg" download>keyboard.jpg</a><br><img src="assets/products/keyboard.jpg" alt="機械鍵盤" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '行動電源：<a href="assets/products/power-bank.jpg" download>power-bank.jpg</a><br><img src="assets/products/power-bank.jpg" alt="行動電源" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '香氛加濕器：<a href="assets/products/humidifier.jpg" download>humidifier.jpg</a><br><img src="assets/products/humidifier.jpg" alt="香氛加濕器" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '智慧檯燈（缺貨示範）：<a href="assets/products/desk-lamp.jpg" download>desk-lamp.jpg</a><br><img src="assets/products/desk-lamp.jpg" alt="智慧檯燈（缺貨示範）" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">'
+              ]
+            },
+            {
               title: '用 AI Agent 設定 application.yml 資料庫連線',
               type: 'code',
               paragraphs: [
@@ -751,7 +1043,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 設定 application.yml',
-                content: '【提示詞 1 — 請 AI Agent 設定資料庫連線】\n請修改我的 Spring Boot 專案的 src/main/resources/application.yml，\n加入以下設定（若已存在請直接修改，不要重複）：\n1. datasource：連線到 localhost:5432/learn_spring，帳號 postgres，密碼 password\n2. flyway：enabled: true，baseline-on-migrate: true，腳本位置 classpath:db/migration\n3. jpa：ddl-auto: validate（由 Flyway 管理 Schema，JPA 只驗證結構）\n每個設定項目請加上中文註解說明用途。\n\n【提示詞 2 — 驗證連線與 Flyway 遷移】\n設定完成後請幫我執行 mvn spring-boot:run，\n確認 log 中出現 Successfully applied N migration(s) 的訊息。\n若出現連線錯誤或 Flyway 失敗，請幫我找出原因並修正。'
+                content: '【提示詞 1 — 加入依賴與資料庫連線】\n請修改我的 Spring Boot 專案（1-2 章的商品 API）：\n1. pom.xml 加入 postgresql、spring-boot-starter-flyway、flyway-database-postgresql 依賴（版本交給 Spring Boot 管理；Spring Boot 4 必須用 starter，單加 flyway-core 啟動不會報錯但完全不會遷移）\n2. Initializr 產生的是 application.properties，請改成 src/main/resources/application.yml（刪除 properties，保留 spring.application.name），並加入：\n   - datasource：連線到 localhost:5432/learn_spring，帳號 postgres，密碼 password\n   - flyway：enabled: true，baseline-on-migrate: true，腳本位置 classpath:db/migration\n每個設定項目請加上中文註解說明用途。\n\n【提示詞 2 — 建立商品資料表與示範商品】\n請在 src/main/resources/db/migration/ 建立 V1__create_products.sql：\n1. 建立 products 資料表，欄位對應 1-2 的 Product：id（BIGSERIAL 主鍵）、name、description、price（NUMERIC(10,2)）、stock（INT）、image_url、category，再加上 created_at、updated_at（TIMESTAMP，預設現在時間）\n2. 插入 6 筆示範商品：無線耳機 Pro（售價 2990、庫存 12）、Bass+ 重低音耳機（售價 3000 以內）、機械鍵盤、行動電源、香氛加濕器、智慧檯燈（庫存 0，缺貨示範）；說明欄位寫出規格重點；image_url 依序填 /images/products/earphone-pro.jpg、bass-headphones.jpg、keyboard.jpg、power-bank.jpg、humidifier.jpg、desk-lamp.jpg（圖片在本章「示範商品圖片」下載，2-4 章放進前端）\n3. 檔名注意 V1 後面是「兩個底線」\n\n【提示詞 3 — 驗證連線與 Flyway 遷移】\n設定完成後請幫我執行 mvn spring-boot:run，\n確認 log 中出現 Successfully applied 1 migration 的訊息，並用 docker exec 進入容器查詢 products 有 6 筆資料。\n若 log 完全沒有 Flyway 字樣，代表缺 spring-boot-starter-flyway；若出現連線錯誤或 Flyway 失敗，請幫我找出原因並修正。'
               }
             },
             {
@@ -763,7 +1055,7 @@ window.COURSE = {
               code: {
                 language: 'yaml',
                 title: 'application.yml 資料庫設定',
-                content: 'spring:\n  datasource:\n    url: jdbc:postgresql://localhost:5432/learn_spring\n    username: postgres\n    password: password\n    driver-class-name: org.postgresql.Driver\n  flyway:\n    enabled: true\n    baseline-on-migrate: true  # 資料庫非空時以現況為遷移起點\n  jpa:\n    hibernate:\n      ddl-auto: validate  # 由 Flyway 管理 Schema，JPA 只做驗證'
+                content: 'spring:\n  datasource:\n    url: jdbc:postgresql://localhost:5432/learn_spring\n    username: postgres\n    password: password\n    driver-class-name: org.postgresql.Driver\n  flyway:\n    enabled: true\n    baseline-on-migrate: true  # 資料庫非空時以現況為遷移起點\n  jpa:\n    hibernate:\n      ddl-auto: validate  # 1-4 加入 JPA 依賴後才生效；由 Flyway 管理 Schema，JPA 只做驗證'
               }
             },
             {
@@ -786,7 +1078,7 @@ window.COURSE = {
           summary: '使用 Entity、Repository 與 Query Method 將資料表操作提升為物件導向程式碼。',
           source: 'docs/Day1-4-SpringJPA.md',
           heroImage: 'assets/teaching-site/04-ch04-jpa-entity-mapping.png',
-          diagramImage: 'assets/teaching-site/14-diagram-jpa-mapping.png',
+          diagramImage: 'assets/diagrams/d1-u4.png',
           diagramCaption: 'Java Entity 對應資料表欄位，Repository 則封裝查詢與持久化操作。',
           goals: [
             '理解 ORM 與 JPA 在專案中的角色',
@@ -796,7 +1088,8 @@ window.COURSE = {
           tasks: [
             { id: 'd1-u4-t1', text: '用 AI Agent 為 1-2 專案加入 JPA 依賴並更新 Product.java 為 Entity' },
             { id: 'd1-u4-t2', text: '用 AI Agent 建立 ProductRepository 並更新 ProductService 改用資料庫' },
-            { id: 'd1-u4-t3', text: '執行 mvn spring-boot:run，確認 API 仍正常運作且資料已寫入資料庫' }
+            { id: 'd1-u4-t3', text: '執行 mvn spring-boot:run，確認 GET /api/products 回傳資料庫中的商品' },
+            { id: 'd1-u4-t4', text: '用 AI Agent 建立 V2 訂單資料表、Order Entity 與 OrderService（供 AI 客服查訂單）' }
           ],
           sections: [
             {
@@ -1217,7 +1510,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 為 Spring MVC 專案加入 JPA',
-                content: '【步驟一：加入依賴】\n我在 1-2 建立了一個 Spring Boot 專案（只有 spring-boot-starter-web），\n請幫我在 pom.xml 加入以下依賴：\n- spring-boot-starter-data-jpa\n- postgresql\n- lombok（若尚未加入）\n\n【步驟二：升級 Product 類別】\n我目前的 Product.java 只是普通 POJO，\n請幫我加上 JPA 註解（@Entity、@Table、@Id、@GeneratedValue、@Column），\n並改用 Lombok 的 @Data、@NoArgsConstructor、@AllArgsConstructor 取代手寫 getter/setter。\n\n【步驟三：建立 Repository 並更新 Service】\n請幫我：\n1. 建立 ProductRepository.java，繼承 JpaRepository<Product, Long>\n2. 更新 ProductService.java，把原本的 List<Product> 換成注入 ProductRepository，\n   讓 getAll、findById、save 方法改用資料庫操作\n\n完成後請執行 mvn spring-boot:run，確認應用程式能啟動並成功連線資料庫。'
+                content: '【步驟一：加入依賴】\n請在 1-3 的專案 pom.xml 加入 spring-boot-starter-data-jpa 與 lombok（若尚未加入），\n並在 application.yml 設定 spring.jpa.hibernate.ddl-auto: validate（Schema 由 Flyway 管理，JPA 只驗證）。\n\n【步驟二：升級 Product 為 Entity】\n請把 Product.java 改成 JPA Entity，對應 1-3 建好的 products 資料表：\n- 使用 @Entity、@Table(name = "products")、@Id、@GeneratedValue(strategy = GenerationType.IDENTITY)、@Column\n- 建立 BaseAuditEntity（@MappedSuperclass + JPA Auditing），讓 Product 繼承 created_at / updated_at\n- 用 Lombok 的 @Getter、@Setter、@NoArgsConstructor 取代手寫 getter/setter\n\n【步驟三：Repository 與 Service 改用資料庫】\n1. 建立 ProductRepository，繼承 JpaRepository<Product, Long>，加上 findByNameContainingIgnoreCase(String keyword) 供關鍵字搜尋\n2. ProductService 改注入 ProductRepository，getAll、findById、create 改用資料庫，寫入方法加上 @Transactional\n3. 刪掉 1-2 寫在記憶體裡的示範商品（改由 Flyway 的資料提供）\n\n【步驟四：加入訂單（之後 AI 客服查訂單會用到）】\n1. 建立 V2__create_orders.sql：orders 資料表，欄位 id、order_no（訂單編號）、username（下單帳號）、product_id（外鍵到 products）、quantity、total_price、status（PENDING / SHIPPED / DELIVERED）、created_at\n2. 插入 3 筆 username 為 user 的示範訂單（狀態各不相同），再插入 1 筆 username 為 admin 的訂單（用來驗證「只能查到自己的訂單」）；帳號 user、admin 在 1-9 章建立\n3. 建立 Order Entity（@ManyToOne 關聯 Product；orders 沒有 updated_at，Order 不要繼承 BaseAuditEntity，否則 validate 會失敗）、OrderRepository（findByUsernameOrderByCreatedAtDesc）與 OrderService（getOrdersByUsername）\n\n完成後請執行 mvn spring-boot:run，確認 Flyway 套用 V2、應用程式能啟動，GET /api/products 回傳資料庫中的 6 筆商品。'
               }
             },
             {
@@ -1237,7 +1530,7 @@ window.COURSE = {
           summary: '透過 springdoc-openapi 自動產生互動式 API 文件，讓前端與測試人員不需要看程式碼就能理解與呼叫 API。',
           source: 'docs/Day1-5-API-Docs.md',
           heroImage: 'assets/teaching-site/05-ch05-api-docs.png',
-          diagramImage: 'assets/teaching-site/05-api-diagram.svg',
+          diagramImage: 'assets/diagrams/d1-u5.png',
           diagramCaption: 'SpringDoc OpenAPI 自動掃描 Controller 端點並渲染 Swagger UI 的運作架構',
           goals: [
             '理解 OpenAPI 規範與 Swagger UI 的關係',
@@ -1335,7 +1628,7 @@ window.COURSE = {
           summary: '用 @RestControllerAdvice 統一攔截應用程式例外，回傳格式一致的錯誤回應，讓前端不再猜測錯誤格式。',
           source: 'docs/Day1-6-GlobalException.md',
           heroImage: 'assets/teaching-site/06-ch06-global-exception.png',
-          diagramImage: 'assets/teaching-site/06-exception-diagram.svg',
+          diagramImage: 'assets/diagrams/d1-u6.png',
           diagramCaption: 'Spring MVC 機制攔截異常並轉換為標準錯誤回應的流向圖解',
           goals: [
             '理解沒有全域例外處理的系統有什麼問題',
@@ -1427,11 +1720,11 @@ window.COURSE = {
         {
           id: 'd1-u7',
           chapter: '1-7',
-          title: '結構化 Log 與動態調整',
+          title: '結構化 Log 與動態調整（精簡／課後自學）',
           summary: '善用 @Slf4j 建立有語意的結構化日誌，透過 application.yml 設定 Log層級，再用 Spring Actuator 在不重啟應用的情況下動態調整。',
           source: 'docs/Day1-7-Logging.md',
           heroImage: 'assets/teaching-site/07-ch07-logging.png',
-          diagramImage: 'assets/teaching-site/07-logging-diagram.svg',
+          diagramImage: 'assets/diagrams/d1-u7.png',
           diagramCaption: 'Slf4j 與 Logback 攔截應用程式各層日誌並輸出至結構化目標的流程',
           goals: [
             '理解 Spring Boot 預設 Log 機制與層級',
@@ -1444,6 +1737,17 @@ window.COURSE = {
             { id: 'd1-u7-t2', text: '加入 spring-boot-starter-actuator，驗證可透過 PATCH /actuator/loggers 動態調整層級' }
           ],
           sections: [
+            {
+              title: '本章上課範圍（精簡講解）',
+              type: 'text',
+              paragraphs: [
+                '為了讓出 Day 0 開場導覽的時間，本章課堂上只講核心觀念與示範（約 15 分鐘），其餘段落與任務列為課後自學。'
+              ],
+              bullets: [
+                '課堂重點：Log 等級的用途、用 `@Slf4j` 記錄關鍵事件、在 application.yml 調整套件 Log 等級',
+                '課後自學：本章其餘段落與「本章學習進度」任務，遇到問題可直接把段落貼給 AI Agent 請它帶你做一次。'
+              ]
+            },
             {
               title: 'Spring Boot 預設 Log 機制',
               type: 'text',
@@ -1515,7 +1819,7 @@ window.COURSE = {
         {
           id: 'd1-u8',
           chapter: '1-8',
-          title: 'AOP 橫切關注點（Spring 核心機制）',
+          title: 'AOP 橫切關注點（Spring 核心機制）（精簡／課後自學）',
           summary: 'AOP（面向切面程式設計）是 Spring 最重要的底層機制之一，@Transactional、@Valid、@RestControllerAdvice 等你已經用過的功能全部建立在 AOP 之上。本章說明概念，並整理第一天哪些功能背後動用了 AOP。',
           source: 'docs/Day1-8-AOP.md',
           heroImage: 'assets/teaching-site/08-ch08-aop.png',
@@ -1532,6 +1836,17 @@ window.COURSE = {
             { id: 'd1-u8-t2', text: '對照第一天功能清單，說明至少 3 個用到 AOP 的地方與其對應的 Advice 類型' }
           ],
           sections: [
+            {
+              title: '本章上課範圍（精簡講解）',
+              type: 'text',
+              paragraphs: [
+                '為了讓出 Day 0 開場導覽的時間，本章課堂上只講核心觀念與示範（約 15 分鐘），其餘段落與任務列為課後自學。'
+              ],
+              bullets: [
+                '課堂重點：AOP 解決什麼問題、`@Aspect` + `@Around` 記錄方法執行時間的一個範例',
+                '課後自學：本章其餘段落與「本章學習進度」任務，遇到問題可直接把段落貼給 AI Agent 請它帶你做一次。'
+              ]
+            },
             {
               title: 'AOP 解決了什麼問題',
               type: 'text',
@@ -1686,7 +2001,8 @@ window.COURSE = {
           tasks: [
             { id: 'd1-u9-t1', text: '透過 AI 提示詞引入 Security 與 JWT 相關依賴' },
             { id: 'd1-u9-t2', text: '實作 JwtUtils 產生包含角色資訊的 Token，並完成認證過濾器與 SecurityConfig 配置' },
-            { id: 'd1-u9-t3', text: '實作 /api/auth/login 登入 API，並為商品 API 設定角色權限控制（ADMIN 限制新增/修改/刪除）' }
+            { id: 'd1-u9-t3', text: '實作 /api/auth/login 登入 API，並為商品 API 設定角色權限控制（ADMIN 限制新增/修改/刪除）' },
+            { id: 'd1-u9-t4', text: '商品查詢開放訪客瀏覽，並新增 GET /api/orders/me 只回傳登入者自己的訂單' }
           ],
           sections: [
             {
@@ -1731,7 +2047,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '\u8acb\u5728\u73fe\u6709\u5c08\u6848\u4e2d\uff0c\u4f7f\u7528 Spring Security \u8207 JWT \u5be6\u4f5c\u5b89\u5168\u9632\u8b77\u8207\u767b\u5165\u9a57\u8b49\u529f\u80fd\uff1a\n1. \u5f15\u5165\u5b89\u5168\u9632\u8b77\u5957\u4ef6\uff08Spring Security\uff09\u8207 JWT \u4f9d\u8cf4\uff0c\u9650\u5236\u9664\u4e86\u767b\u5165\u76f8\u95dc\u7684 API \u4e4b\u5916\uff0c\u5176\u9918\u6240\u6709\u7684 API \u90fd\u9700\u8981\u651c\u5e36 JWT Token \u9032\u884c\u9a57\u8b49\u624d\u80fd\u5b58\u53d6\u3002\n2. \u5be6\u4f5c\u4e00\u500b\u767b\u5165 API\uff08\u4f8b\u5982 POST /api/auth/login\uff09\uff0c\u4f9b\u4f7f\u7528\u8005\u50b3\u5165\u5e33\u865f\u5bc6\u78bc\u9032\u884c\u8eab\u5206\u9a57\u8b49\u3002\u767b\u5165\u6210\u529f\u5f8c\uff0c\u8acb\u5728 JWT Token \u4e2d\u5beb\u5165\u4f7f\u7528\u8005\u7684\u89d2\u8272\uff08\u7c21\u55ae\u5340\u5206\u300c\u7ba1\u7406\u54e1 ADMIN\u300d\u8207\u300c\u4e00\u822c\u7528\u6236 USER\u300d\uff09\uff0c\u4e26\u5c07 Token \u56de\u50b3\u7d66\u524d\u7aef\u3002\n3. \u5be6\u4f5c\u89d2\u8272\u6b0a\u9650\u63a7\u5236\uff1a\u9650\u5236\u5546\u54c1\u7ba1\u7406 API \u7684\u65b0\u589e\u3001\u4fee\u6539\u8207\u522a\u9664\u529f\u80fd\u5fc5\u9808\u5177\u5099\u300c\u7ba1\u7406\u54e1 ADMIN\u300d\u89d2\u8272\u624d\u80fd\u57f7\u884c\uff0c\u800c\u4e00\u822c\u67e5\u8a62\u529f\u80fd\u5247\u50c5\u9700\u4e00\u822c\u300c\u7528\u6236 USER\u300d\u6216\u5df2\u767b\u5165\u8eab\u5206\u5373\u53ef\u3002\n4. \u4fdd\u8b77\u6211\u5011\u7684 API \u6587\u4ef6\uff08Swagger UI \u7db2\u9801\u8207\u76f8\u95dc\u7aef\u9ede\uff09\uff0c\u8a2d\u5b9a\u5fc5\u9808\u5728\u767b\u5165\u9a57\u8b49\u4e26\u651c\u5e36 JWT Token \u5f8c\u624d\u80fd\u6b63\u5e38\u700f\u89bd\u8207\u6e2c\u8a66\u3002'
+                content: '請在現有的智慧商城專案中，使用 Spring Security 與 JWT 實作登入驗證與角色權限：\n1. 引入 Spring Security 與 jjwt 0.12.x（jjwt-api、jjwt-impl、jjwt-jackson 都要明確寫版本，jjwt 不在 Spring Boot 版本管理內）。JWT 金鑰從環境變數 JWT_SECRET 讀取，需至少 32 字元；執行 mvn 前先在同一個 PowerShell 設定 $env:JWT_SECRET = \'至少32字元的隨機字串\'。\n2. 建立兩個示範帳號（InMemoryUserDetailsManager + BCrypt 密碼）：admin / admin123（角色 ADMIN）、user / user123（角色 USER）。帳號名稱 user 要與 1-4 示範訂單的 username 相同。\n3. 實作登入 API POST /api/auth/login，傳入帳號密碼，回應 { token, username, role }，role 的值為 ADMIN 或 USER（不含 ROLE_ 前綴，Filter 載入權限時再補 ROLE_）。\n4. 權限規則：\n   - 公開（免登入）：POST /api/auth/login、GET /api/products、GET /api/products/{id}（商城首頁要讓訪客看到商品）\n   - 僅 ADMIN：POST /api/products（商品上架；PUT / DELETE 先預留同樣的規則）\n   - 放行 ASYNC 與 ERROR 派送：dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()（否則 SSE 串流結束會丟 AccessDeniedException、找不到商品的 404 會變成 401）\n   - 需登入：其餘所有 API（含之後的 /api/ai/**、/api/orders/**）\n5. 新增 GET /api/orders/me：回傳「目前登入者」的訂單（帳號從 Spring Security 取得，不接受前端傳 username）。\n6. 建立 JwtAuthenticationFilter，用 parseJwt(request) 方法解析 Authorization: Bearer 標頭（2-5 章會擴充這個方法）；未登入回 401、權限不足回 403。\n完成後請用 PowerShell 示範：user 登入 → 查 /api/orders/me 看到 3 筆訂單；user 嘗試新增商品得到 403；admin 登入後成功上架一個新商品。'
               }
             },
             {
@@ -1836,7 +2152,7 @@ window.COURSE = {
           summary: '建立 Spring AI 對話入口，理解串流輸出、對話記憶與多 session 管理。',
           source: 'docs/Day2-1-SpringAI-ChatClient.md',
           heroImage: 'assets/teaching-site/05-ch05-springai-chatclient.png',
-          diagramImage: 'assets/teaching-site/15-diagram-chatclient-memory.png',
+          diagramImage: 'assets/diagrams/d2-u1.png',
           diagramCaption: 'ChatClient 負責對話調度，記憶機制負責將上下文留在正確的 session 中。',
           goals: [
             '掌握 ChatClient 在 Spring AI 的使用位置',
@@ -1893,27 +2209,63 @@ window.COURSE = {
               }
             },
             {
-              title: 'Groq API 端點設定（application.yml）',
-              type: 'code',
+              title: '模型怎麼選：Groq（免費）vs Muse Spark 1.3 Contributor（成本價）',
+              type: 'text',
               paragraphs: [
-                'Groq 提供與 OpenAI 相容的 API 介面，因此可以使用 Spring AI 的 OpenAI Starter，只需把 Chat 端點的 base-url 覆寫為 Groq 即可。'
+                '本課程的對話模型提供兩條路，兩者都走 OpenAI 相容介面，所以 Spring AI 程式碼完全相同，只差 `base-url`、`api-key` 與 `model` 三個設定值。上課練習用 Groq，要長時間跑或模型品質要求較高時再換 Muse Spark。'
+              ],
+              image: 'assets/teaching-site/info-2-1b-model-selection.png',
+              imageAlt: '對話模型二選一與向量檢索示意圖',
+              imageCaption: '左邊免費高速、右邊成本價但資料會用於訓練；不論選哪個，檢索都交給 Voyage 向量 + rerank 精排。',
+              bullets: [
+                '<strong>Groq（免費）</strong>：免綁信用卡即可取得 API Key，推論速度極快；免費方案有每分鐘請求數與每日 token 上限，同一 Key 多人共用很容易撞到 429。適合課堂練習。',
+                '<strong>Muse Spark 1.3 Contributor（成本價）</strong>：Meta 的模型，Contributor 方案以「同意 Meta 將你的提示詞、程式碼與回應用於訓練未來模型」換取接近成本的價格：輸入 US$0.10 / 百萬 tokens、輸出 US$0.20 / 百萬 tokens（Standard 方案為 1.25 / 4.25）。一整天課程練習的花費通常不到 1 美元。',
+                '⚠️ Contributor 方案的資料會被拿去訓練：<strong>不要送入客戶個資、公司機密或正式環境資料</strong>，正式產品請改用 Standard 方案或其他商用模型。',
+                '價格與限額以官方頁面為準（本頁整理於 2026-11）：Groq 看 console.groq.com/settings/limits，Muse Spark 看 dev.meta.ai/docs/pricing-rate-limits。'
+              ]
+            },
+            {
+              title: '註冊與取得 API Key（課前完成）',
+              type: 'text',
+              paragraphs: [
+                '三把金鑰都請在課前申請好，避免上課時卡在信箱驗證。取得後一律用環境變數注入，<strong>不要寫進 application.yml 或推上 Git</strong>。'
               ],
               bullets: [
-                'Chat：前往 console.groq.com 建立免費 API Key，設定 `$env:GROQ_API_KEY="gsk_xxx..."`',
-                'Embedding：前往 voyageai.com 建立 API Key（每月 50M tokens 免費），設定 `$env:VOYAGE_API_KEY="pa-xxx..."`',
-                'Voyage AI 提供 OpenAI 相容介面，直接設定在 openai.embedding 區塊即可，不需要額外的 Starter 依賴'
+                '<strong>Groq</strong>：① 開啟 console.groq.com，用 Google / GitHub 帳號或 Email 登入 ② 左側選單 <code>API Keys</code> → <code>Create API Key</code>，取個名稱（如 learn-spring） ③ 金鑰只顯示一次（<code>gsk_</code> 開頭），立即複製保存。',
+                '<strong>Muse Spark（Meta Model API）</strong>：① 開啟 dev.meta.ai 註冊 Model API 帳號並建立團隊 ② 在 Billing 綁定付款方式並儲值少量額度 ③ Dashboard → <code>API keys</code> → <code>Create API key</code> ④ 呼叫時模型名稱使用 <code>muse-spark-1.3-contributor</code> 才會套用 Contributor 價格。部分地區需先開通 Contributor 方案。',
+                '<strong>Voyage AI（向量與重排序）</strong>：① 開啟 dash.voyageai.com 用 Email 或 Google 註冊 ② <code>API Keys</code> → <code>Create new secret key</code>（<code>pa-</code> 開頭） ③ voyage-4 與 rerank-3 每個帳號前 2 億 tokens 免費；未綁付款方式時速率限制很低，建議綁卡以解除限制（不超過免費額度不會扣款）。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell — 設定環境變數（目前視窗有效）',
+                content: '# 對話模型二擇一：Groq（免費）或 Meta Muse Spark（成本價）\n# 兩家共用同一個變數名稱，切換供應商時只改值、不改 application.yml\n$env:MODEL_API_KEY  = "meta_xxx..."   # Muse Spark；改用 Groq 時填 gsk_xxx...\n# 向量與重排序\n$env:VOYAGE_API_KEY = "pa-xxx..."\n# JWT 簽章金鑰（1-9 章，至少 32 字元）\n$env:JWT_SECRET     = "please-change-me-to-a-32-chars-or-longer-secret"\n\n# 想永久保存可寫入使用者環境變數（重開終端機後生效）\n[Environment]::SetEnvironmentVariable("VOYAGE_API_KEY", "pa-xxx...", "User")'
+              }
+            },
+            {
+              title: 'Spring AI 模型設定（application.yml）',
+              type: 'code',
+              paragraphs: [
+                'Groq 與 Meta Model API 都提供與 OpenAI 相容的介面，因此沿用 Spring AI 的 OpenAI Starter，只要覆寫 Chat 的 base-url。切換模型時只改 chat 區塊三行，程式碼不用動。以下設定已用 Spring Boot 4 + Spring AI 2.0.2 實際驗證。'
+              ],
+              bullets: [
+                'pom.xml 需用 dependencyManagement 匯入 `spring-ai-bom`（版本 2.0.2，Maven Central 上的最新正式版），Spring AI 的 starter 才有版本',
+                'Groq：`base-url: https://api.groq.com/openai/v1`，模型 `openai/gpt-oss-120b`（支援工具呼叫）',
+                'Muse Spark：`base-url: https://api.meta.ai/v1`，模型 `muse-spark-1.3-contributor`。它是推理模型，預設推理強度 high 時要先思考 15～20 秒；設 `reasoning-effort: minimal` 後首字約 3～6 秒、帶工具時 3～18 秒（實測）',
+                '⚠️ Muse 串流實測：請求<strong>不帶工具</strong>時會逐段輸出；<strong>帶了工具定義</strong>（2-2 章起的客服都會帶）時，Muse 會把整段回答一次送出。所以前端要有等待提示，想要逐字效果請在前端自行做打字機動畫',
+                'Embedding：Voyage `voyage-4`，預設輸出 1024 維，pgvector 的 `dimensions` 必須同步設為 1024；重排序 rerank-3 在 2-3 章介紹'
               ],
               code: {
                 language: 'yaml',
                 title: 'application.yml — Spring AI 模型設定',
-                content: 'spring:\n  ai:\n    # OpenAI Starter 同時處理 Chat（Groq）與 Embedding（Voyage AI）\n    openai:\n      chat:\n        base-url: https://api.groq.com/openai/v1   # 覆寫為 Groq 端點\n        api-key: ${GROQ_API_KEY:your_groq_api_key}\n        options:\n          model: llama-3.3-70b-versatile  # Groq 免費高速模型\n          temperature: 0.7\n      # Voyage AI 提供 OpenAI 相容介面，直接設定 embedding 區塊\n      embedding:\n        base-url: https://api.voyageai.com/v1\n        api-key: ${VOYAGE_API_KEY:your_voyage_api_key}\n        options:\n          model: voyage-3-lite  # 每月 50M tokens 免費，512 維度'
+                content: 'spring:\n  ai:\n    # Spring AI 2.0 必加：只啟用 Chat，其餘子模型關閉（否則各自要求 api-key，啟動失敗）\n    model:\n      audio:\n        speech: none\n        transcription: none\n      image: none\n      moderation: none\n      # 內建 OpenAI embedding 與 Voyage 不相容（usage 缺 prompt_tokens），2-3 改用自訂 VoyageEmbeddingModel\n      embedding: none\n    openai:\n      chat:\n        # ── 預設：Muse Spark 1.3 Contributor（成本價）──\n        base-url: https://api.meta.ai/v1\n        api-key: ${MODEL_API_KEY}\n        model: muse-spark-1.3-contributor   # 2.0.2 起寫在 chat 底下（舊寫法 options.model 已 deprecated）\n        temperature: 0.7\n        # Muse 預設推理強度 high，首字要等 15～20 秒；minimal 約 3～6 秒（contributor 不可設 none）\n        reasoning-effort: minimal\n        # ── 改用 Groq（免費）只換這三個值 ──\n        # base-url: https://api.groq.com/openai/v1\n        # api-key: ${MODEL_API_KEY}   # 金鑰統一用同一個環境變數名稱，切換時不會漏改\n        # model: openai/gpt-oss-120b\n      embedding:\n        # 2-3 的自訂 VoyageEmbeddingModel 讀這裡的設定\n        base-url: https://api.voyageai.com/v1\n        api-key: ${VOYAGE_API_KEY:}   # 預設空值：尚未申請 Voyage 也能啟動（2-3 才用到）\n        model: voyage-4   # 預設 1024 維\n    vectorstore:\n      pgvector:\n        dimensions: 1024    # 必須與 embedding 維度一致\n        initialize-schema: true'
               }
             },
             {
               title: 'MessageChatMemoryAdvisor 對話記憶',
               type: 'code',
               paragraphs: [
-                '大模型本身是無狀態的，不記得上一句說什麼。`MessageChatMemoryAdvisor` 會在發送請求前自動帶入歷史訊息，並在回覆後存入記憶。`sessionId` 讓不同使用者的對話記憶互相隔離。'
+                '大模型本身是無狀態的，不記得上一句說什麼。`MessageChatMemoryAdvisor` 會在發送請求前自動帶入歷史訊息，並在回覆後存入記憶；對話 ID（本課程用登入帳號）讓不同使用者的記憶互相隔離。',
+                'Spring AI 2.0 會自動設定一個 `ChatMemory` Bean：`MessageWindowChatMemory`（保留最近 20 則）＋`InMemoryChatMemoryRepository`。直接注入使用即可，不必自己寫記憶類別；對話 ID 一律用 `ChatMemory.CONVERSATION_ID` 常數傳入，漏傳會丟例外。'
               ],
               image: 'assets/teaching-site/15-diagram-ai-context-memory.svg',
               imageAlt: 'AI 上下文與對話記憶組成圖',
@@ -1921,7 +2273,7 @@ window.COURSE = {
               code: {
                 language: 'java',
                 title: 'SSE 串流 + 對話記憶',
-                content: 'private final InMemoryChatMemory chatMemory = new InMemoryChatMemory();\n\n@GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<String> streamChat(\n        @RequestParam String message,\n        java.security.Principal principal) {\n    String username = principal.getName(); // 從 Spring Security 取得當前登入的使用者名稱\n    return this.chatClient.prompt()\n            .user(message)\n            // 載入對話記憶 Advisor\n            .advisors(MessageChatMemoryAdvisor.builder(this.chatMemory).build())\n            // 傳入會話 ID，不同 sessionId 的記憶彼此隔離\n            .advisors(spec -> spec.param("chat_memory_conversation_id", username))\n            .stream()\n            .content();  // 回傳 Flux<String> 供 SSE 串流'
+                content: '// Spring AI 2.0 自動設定的 ChatMemory（MessageWindowChatMemory，保留最近 20 則）\nprivate final MessageChatMemoryAdvisor memoryAdvisor;\n\npublic ChatController(ChatClient.Builder builder, ChatMemory chatMemory) {\n    // Advisor 建一次即可，所有請求共用\n    this.memoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();\n    this.chatClient = builder.defaultSystem("你是親切的商城智慧客服……").build();\n}\n\n@GetMapping(value = "/api/ai/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<String> streamChat(@RequestParam String message, Principal principal) {\n    String username = principal.getName(); // 以登入帳號當對話 ID，記憶依使用者隔離\n    return this.chatClient.prompt()\n            .user(message)\n            .advisors(this.memoryAdvisor)\n            .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, username))\n            .stream()\n            .content()\n            .concatWith(Flux.just("[DONE]")); // 結束標記：前端收到後關閉 EventSource\n\n// 想讓記憶重啟後仍在：加入 spring-ai-starter-model-chat-memory-repository-jdbc，\n// 自動設定會改用 JdbcChatMemoryRepository（PostgreSQL），程式碼完全不用改；\n// 用 Flyway 管 Schema 時設 spring.ai.chat.memory.repository.jdbc.initialize-schema: never 並自建 SPRING_AI_CHAT_MEMORY 表\n}'
               }
             },
             {
@@ -1944,13 +2296,27 @@ window.COURSE = {
                   '<strong style="color: var(--primary-color); display: block; margin-bottom: 8px;">2. Spring AI 最新的內建 Advisor：</strong>' +
                   '<ul style="list-style-type: disc; margin-left: 20px; margin-bottom: 16px; line-height: 1.8;">' +
                     '<li style="margin-bottom: 6px;"><code>MessageChatMemoryAdvisor</code>：最常用的對話記憶 Advisor，負責自動讀取指定 sessionId 的對話歷史並注入上下文，且在回答後自動將新問答存回記憶庫。</li>' +
-                    '<li style="margin-bottom: 6px;"><code>PromptChatMemoryAdvisor</code>：文字範本式對話記憶 Advisor，將對話歷史格式化為一段文字並透過 Prompt 變數填入，適用於不支援多輪 Message 格式的特殊模型。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>PromptChatMemoryAdvisor</code>：<strong>2.0 已移除</strong>，舊專案升級時改用 <code>MessageChatMemoryAdvisor</code>（Builder 用法相同）。</li>' +
                     '<li style="margin-bottom: 6px;"><code>QuestionAnswerAdvisor</code>：RAG 檢索增強生成 Advisor，自動將使用者提問向量化並至 VectorStore 檢索相關知識片段，作為上下文注入 Prompt 以降低幻覺。</li>' +
                     '<li style="margin-bottom: 6px;"><code>SimpleLoggerAdvisor</code>：日誌記錄 Advisor，在調試時可自動將完整 Prompt、參數配置與模型回應印出至 Log。</li>' +
-                    '<li style="margin-bottom: 6px;"><code>VectorStoreChatMemoryAdvisor</code>：基於向量資料庫的持久化對話記憶 Advisor，適合極大規模或長期對話歷史的語意檢索與儲存。</li>' +
+                    '<li style="margin-bottom: 6px;"><code>VectorStoreChatMemoryAdvisor</code>：把對話存進向量資料庫，每次依語意撈出相關的舊對話，以純文字附加到系統訊息。這就是「RAG 記憶」，2-6 章會手動實作同樣的概念。</li>' +
                     '<li style="margin-bottom: 6px;"><code>SafeGuardAdvisor</code>：內容安全防護 Advisor，用於在發送給 LLM 前或回應給用戶前，攔截與過濾敏感詞或不當發言。</li>' +
                   '</ul>' +
                 '</div>'
+              ]
+            },
+            {
+              title: '兩種記憶怎麼分：短期對話記憶 vs RAG 長期記憶',
+              type: 'text',
+              paragraphs: [
+                '本課程會用到兩種「記憶」，名字很像但解決的問題不同。本章做的是<strong>短期對話記憶</strong>，2-6 章做的是 <strong>RAG 長期記憶</strong>，實務上兩者通常一起用。'
+              ],
+              bullets: [
+                '<strong>短期對話記憶（ChatMemory，本章）</strong>：把<strong>最近 N 則</strong>訊息原封不動放回 Prompt，讓 AI 接得上上一句。用 <code>MessageWindowChatMemory</code> + <code>MessageChatMemoryAdvisor</code>，依對話 ID 隔離。預設存記憶體，重啟就消失；換成 JDBC Repository 可持久化。超過視窗的舊訊息會被丟掉。',
+                '<strong>RAG 長期記憶（向量庫，2-6 章）</strong>：把每輪問答<strong>向量化</strong>存進 pgvector，提問時依<strong>語意相似度</strong>撈出幾則相關舊對話當參考資料。可以記得幾週前說過的偏好，但只撈「相關的」，不保證順序與完整。官方對應元件是 <code>VectorStoreChatMemoryAdvisor</code>。',
+                '<strong>怎麼選</strong>：要「接得上話」用短期記憶；要「記得使用者是誰、喜歡什麼」用 RAG 記憶。成本上短期記憶每次都整段送出（token 隨視窗變大），RAG 記憶只送撈到的幾則。',
+                '<strong>和工具呼叫的關係（2.0 新行為）</strong>：<code>MessageChatMemoryAdvisor</code> 預設位在工具呼叫迴圈<strong>外側</strong>，只保存最終的提問與回答，不保存「呼叫工具 / 工具結果」這些中間訊息。這是 2.0 修正的重點：M8 時期視窗截斷會切開工具訊息，模型回 400。',
+                '<strong>Chat Memory ≠ Chat History</strong>：官方文件刻意區分兩者。Memory 是「給模型看的上下文」，可以裁切；History 是「完整的對話紀錄」，要稽核或顯示歷史時請另外存資料庫。'
               ]
             },
             {
@@ -1971,7 +2337,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有的 Spring Boot 電商專案中加入 AI 對話功能\n\n1. 請在現有的 Spring Boot 電商專案中加入 AI 對話功能\n2. 設定 Groq 的 base-url，模型用 openai/gpt-oss-120b，API Key 為 "xxxxxxx"。\n3. 系統提示詞：「你是一個親切的商城智慧助手」。\n4. 使用 SSE串流回覆的API，並掛上記憶，以 sessionId 參數隔離不同使用者的對話記憶。'
+                content: '請在現有的智慧商城專案（已有商品、訂單與 JWT 登入）中加入 AI 對話功能。開始前我已在同一個 PowerShell 設好 $env:MODEL_API_KEY（2-1 章申請的金鑰），之後執行 mvn spring-boot:run 與 mvn test 都在這個視窗：\n1. 依賴：在 <properties> 加 <spring-ai.version>2.0.2</spring-ai.version>，用 dependencyManagement 匯入 org.springframework.ai:spring-ai-bom:${spring-ai.version}（type pom、scope import），再加入 spring-ai-starter-model-openai。\n2. application.yml 照 2-1 章「Spring AI 模型設定」併入既有的 spring: 區塊底下：Chat 使用 Muse Spark（base-url https://api.meta.ai/v1，模型 muse-spark-1.3-contributor，金鑰讀環境變數 MODEL_API_KEY，寫成 ${MODEL_API_KEY:} 帶空預設值，未設定時至少能啟動；改用 Groq 時只換這三個值），並照範例把 spring.ai.model 底下的 audio.speech、audio.transcription、image、moderation 設為 none（Spring AI 2.0 必加，否則缺金鑰啟動失敗），並設 chat.reasoning-effort: minimal（Muse 預設推理強度 high，首字要等 15～20 秒）。不要把金鑰寫死在檔案裡。\n3. 建立 ChatController，用 ChatClient.Builder 建立 ChatClient，系統提示詞：「你是親切的商城智慧客服。回答商品、庫存、訂單問題時，只能根據工具或知識庫查到的資料回答；查不到就說不知道，不可以編造。請用純文字回答，不要使用 Markdown；呼叫工具前不要先說「幫你查一下」之類的過場話，查到結果再一次回答。」\n4. 提供 SSE 串流端點 GET /api/ai/stream?message=...（produces = text/event-stream），回傳 Flux<String>；每個片段若以空白開頭，把第一個空白換成不換行空白（\\u00A0），否則瀏覽器 EventSource 會吃掉 data: 後面的空白造成黏字；串流結束時用 .concatWith(Flux.just("[DONE]")) 多送一則結束標記，讓前端知道可以關閉連線（否則 EventSource 會自動重連、重複提問）。\n5. 對話記憶：直接注入 Spring AI 2.0 自動設定的 ChatMemory（MessageWindowChatMemory，保留最近 20 則），不要自己寫記憶類別；用 MessageChatMemoryAdvisor.builder(chatMemory).build() 建一次 Advisor 共用，並以 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, 登入帳號)) 傳入對話 ID（從 Principal 取得）。\n完成後請用 PowerShell 7 驗證串流：先登入 user 取得 $token，再執行\n$q = [uri]::EscapeDataString("你好，你是誰？")\ncurl.exe -N "http://localhost:8080/api/ai/stream?message=$q" -H "Authorization: Bearer $token"\n（中文要先編碼：curl.exe 會用 CP950 送出中文，後端以 UTF-8 解碼會回 400）\n確認回覆分成多筆 data: 陸續出現，結尾有 data:[DONE]（Invoke-RestMethod 會整包緩衝，看不出串流）。再用同一個帳號問「我剛剛問了什麼？」，確認短期記憶有效。'
               }
             },
             {
@@ -2020,7 +2386,7 @@ window.COURSE = {
           summary: '讓模型透過工具呼叫查詢即時資料或呼叫外部 API，而不是只依賴語料記憶作答。',
           source: 'docs/Day2-2-Function-Calling.md',
           heroImage: 'assets/teaching-site/06-ch06-tool-calling-jpa.png',
-          diagramImage: 'assets/teaching-site/16-diagram-tool-calling-dispatch.png',
+          diagramImage: 'assets/diagrams/d2-u2.png',
           diagramCaption: 'AI 將需求派送到對應工具，工具再向 Service / Repository 取得即時資料。',
           goals: [
             '理解 Tool Calling 與 Function Calling 的實際用途',
@@ -2030,7 +2396,7 @@ window.COURSE = {
           tasks: [
             { id: 'd2-u2-t1', text: '辨識可抽成工具的方法' },
             { id: 'd2-u2-t2', text: '整理 `@Tool` 與 `ToolCallback` 差異' },
-            { id: 'd2-u2-t3', text: '記錄 1 個 AI 查商品即時資料情境' }
+            { id: 'd2-u2-t3', text: '以 user 登入，讓 AI 客服正確回答庫存與「我的訂單」問題（日誌可見工具呼叫）' }
           ],
           sections: [
             {
@@ -2121,7 +2487,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請為商城 AI 助手加入工具呼叫（Tool Calling）能力，讓 AI 能查詢資料庫的即時資料：\n1. 建立 ProductTools 類別，用 @Tool 註解包裝既有的 ProductService：\n   - getProducts(query)：查詢商品列表，支援關鍵字搜尋，query 為空時回傳全部商品\n   - getProductDetail(id)：依商品 ID 查詢庫存與價格\n2. 建立 OrderTools 類別，用 @Tool 包裝既有的 OrderService：\n   - getUserOrders(username)：查詢該使用者的所有訂單\n3. 每個 @Tool 的 description 請用中文清楚描述「什麼情況下該呼叫這個工具」，這段文字是寫給大模型看的。\n4. 在 ChatController 的 ChatClient 呼叫鏈中，用 .tools() 掛上這兩個工具類別。\n完成後請示範一句測試提問（例如「無線耳機 Pro 還有多少庫存？」），並說明如何從後端日誌確認工具真的被呼叫。'
+                content: '請為商城 AI 客服加入工具呼叫（Tool Calling），讓 AI 能查資料庫的即時資料：\n1. 建立 ProductTools，用 @Tool 包裝既有的 ProductService：\n   - searchProducts(keyword)：依名稱關鍵字查商品（用 1-4 的 findByNameContainingIgnoreCase），keyword 為空時回傳全部；回傳名稱、價格、庫存\n   - getProductDetail(name)：依商品名稱查單一商品的價格、庫存、說明與分類；庫存為 0 時明確標示「缺貨」\n2. 建立 OrderTools，用 @Tool 包裝 1-4 的 OrderService：\n   - getMyOrders()：查詢「目前登入者」的訂單（訂單編號、商品、數量、金額、狀態）\n   - 帳號不可由模型決定：在 ChatController 用 .toolContext(Map.of("username", principal.getName())) 傳入，OrderTools 從 ToolContext 取得 username，避免使用者騙 AI 查別人的訂單\n3. 每個 @Tool 的 description 用中文寫清楚「什麼情況該呼叫」，這段文字是寫給模型看的；每個工具方法第一行加 log.info("[工具呼叫] 方法名(參數)")，之後用這個字串從日誌確認工具被呼叫。getProductDetail 以名稱模糊比對（findByNameContainingIgnoreCase），回傳所有符合的商品。\n4. 在 /api/ai/stream 的 ChatClient 呼叫鏈用 .tools() 掛上兩個工具類別。\n完成後請以 user 登入測試三句提問，並在後端日誌找到 [工具呼叫] 紀錄（後端啟動請用 mvn spring-boot:run 2>&1 | Tee-Object logs/backend.log，日誌留在檔案方便搜尋）：\n- 「無線耳機 Pro 還有多少庫存？」\n- 「我的訂單出貨了嗎？」\n- 「有沒有缺貨的商品？」'
               }
             },
             {
@@ -2171,7 +2537,7 @@ window.COURSE = {
           summary: '將文件切分、向量化並儲存到 pgvector，讓模型先檢索再作答，降低憑空回答風險。',
           source: 'docs/Day2-3-RAG-VectorStore.md',
           heroImage: 'assets/teaching-site/07-ch07-rag-vectorstore.png',
-          diagramImage: 'assets/teaching-site/17-diagram-rag-retrieval-flow.png',
+          diagramImage: 'assets/diagrams/d2-u3.png',
           diagramCaption: '問題先檢索相關內容，再帶著上下文交給模型生成答案。',
           goals: [
             '理解 RAG 與傳統純對話模型的差異',
@@ -2267,6 +2633,43 @@ window.COURSE = {
               }
             },
             {
+              title: '向量模型：Voyage voyage-4',
+              type: 'text',
+              paragraphs: [
+                '本課程的 Embedding 使用 Voyage AI 的 <code>voyage-4</code>（金鑰申請步驟見 2-1 章）。它在多語系（含繁體中文）檢索表現好，每個帳號前 2 億 tokens 免費，課程用量遠低於此。'
+              ],
+              bullets: [
+                '預設輸出 <strong>1024 維</strong>，也可選 256 / 512 / 2048；pgvector 的 <code>dimensions</code> 必須與它一致，換維度就要重建向量表並重新匯入文件。',
+                '同家族還有 <code>voyage-4-lite</code>（更便宜、較快）與 <code>voyage-4-large</code>（品質最高），三者可互換但向量不相容，<strong>入庫與查詢必須用同一個模型</strong>。',
+                '檢索情境下 Voyage 建議區分 <code>input_type</code>：入庫用 <code>document</code>、查詢用 <code>query</code>，召回品質會更好。'
+              ]
+            },
+            {
+              title: '兩階段檢索：向量粗篩 + rerank-3 精排',
+              type: 'code',
+              paragraphs: [
+                '向量相似度擅長「快速找出大概相關的」，但排序不一定精準。實務上常用兩階段：先用向量檢索撈 20 筆候選，再交給 Voyage <code>rerank-3</code> 逐筆判斷與問題的相關度，只留前 5 筆塞進 Prompt。這樣能減少無關片段干擾模型，也省 token。',
+                'Spring AI 目前沒有 Voyage Reranker 的現成元件，直接用 <code>RestClient</code> 呼叫 <code>POST https://api.voyageai.com/v1/rerank</code> 即可。rerank-3 同樣前 2 億 tokens 免費。'
+              ],
+              code: {
+                language: 'java',
+                title: 'VoyageReranker.java — 呼叫 rerank-3 重新排序候選文件',
+                content: '/**\n * 用 Voyage rerank-3 對向量檢索的候選文件重新排序，只保留最相關的 topK 筆。\n */\n@Component\npublic class VoyageReranker {\n\n    // Voyage API 的 HTTP 客戶端，Base URL 與金鑰在建構時設定好\n    private final RestClient restClient;\n\n    public VoyageReranker(@Value("${VOYAGE_API_KEY}") String apiKey) {\n        this.restClient = RestClient.builder()\n            .baseUrl("https://api.voyageai.com/v1")\n            .defaultHeader("Authorization", "Bearer " + apiKey)\n            .build();\n    }\n\n    // 請求與回應的資料結構（只宣告用得到的欄位）\n    record RerankRequest(String query, List<String> documents, String model, int top_k) {}\n    record RerankItem(int index, double relevance_score) {}\n    record RerankResponse(List<RerankItem> data) {}\n\n    /**\n     * 依與問題的相關度重新排序候選文件。\n     * @param query      使用者問題\n     * @param candidates 向量檢索撈回的候選文件（建議 20 筆左右）\n     * @param topK       最後要保留幾筆\n     */\n    public List<Document> rerank(String query, List<Document> candidates, int topK) {\n        if (candidates.isEmpty()) return candidates;\n        List<String> texts = candidates.stream().map(Document::getText).toList();\n        RerankResponse res = restClient.post()\n            .uri("/rerank")\n            .body(new RerankRequest(query, texts, "rerank-3", topK))\n            .retrieve()\n            .body(RerankResponse.class);\n        // 回傳結果已依分數由高到低排序，index 指向原本的候選位置\n        return res.data().stream().map(item -> candidates.get(item.index())).toList();\n    }\n}\n\n// 使用方式：先粗篩 20 筆，再精排留 5 筆\nList<Document> candidates = vectorStore.similaritySearch(\n    SearchRequest.builder().query(question).topK(20).build());\nList<Document> top5 = reranker.rerank(question, candidates, 5);'
+              }
+            },
+            {
+              title: 'RAG 範例文件（存成 UTF-8 文字檔上傳）',
+              type: 'code',
+              paragraphs: [
+                '把下面兩段分別存成 <code>退貨政策.txt</code> 與 <code>無線耳機 Pro 規格說明.txt</code>（UTF-8）。注意「保固 2 年」只寫在文件裡、不放進資料庫的商品說明，這樣 AI 答出保固期限時就能確定答案來自知識庫。'
+              ],
+              code: {
+                language: 'text',
+                title: '退貨政策.txt ／ 無線耳機 Pro 規格說明.txt',
+                content: '===== 退貨政策.txt =====\n本商城退貨政策\n\n1. 鑑賞期：商品到貨後 7 天內，可申請無條件退貨（鑑賞期不等於試用期）。\n2. 退貨條件：商品須保持全新、未使用、配件與包裝完整；已拆封的個人衛生用品（例如入耳式耳機的耳塞）恕不接受退貨。\n3. 退款時間：我們收到退貨並檢查無誤後，3 到 5 個工作天內退款至原付款方式。\n4. 運費：商品瑕疵或寄錯由商城負擔運費；因個人因素退貨，退回運費由買家負擔。\n5. 申請方式：登入會員後於「我的訂單」申請退貨，或聯絡智慧客服。\n\n===== 無線耳機 Pro 規格說明.txt =====\n無線耳機 Pro 規格說明\n\n- 續航力：單次連續播放約 8 小時，搭配充電盒總續航約 30 小時。\n- 防水等級：IPX4，可防潑濺與汗水，但不可浸泡水中、不建議游泳時配戴。\n- 藍牙版本：5.3，支援 AAC / SBC。\n- 降噪：主動降噪（ANC），降噪深度最高 35dB。\n- 保固：購買日起享 2 年原廠保固（含電池），人為損壞與浸水不在保固範圍。\n- 充電：USB-C，快充 10 分鐘可使用 2 小時。\n\n# 上傳指令（PowerShell 7，$h 為 admin 的 Authorization 標頭）\n# Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/rag/upload -Headers $h -Form @{ file = Get-Item -LiteralPath "退貨政策.txt" }'
+              }
+            },
+            {
               title: 'AI Agent 提示詞 — 建立 RAG 知識庫',
               type: 'code',
               paragraphs: [
@@ -2275,7 +2678,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請為專案加入 RAG 知識庫功能，使用 PostgreSQL pgvector 儲存向量：\n1. 在 pom.xml 加入 spring-ai-starter-vector-store-pgvector 依賴，並確認 application.yml 已設定 Voyage AI 的 embedding 端點（環境變數 VOYAGE_API_KEY）。\n2. 建立 RAGController，提供兩支 API：\n   - POST /api/rag/upload：接收上傳的文字檔，用 TextReader 讀取、TokenTextSplitter 切分成小段，最後用 vectorStore.accept() 向量化寫入資料庫\n   - GET /api/rag/query：掛上 QuestionAnswerAdvisor，讓 AI 先檢索相關文件片段再回答\n3. 程式碼需有中文函式註解。\n完成後請示範驗證流程：先上傳一份「退貨政策」文件，再提問「商城退貨政策是什麼？」，確認 AI 是根據文件內容回答，而不是自由發揮。'
+                content: '請為商城加入 RAG 知識庫，讓 AI 客服能回答商品細節與商城政策：\n1. 加入 spring-ai-starter-vector-store-pgvector 與 spring-ai-vector-store-advisor 依賴（2.0 正式版的套件名稱）；pgvector 設 dimensions: 1024、initialize-schema: true。\n2. Embedding 用 Voyage voyage-4（環境變數 VOYAGE_API_KEY）。注意：Spring AI 內建的 OpenAI embedding 與 Voyage 不相容（Voyage 回應的 usage 沒有 prompt_tokens，上傳時會丟 OpenAIInvalidDataException）。請設定 spring.ai.model.embedding: none，自行實作 VoyageEmbeddingModel（繼承 AbstractEmbeddingModel，用 RestClient 呼叫 https://api.voyageai.com/v1/embeddings，body 為 {model, input:[...]}，只取 data[].embedding 與 index；RestClient 設連線逾時 5 秒、讀取逾時 20 秒，避免 Voyage 沒回應時整個對話卡住），並註冊成 @Bean EmbeddingModel。\n3. 建立 RAGController：\n   - POST /api/rag/upload：接收文字檔，用 TextReader 讀取、TokenTextSplitter 切分，每個片段的 metadata 加上 type=product_doc 與檔名，再用 vectorStore.accept() 寫入；並在 SecurityConfig 加上「/api/rag/upload 僅 ADMIN」\n   - GET /api/rag/query：掛 QuestionAnswerAdvisor 測試檢索效果\n4. 把 QuestionAnswerAdvisor（filterExpression 限定 type == \'product_doc\'）也掛到 /api/ai/stream。注意它的預設範本會讓模型在「上下文沒有答案」時直接拒答，連庫存、訂單都不再呼叫工具。請用 .promptTemplate() 自訂範本（保留 {query} 與 {question_answer_context}），明講：商品規格、保固、退貨政策依知識庫；庫存、價格、缺貨、訂單必須呼叫工具；兩者都沒有才說不知道。\n5. 程式碼需有中文函式註解。\n完成後請示範：用 2-3 章提供的兩份範例文件（退貨政策.txt、無線耳機 Pro 規格說明.txt，保固期限只寫在文件裡、不寫進資料庫），以 admin 上傳；再以 user 問「無線耳機 Pro 防水嗎？保固多久？」「商城退貨政策是什麼？」，確認答案來自文件；最後重跑 2-2 的三句提問，確認工具呼叫沒有退化。'
               }
             },
             {
@@ -2309,158 +2712,13 @@ window.COURSE = {
           ]
         },
         {
-          id: 'd2-u4',
-          chapter: '2-4',
-          title: '擴充AI能力：MCP 與 Skills',
-          summary: '補充說明 MCP 在 AI 系統中的標準化接口角色與 Spring AI 的接入方式，並介紹 Skills 開放標準與 Spring AI Community 官方的 spring-ai-agent-utils 套件（SkillsTool 與 Agent 工具集）。',
-          source: 'docs/Day2-4-WrapUp-MCP.md',
-          heroImage: 'assets/teaching-site/08-ch08-mcp-wrapup.png',
-          diagramImage: 'assets/teaching-site/18-diagram-mcp-hub.png',
-          diagramCaption: '不同 AI 客戶端透過 MCP 標準接口接入同一批工具與上下文能力。',
-          goals: [
-            '理解 MCP 對跨工具 AI 生態的價值與 Spring AI 的接入方式',
-            '理解 Skills 開放標準與 MCP 的角色差異',
-            '認識 Spring AI Community 的 spring-ai-agent-utils 與其 Agent 工具集',
-            '知道如何在 Spring Boot 中以 SkillsTool 為應用加入 Skills'
-          ],
-          tasks: [
-            { id: 'd2-u4-t1', text: '理解 MCP Server / Client 在 Spring AI 的接入方式與呼叫流程' },
-            { id: 'd2-u4-t2', text: '理解 MCP 與 Skills 的角色差異與適用場景' },
-            { id: 'd2-u4-t3', text: '瀏覽 spring-ai-agent-utils 專案與工具清單，評估導入 SkillsTool 的版本前置條件' }
-          ],
-          sections: [
-            {
-              title: 'MCP 應該怎麼理解',
-              type: 'text',
-              paragraphs: [
-                'MCP 可以想成 AI 世界的標準插座。當系統中有多個模型平台、IDE 工具與資料來源時，MCP 提供一致的方式描述工具與上下文。',
-                '它的價值不是取代應用程式內部工具呼叫，而是讓不同 AI 客戶端可以以標準方式接入同一批能力。'
-              ],
-              bullets: [
-                'Client 是 AI 平台或整合工具',
-                'Host / Server 提供工具與上下文能力',
-                'Model 專注在理解與生成'
-              ]
-            },
-            {
-              title: 'MCP 在 Spring AI 的接入方式（補充說明）',
-              type: 'text',
-              paragraphs: [
-                'Spring AI 已內建 MCP 支援，接入成本非常低，本章以補充說明的方式帶過即可：Day 2-2 寫好的 `@Tool` Bean 完全不需要修改程式碼，Server 端加一個依賴就會自動透過 `/sse` 端點對外發布為 MCP 工具；另一個應用加上 Client 依賴，啟動時就會自動取回遠端工具清單交給 ChatClient 使用。',
-                '想完整動手做的學員，可參考專案中的 `mcp/` 目錄（mcp-client-demo），其中已包含可直接執行的 MCP Client 範例與設定檔。'
-              ],
-              bullets: [
-                'Server 端：加入 `spring-ai-starter-mcp-server-webmvc` 依賴，既有 @Tool Bean 自動發布為 MCP 工具',
-                'Client 端：加入 `spring-ai-starter-mcp-client` 依賴，SyncMcpToolCallbackProvider 啟動時自動連線取回工具',
-                'Server 與 Client 是兩個獨立服務，必須使用不同 port（例如 8080 / 8081），且要先啟動 Server',
-                '工具掛載方式與本地工具一致：把取回的工具陣列傳入 `.tools()`，AI 就會自動選用遠端工具'
-              ]
-            },
-            {
-              title: 'AI 呼叫遠端工具的完整流程',
-              type: 'text',
-              paragraphs: [
-                '以「有哪些商品？」為例，說明從使用者輸入到 AI 回答的跨服務執行路徑：'
-              ],
-              image: 'assets/teaching-site/22-diagram-mcp-remote-call.svg',
-              imageAlt: 'MCP 跨服務工具呼叫六步驟流程圖',
-              imageCaption: 'Client（8081）透過 SSE 連線呼叫 Server（8080）的工具，@Tool 程式碼完全不用修改。',
-              bullets: [
-                '① 使用者呼叫 `GET http://localhost:8081/api/mcp/chat?message=有哪些商品`',
-                '② MCP Client（port 8081）的 ChatClient 收到訊息，交由 LLM 判斷意圖',
-                '③ AI 判斷需要查商品，透過已建立的 SSE 連線，向 MCP Server（port 8080）發送 getProducts 工具呼叫請求',
-                '④ MCP Server 執行 `ProductTools.getProducts("")` → 查詢 PostgreSQL → 回傳商品 JSON',
-                '⑤ MCP Client 收到工具執行結果，AI 組合成自然語言回答',
-                '⑥ 使用者收到：「目前商城共有 5 項商品：1. 無線耳機 Pro（NT$2,999，庫存 50）...」'
-              ]
-            },
-            {
-              title: 'Skills 是什麼：把專業知識打包給 AI',
-              type: 'text',
-              paragraphs: [
-                'Skills（Agent Skills）是 Anthropic 於 2025 年提出的開放標準：把某個領域的程序性知識（操作流程、規範、範本、輔助腳本）打包成一個資料夾，核心是一份帶有名稱與描述的 SKILL.md 說明檔。AI 平時只看到每個 Skill 的一行描述，judged 相關時才載入完整內容，這種「漸進式載入」讓模型能掛上大量專業知識而不撐爆上下文。',
-                '如果說 Tool Calling 與 MCP 解決的是「AI 能呼叫什麼工具、拿到什麼資料」，Skills 解決的則是「AI 應該照什麼流程與規範做事」。兩者互補，不是替代關係。'
-              ],
-              bullets: [
-                'Skill = 資料夾 + SKILL.md（frontmatter 描述）+ 選配的範本與腳本',
-                '平時只載入描述，被點名才載入全文 — 漸進式揭露（progressive disclosure）',
-                'MCP 擴充「能力與資料」，Skills 擴充「知識與流程」'
-              ]
-            },
-            {
-              title: 'MCP vs Skills：擴充 AI 能力的兩條路',
-              type: 'text',
-              bullets: [
-                'MCP：標準化「連接」— 讓 AI 客戶端以一致方式接上工具與資料來源，重點在執行能力',
-                'Skills：標準化「知識」— 讓 AI 依描述按需載入工作流程與規範，重點在做事方法',
-                '判斷方式：要讓 AI「查得到、做得到」用 MCP / Tool Calling；要讓 AI「做得對、有章法」用 Skills',
-                '實務上常見組合：Skill 內的流程指示 AI 在特定步驟呼叫 MCP 工具完成查詢或寫入'
-              ]
-            },
-            {
-              title: 'Spring AI 如何加入 Skills：spring-ai-agent-utils',
-              type: 'text',
-              paragraphs: [
-                'Skills 是 Claude、Claude Code 等 AI 客戶端原生支援的標準，但 Spring AI 核心框架尚未內建 Skills 概念。在 Spring Boot 應用中要讓 AI 具備 Skills 能力，目前的推薦做法是引用 Spring AI Community（Spring AI 官方社群組織）維護的 spring-ai-agent-utils 套件 — 它把 Claude Code 風格的 Agent 工具與 Skills 機制帶進 Java 應用。',
-                '版本注意：spring-ai-agent-utils 0.9.0 要求 Spring AI 2.0.0-RC1 以上、Java 17+、Spring Boot 3.x / 4.x。本課程專案使用 Spring AI 2.0.0-M8，導入前需先把 Spring AI 升到 RC1 以上版本。'
-              ],
-              bullets: [
-                '路線一（推薦）：引用 spring-ai-agent-utils 的 SkillsTool，以 Markdown + YAML frontmatter 定義可重用知識模組',
-                '路線二：自行實作最小核心 — 掃描 skills/ 目錄、解析 SKILL.md、把描述注入 system prompt（原理與套件相同）',
-                'Skill 檔案本身是純 Markdown、與平台無關，可在 Claude Code 與 Spring Boot 應用間共用同一份'
-              ]
-            },
-            {
-              title: 'spring-ai-agent-utils 提供的 Agent 工具總覽',
-              type: 'text',
-              paragraphs: [
-                '這個套件不只有 Skills，而是一整組 Claude Code 啟發的 Agent 工具，皆以 Spring AI 的 Tool 形式提供，可依需求個別掛入 ChatClient，讓你的 Spring Boot 應用具備接近 Coding Agent 的能力。'
-              ],
-              bullets: [
-                'SkillsTool：載入 SKILL.md 知識模組，支援漸進式載入與技能路由',
-                'FileSystemTools / GrepTool / GlobTool：檔案讀寫編輯、純 Java 的內容搜尋與檔名匹配',
-                'ShellTools：讓 AI 執行 Shell 命令（生產環境務必搭配權限控管）',
-                'TaskTool：子代理（subagent）協調，支援 Markdown 定義的本地子代理與 A2A 遠端代理',
-                'AutoMemoryTools：跨對話的持久化長期記憶',
-                'SmartWebFetchTool / BraveWebSearchTool：網頁擷取摘要與網路搜尋',
-                'AskUserQuestionTool / TodoWriteTool：執行期間向使用者提問、結構化任務清單管理',
-                'Skill 檔案來源可搭配 anthropics/skills（Anthropic 官方開源庫）與 VoltAgent/awesome-agent-skills（社群精選 1000+），格式通用可直接取用'
-              ]
-            },
-            {
-              title: '加入 spring-ai-agent-utils 依賴（pom.xml）',
-              type: 'code',
-              paragraphs: [
-                '套件發布於 Maven Central（groupId 為 org.springaicommunity），官方建議透過 BOM 統一管理版本，再引入核心函式庫。'
-              ],
-              code: {
-                language: 'xml',
-                title: 'pom.xml — 引入 spring-ai-agent-utils（BOM + 核心庫）',
-                content: '<!-- 1. dependencyManagement：以 BOM 統一管理 agent-utils 版本 -->\n<dependencyManagement>\n    <dependencies>\n        <dependency>\n            <groupId>org.springaicommunity</groupId>\n            <artifactId>spring-ai-agent-utils-bom</artifactId>\n            <version>0.9.0</version>\n            <type>pom</type>\n            <scope>import</scope>\n        </dependency>\n    </dependencies>\n</dependencyManagement>\n\n<!-- 2. dependencies：引入核心函式庫（版本由 BOM 決定） -->\n<dependency>\n    <groupId>org.springaicommunity</groupId>\n    <artifactId>spring-ai-agent-utils</artifactId>\n</dependency>\n\n<!-- 注意：0.9.0 要求 Spring AI 2.0.0-RC1+ / Java 17+ / Spring Boot 3.x 或 4.x -->'
-              }
-            },
-            {
-              title: 'ChatClient 掛上 SkillsTool 與 Agent 工具',
-              type: 'code',
-              paragraphs: [
-                '把 SkillsTool 與需要的 Agent 工具透過 defaultTools 掛入 ChatClient：SkillsTool 啟動時讀取指定路徑下的 SKILL.md，平時只讓模型看到技能描述，任務匹配時才載入完整內容（漸進式載入）— 與 Claude Code 載入 Skill 的行為一致。'
-              ],
-              code: {
-                language: 'java',
-                title: 'ChatClient 整合 SkillsTool（節錄）',
-                content: '// 建立 ChatClient 時掛上 Skills 與 Agent 工具\n// skillPaths：SKILL.md 所在的資源路徑清單（例如 classpath:/skills/ 下各技能目錄）\nChatClient chatClient = chatClientBuilder\n        .defaultSystem("你是智慧商城助手。")\n        .defaultTools(\n                // Skills：載入 Markdown + YAML frontmatter 定義的知識模組\n                SkillsTool.builder()\n                        .addSkillsResources(skillPaths)\n                        .build(),\n                // 依需求選掛其他 Agent 工具（檔案存取、Shell 執行等）\n                FileSystemTools.builder().build()\n        )\n        .build();'
-              }
-            }
-          ]
-        },
-        {
           id: 'd2-u5',
-          chapter: '2-5',
+          chapter: '2-4',
           title: 'React 快速入門與前端優化指引',
           summary: '掌握 Node.js 環境、使用 Vite 建立 React 19 專案、JSX 語法元件結構，並學習如何以 Proxy 串接後端 API 及套用 uiuxpromax 優化前端視覺體驗。',
           source: 'docs/Day2-5-React-Intro.md',
           heroImage: 'assets/teaching-site/10-ch10-react-intro.png',
-          diagramImage: 'assets/teaching-site/23-diagram-vite-proxy.svg',
+          diagramImage: 'assets/diagrams/d2-u5.png',
           diagramCaption: '瀏覽器只跟 5173 對話，跨網域請求由 Vite Proxy 代理轉發到 8080，免除 CORS 限制。',
           goals: [
             '理解 Node.js 與 NPM 相依性套件管理機制',
@@ -2473,7 +2731,8 @@ window.COURSE = {
             { id: 'd2-u5-t1', text: '安裝 Node.js 並執行 npm 驗證' },
             { id: 'd2-u5-t2', text: '使用 Vite 建立 React 19 專案並以 npm install 安裝' },
             { id: 'd2-u5-t3', text: '配置 vite.config.js 的 server.proxy 代理' },
-            { id: 'd2-u5-t4', text: '套用 CSS 動畫實作骨架屏與毛玻璃視覺效果' }
+            { id: 'd2-u5-t4', text: '套用 CSS 動畫實作骨架屏與毛玻璃視覺效果' },
+            { id: 'd2-u5-t5', text: '完成商城首頁商品卡片列表（免登入可見，缺貨顯示標籤）' }
           ],
           sections: [
             {
@@ -2542,19 +2801,19 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請幫我建立商城智慧客服的 React 前端專案：\n1. 在專案根目錄用 Vite 建立 React 19 專案：npx create-vite@latest frontend --template react，並執行 npm install。\n2. 設定 vite.config.js 的 server.proxy，把所有 /api 開頭的請求代理到 http://localhost:8080，解決前後端分離的 CORS 問題。\n3. 建立 App 頁面骨架：包含漸層色 Header（linear-gradient 靛藍到紫色）、毛玻璃卡片容器（backdrop-filter: blur），以及聊天視窗的占位區塊。\n4. CSS 請加上骨架屏（skeleton shimmer）載入動畫，之後聊天室等待 AI 回覆時會用到。\n5. 元件需有中文註解。\n完成後請告訴我如何啟動開發伺服器，以及如何確認 proxy 代理有生效。'
+                content: '請幫我建立智慧商城的 React 前端專案：\n1. 在專案根目錄用 Vite 建立 React 19 專案：npx create-vite@latest frontend --template react（AI Agent 的終端機不能回答互動問題，若出現提問請改用非互動方式），並執行 npm install。\n2. 設定 vite.config.js 的 server.proxy，把 /api 開頭的請求代理到 http://localhost:8080。\n3. 把 1-3 章下載的 6 張商品圖片放到 frontend/public/images/products/（檔名不變），資料庫的 image_url 就能直接當圖片網址。\n4. 建立商城首頁 ProductList：呼叫 GET /api/products（免登入），用卡片格狀排版（每張卡片的 class 為 product-card）顯示商品圖片、名稱、價格、庫存，庫存為 0 顯示「缺貨」標籤；點卡片開啟商品詳情（GET /api/products/{id}）。\n5. 版面：漸層色 Header（顯示商城名稱，右側預留登入按鈕位置）、毛玻璃卡片、商品載入中顯示骨架屏（skeleton shimmer），右下角預留 AI 客服聊天視窗的開關按鈕。\n6. 元件需有中文註解。\n完成後請告訴我如何啟動開發伺服器，並確認未登入時首頁就能看到資料庫裡的商品與商品圖片。'
               }
             }
           ]
         },
         {
           id: 'd2-u6',
-          chapter: '2-6',
+          chapter: '2-5',
           title: 'React 聊天室與 SSE 串流式對話實戰',
           summary: '使用 React 串接後端 Server-Sent Events (SSE) 串流 API，利用原生 EventSource 與狀態管理實現即時打字機對話效果。',
           source: 'docs/Day2-5-React-SSE.md',
           heroImage: 'assets/teaching-site/11-ch11-react-sse-chat.png',
-          diagramImage: 'assets/teaching-site/24-diagram-sse-jwt-flow.svg',
+          diagramImage: 'assets/diagrams/d2-u6.png',
           diagramCaption: 'EventSource 無法自訂 Header，JWT 改走網址 Query 參數，由升級後的過濾器驗證。',
           goals: [
             '理解 SSE 與 WebSockets 的區別與選型',
@@ -2565,7 +2824,8 @@ window.COURSE = {
           tasks: [
             { id: 'd2-u6-t1', text: '理解 SSE (Server-Sent Events) 單向串流原理與安全限制' },
             { id: 'd2-u6-t2', text: '升級後端 JwtAuthenticationFilter 支援網址 Query Token' },
-            { id: 'd2-u6-t3', text: '使用 React 實作 EventSource 帶 Token 監聽與狀態更新' }
+            { id: 'd2-u6-t3', text: '使用 React 實作 EventSource 帶 Token 監聽與狀態更新' },
+            { id: 'd2-u6-t4', text: '完成登入表單與 ADMIN 商品上架表單，上架後首頁立即出現新商品' }
           ],
           sections: [
             {
@@ -2654,7 +2914,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有專案中完成以下前端與後端的串流對話安全升級：\n1. 由於原生的 EventSource 無法在 Header 中自訂 Token 進行驗證，請修改後端 `JwtAuthenticationFilter.java` 的 `parseJwt` 方法，使其除了支援從 `Authorization` 標頭讀取 Token 外，也支援從 URL 的 Query 參數（例如 `token`）中取得並驗證 Token。\n2. 在前端 `ChatRoom.jsx` 中，連接後端的 `/api/ai/stream` 串流對話介面。連線時，請從 `localStorage` 中讀取先前儲存的 JWT Token，並以網址參數形式帶入（例如 `/api/ai/stream?message=xxx&token=yyy`），以安全地建立 EventSource 串流對話連線。'
+                content: '請在現有專案中完成「登入、商品上架、AI 客服串流聊天」三個前端功能：\n1. 後端：修改 JwtAuthenticationFilter 的 parseJwt，除了 Authorization 標頭外，也支援從 URL Query 參數 token 取得 JWT（原生 EventSource 無法自訂 Header；token 會出現在存取日誌，僅供教學，正式環境改用 fetch 串流或短效 ticket）。\n2. 前端登入：Header 的登入按鈕開啟 LoginForm，呼叫 POST /api/auth/login，成功後把 Token、帳號與角色存進 localStorage，Header 顯示「你好，帳號名稱」與登出按鈕。\n3. 前端商品上架：登入者角色為 ADMIN 時，Header 顯示「商品上架」按鈕，開啟表單（名稱、說明、價格、庫存、分類、圖片網址），以 Authorization: Bearer 呼叫 POST /api/products，成功後重新載入商品列表。\n4. 前端 ChatRoom.jsx：右下角聊天視窗，未登入時提示「請先登入以使用客服」；登入後以 new EventSource(\'/api/ai/stream?message=...&token=...\') 連線，等待時顯示骨架屏，收到 "[DONE]" 結束標記或發生錯誤時立即呼叫 eventSource.close()，避免自動重連重複提問。\n5. 打字機效果：收到的文字先放進緩衝區，再用 setInterval 每 20～30 毫秒取出幾個字顯示，做出逐字出現的效果；收到 [DONE] 後把剩下的字顯示完。這只改善使用者體感，不會讓回答變快（Muse 帶工具時整段一次送達，總時間不變）。\n完成後請示範：訪客看得到商品 → admin 登入上架一個新商品，首頁立即出現 → 登出改用 user 登入，在聊天視窗問「無線耳機 Pro 還有庫存嗎？」並看到逐字回覆。'
               }
             },
             {
@@ -2701,12 +2961,12 @@ window.COURSE = {
         },
         {
           id: 'd2-u7',
-          chapter: '2-7',
+          chapter: '2-6',
           title: '對話歷史向量化與 RAG 檢索',
           summary: '將聊天室的對話紀錄（User Prompt 與 AI Response）非同步向量化儲存，並在發問時透過多路 RAG 同時檢索商品庫與歷史對話，打造具備長效語意記憶的 AI 助手。',
           source: 'docs/Day2-6-ChatHistory-RAG.md',
           heroImage: 'assets/teaching-site/12-ch12-chat-history-rag.png',
-          diagramImage: 'assets/teaching-site/25-diagram-dual-rag.svg',
+          diagramImage: 'assets/diagrams/d2-u7.png',
           diagramCaption: '提問時雙路並行檢索商品知識與個人歷史；對話結束後才非同步寫回向量庫，不阻塞串流。',
           goals: [
             '理解對話歷史向量化的重要性與長期記憶挑戰',
@@ -2741,31 +3001,31 @@ window.COURSE = {
               code: {
                 language: 'java',
                 title: 'RAGController.java — 監聽串流完成並非同步寫入',
-                content: '@GetMapping(value = "/stream-chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<String> streamChatWithHistory(\n        @RequestParam String message,\n        @RequestParam String sessionId) {\n\n    StringBuilder fullResponse = new StringBuilder();\n\n    return this.chatClient.prompt()\n            .user(message)\n            .stream()\n            .content()\n            .doOnNext(fullResponse::append) // 持續收集模型生成的字元片段\n            .doOnComplete(() -> {\n                // 串流傳輸完成後，非同步將對話紀錄寫入向量庫\n                CompletableFuture.runAsync(() -> {\n                    chatHistoryService.saveToVectorStore(sessionId, message, fullResponse.toString());\n                });\n            });\n}'
+                content: '@GetMapping(value = "/api/ai/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)\npublic Flux<String> streamChatWithHistory(\n        @RequestParam String message,\n        java.security.Principal principal) {\n\n    // 以登入帳號作為長期記憶的隔離鍵，重新整理頁面也記得\n    String username = principal.getName();\n    StringBuilder fullResponse = new StringBuilder();\n\n    return this.chatClient.prompt()\n            .user(message)\n            .stream()\n            .content()\n            .doOnNext(fullResponse::append) // 持續收集模型生成的字元片段\n            .doOnComplete(() -> {\n                // 串流傳輸完成後，非同步將對話紀錄寫入向量庫\n                CompletableFuture.runAsync(() -> {\n                    chatHistoryService.saveToVectorStore(username, message, fullResponse.toString());\n                });\n            });\n}'
               }
             },
             {
               title: '對話歷史向量化 Service 實作',
               type: 'code',
               paragraphs: [
-                '利用 `VectorStore` 的 `add` 方法，我們把 User 問句與 AI 答句組合，並加上 metadata 以利日後查詢時，能透過 `sessionId` 隔離不同使用者的隱私。'
+                '利用 `VectorStore` 的 `add` 方法，我們把 User 問句與 AI 答句組合，並加上 metadata 以利日後查詢時，能透過 登入帳號 `username` 隔離不同使用者的隱私。'
               ],
               code: {
                 language: 'java',
                 title: 'ChatHistoryService.java — 寫入向量庫與 Metadata 過濾',
-                content: '@Service\n@Slf4j\npublic class ChatHistoryService {\n    private final VectorStore vectorStore;\n\n    public ChatHistoryService(VectorStore vectorStore) {\n        this.vectorStore = vectorStore;\n    }\n\n    public void saveToVectorStore(String sessionId, String prompt, String response) {\n        String content = "使用者提問：" + prompt + "\\n助手回答：" + response;\n        \n        Document doc = new Document(\n            content,\n            Map.of(\n                "sessionId", sessionId,\n                "type", "chat_history",\n                "created_at", System.currentTimeMillis()\n            )\n        );\n        \n        vectorStore.add(List.of(doc));\n        log.info("[長期記憶] 已成功向量化存入對話歷史，sessionId={}", sessionId);\n    }\n}'
+                content: '@Service\n@Slf4j\npublic class ChatHistoryService {\n    private final VectorStore vectorStore;\n\n    public ChatHistoryService(VectorStore vectorStore) {\n        this.vectorStore = vectorStore;\n    }\n\n    public void saveToVectorStore(String username, String prompt, String response) {\n        String content = "使用者提問：" + prompt + "\\n助手回答：" + response;\n        \n        Document doc = new Document(\n            content,\n            Map.of(\n                "username", username,\n                "type", "chat_history",\n                "created_at", System.currentTimeMillis()\n            )\n        );\n        \n        vectorStore.add(List.of(doc));\n        log.info("[長期記憶] 已成功向量化存入對話歷史，username={}", username);\n    }\n}'
               }
             },
             {
               title: '雙路 RAG 檢索與上下文合併',
               type: 'code',
               paragraphs: [
-                '在使用者提問時，我們同時發起兩路檢索：一路查「商品知識表（type = \'product_doc\'）」，另一路查「該用戶的對話歷史（type = \'chat_history\' AND sessionId = \'xxx\'）」，最後將兩者合併作為 Context 提供給大模型。'
+                '在使用者提問時，我們同時發起兩路檢索：一路查「商品知識表（type = \'product_doc\'）」，另一路查「該用戶的對話歷史（type = \'chat_history\' AND username = \'xxx\'）」，最後將兩者合併作為 Context 提供給大模型。'
               ],
               code: {
                 language: 'java',
                 title: 'RAGController.java — 雙路 RAG 合併檢索',
-                content: 'public List<Document> retrieveDoubleRoad(String query, String sessionId) {\n    // 第一路：商品文件檢索\n    SearchRequest productReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'product_doc\'")\n            .topK(3)\n            .build();\n    List<Document> products = vectorStore.similaritySearch(productReq);\n\n    // 第二路：該使用者歷史對話語意檢索\n    SearchRequest historyReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'chat_history\' && sessionId == \'" + sessionId + "\'")\n            .topK(2)\n            .build();\n    List<Document> histories = vectorStore.similaritySearch(historyReq);\n\n    // 合併結果並回傳\n    List<Document> combined = new ArrayList<>();\n    combined.addAll(products);\n    combined.addAll(histories);\n    return combined;\n}'
+                content: 'public List<Document> retrieveDoubleRoad(String query, String username) {\n    // 第一路：商品文件檢索\n    SearchRequest productReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'product_doc\'")\n            .topK(3)\n            .build();\n    List<Document> products = vectorStore.similaritySearch(productReq);\n\n    // 第二路：該使用者歷史對話語意檢索\n    SearchRequest historyReq = SearchRequest.builder()\n            .query(query)\n            .filterExpression("type == \'chat_history\' && username == \'" + username + "\'")\n            .topK(2)\n            .build();\n    List<Document> histories = vectorStore.similaritySearch(historyReq);\n\n    // 合併結果並回傳\n    List<Document> combined = new ArrayList<>();\n    combined.addAll(products);\n    combined.addAll(histories);\n    return combined;\n}'
               }
             },
             {
@@ -2777,7 +3037,152 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請為聊天室加入「長期記憶」功能，把對話歷史向量化存入 pgvector：\n1. 建立 ChatHistoryService，提供 saveToVectorStore(sessionId, prompt, response) 方法：把使用者問句與 AI 回答組成一份 Document，metadata 加上 sessionId、type 為 chat_history 與建立時間，再寫入 VectorStore。\n2. 修改 SSE 串流介面：用 doOnNext 收集完整回覆內容，並在 doOnComplete 時用 CompletableFuture.runAsync 非同步寫入向量庫，避免阻塞串流回應。\n3. 實作雙路 RAG 檢索方法：使用者提問時同時查兩路 —— 商品文件（filterExpression 過濾 type 為 product_doc）取前 3 筆、該使用者的歷史對話（type 為 chat_history 且 sessionId 相符）取前 2 筆，合併後作為上下文交給模型。\n4. 程式碼需有中文函式註解。\n完成後請示範驗證流程：先聊「我預算三千、想要重低音耳機」，之後開新對話問「根據我之前說的需求推薦商品」，確認 AI 記得歷史偏好。'
+                content: '請為 AI 客服加入「長期記憶」，把對話歷史向量化存入 pgvector：\n1. 建立 ChatHistoryService，提供 saveToVectorStore(username, prompt, response)：把問句與回答組成一份 Document，metadata 加上 username、type=chat_history 與建立時間，再寫入 VectorStore。\n2. 修改 /api/ai/stream：用 doOnNext 收集完整回覆，在 doOnComplete 時以 CompletableFuture.runAsync 非同步寫入向量庫，避免阻塞串流。\n3. 雙路檢索改在 ChatController 內用 vectorStore.similaritySearch 手動實作，並移除 2-3 掛在 /api/ai/stream 上的 QuestionAnswerAdvisor（它只能有一個 filter）：商品文件（type == \'product_doc\'）取前 3 筆、目前登入者的歷史對話（type == \'chat_history\' 且 username 相符）取前 2 筆。\n4. 兩路結果連同「規格、保固、政策依參考資料；庫存、價格、缺貨、訂單必須呼叫工具，不可因參考資料沒有就拒答」的規則放進 system 訊息（不要拼進 user 訊息，否則整包上下文會被短期記憶存起來；system 文字會被當成範本解析，檢索內容裡的大括號要先替換掉）。\n5. 檢索失敗（例外或逾時）時只記錄警告、以空上下文繼續回答，不可讓整個對話失敗。\n6. 程式碼需有中文函式註解。\n完成後請示範：以 user 聊「我預算三千、想要重低音耳機」，再聊 3 個無關話題，接著重新啟動後端（清空短期記憶，只剩向量庫的長期記憶），再問「根據我之前說的需求推薦商品」，確認 AI 記得預算與偏好，且推薦的是資料庫裡有庫存的商品；改用 admin 問同一句，確認看不到 user 的歷史。'
+              }
+            }
+          ]
+        },
+        {
+          id: 'd2-u4',
+          chapter: '2-7',
+          title: '擴充AI能力：MCP 與 Skills',
+          summary: '補充說明 MCP 在 AI 系統中的標準化接口角色與 Spring AI 的接入方式，並介紹 Skills 開放標準與 Spring AI Community 官方的 spring-ai-agent-utils 套件（SkillsTool 與 Agent 工具集）。',
+          source: 'docs/Day2-4-WrapUp-MCP.md',
+          heroImage: 'assets/teaching-site/08-ch08-mcp-wrapup.png',
+          diagramImage: 'assets/diagrams/d2-u4.png',
+          diagramCaption: '不同 AI 客戶端透過 MCP 標準接口接入同一批工具與上下文能力。',
+          goals: [
+            '理解 MCP 對跨工具 AI 生態的價值與 Spring AI 的接入方式',
+            '理解 Skills 開放標準與 MCP 的角色差異',
+            '認識 Spring AI Community 的 spring-ai-agent-utils 與其 Agent 工具集',
+            '知道如何在 Spring Boot 中以 SkillsTool 為應用加入 Skills'
+          ],
+          tasks: [
+            { id: 'd2-u4-t1', text: '理解 MCP Server / Client 在 Spring AI 的接入方式與呼叫流程' },
+            { id: 'd2-u4-t2', text: '理解 MCP 與 Skills 的角色差異與適用場景' },
+            { id: 'd2-u4-t3', text: '瀏覽 spring-ai-agent-utils 專案與工具清單，評估導入 SkillsTool 的版本前置條件' }
+          ],
+          sections: [
+            {
+              title: 'MCP 應該怎麼理解',
+              type: 'text',
+              paragraphs: [
+                'MCP 可以想成 AI 世界的標準插座。當系統中有多個模型平台、IDE 工具與資料來源時，MCP 提供一致的方式描述工具與上下文。',
+                '它的價值不是取代應用程式內部工具呼叫，而是讓不同 AI 客戶端可以以標準方式接入同一批能力。'
+              ],
+              bullets: [
+                'Client 是 AI 平台或整合工具',
+                'Host / Server 提供工具與上下文能力',
+                'Model 專注在理解與生成'
+              ]
+            },
+            {
+              title: 'MCP 在 Spring AI 的接入方式（補充說明）',
+              type: 'text',
+              paragraphs: [
+                'Spring AI 已內建 MCP 支援，接入成本非常低，本章以補充說明的方式帶過即可：Day 2-2 寫好的 `@Tool` Bean 完全不需要修改程式碼，Server 端加一個依賴就會自動透過 `/sse` 端點對外發布為 MCP 工具；另一個應用加上 Client 依賴，啟動時就會自動取回遠端工具清單交給 ChatClient 使用。',
+                '想完整動手做的學員，可參考專案中的 `mcp/` 目錄（mcp-client-demo），其中已包含可直接執行的 MCP Client 範例與設定檔。'
+              ],
+              bullets: [
+                'Server 端：加入 `spring-ai-starter-mcp-server-webmvc` 依賴，既有 @Tool Bean 自動發布為 MCP 工具',
+                'Client 端：加入 `spring-ai-starter-mcp-client` 依賴，SyncMcpToolCallbackProvider 啟動時自動連線取回工具',
+                'Server 與 Client 是兩個獨立服務，必須使用不同 port（例如 8080 / 8081），且要先啟動 Server',
+                '工具掛載方式與本地工具一致：把取回的工具陣列傳入 `.tools()`，AI 就會自動選用遠端工具'
+              ]
+            },
+            {
+              title: 'AI 呼叫遠端工具的完整流程',
+              type: 'text',
+              paragraphs: [
+                '以「有哪些商品？」為例，說明從使用者輸入到 AI 回答的跨服務執行路徑：'
+              ],
+              image: 'assets/teaching-site/22-diagram-mcp-remote-call.svg',
+              imageAlt: 'MCP 跨服務工具呼叫六步驟流程圖',
+              imageCaption: 'Client（8081）透過 SSE 連線呼叫 Server（8080）的工具，@Tool 程式碼完全不用修改。',
+              bullets: [
+                '① 使用者呼叫 `GET http://localhost:8081/api/mcp/chat?message=有哪些商品`',
+                '② MCP Client（port 8081）的 ChatClient 收到訊息，交由 LLM 判斷意圖',
+                '③ AI 判斷需要查商品，透過已建立的 SSE 連線，向 MCP Server（port 8080）發送 getProducts 工具呼叫請求',
+                '④ MCP Server 執行 `ProductTools.getProducts("")` → 查詢 PostgreSQL → 回傳商品 JSON',
+                '⑤ MCP Client 收到工具執行結果，AI 組合成自然語言回答',
+                '⑥ 使用者收到：「目前商城共有 5 項商品：1. 無線耳機 Pro（NT$2,999，庫存 50）...」'
+              ]
+            },
+            {
+              title: 'Skills 是什麼：把專業知識打包給 AI',
+              type: 'text',
+              paragraphs: [
+                'Skills（Agent Skills）是 Anthropic 於 2025 年提出的開放標準：把某個領域的程序性知識（操作流程、規範、範本、輔助腳本）打包成一個資料夾，核心是一份帶有名稱與描述的 SKILL.md 說明檔。AI 平時只看到每個 Skill 的一行描述，judged 相關時才載入完整內容，這種「漸進式載入」讓模型能掛上大量專業知識而不撐爆上下文。',
+                '如果說 Tool Calling 與 MCP 解決的是「AI 能呼叫什麼工具、拿到什麼資料」，Skills 解決的則是「AI 應該照什麼流程與規範做事」。兩者互補，不是替代關係。'
+              ],
+              bullets: [
+                'Skill = 資料夾 + SKILL.md（frontmatter 描述）+ 選配的範本與腳本',
+                '平時只載入描述，被點名才載入全文 — 漸進式揭露（progressive disclosure）',
+                'MCP 擴充「能力與資料」，Skills 擴充「知識與流程」'
+              ]
+            },
+            {
+              title: 'MCP vs Skills：擴充 AI 能力的兩條路',
+              type: 'text',
+              bullets: [
+                'MCP：標準化「連接」— 讓 AI 客戶端以一致方式接上工具與資料來源，重點在執行能力',
+                'Skills：標準化「知識」— 讓 AI 依描述按需載入工作流程與規範，重點在做事方法',
+                '判斷方式：要讓 AI「查得到、做得到」用 MCP / Tool Calling；要讓 AI「做得對、有章法」用 Skills',
+                '實務上常見組合：Skill 內的流程指示 AI 在特定步驟呼叫 MCP 工具完成查詢或寫入'
+              ]
+            },
+            {
+              title: 'Spring AI 如何加入 Skills：spring-ai-agent-utils',
+              type: 'text',
+              paragraphs: [
+                'Skills 是 Claude、Claude Code 等 AI 客戶端原生支援的標準，但 Spring AI 核心框架尚未內建 Skills 概念。在 Spring Boot 應用中要讓 AI 具備 Skills 能力，目前的推薦做法是引用 Spring AI Community（Spring AI 官方社群組織）維護的 spring-ai-agent-utils 套件 — 它把 Claude Code 風格的 Agent 工具與 Skills 機制帶進 Java 應用。',
+                '版本注意：spring-ai-agent-utils 0.9.0 要求 Spring AI 2.0.0-RC1 以上、Java 17+、Spring Boot 3.x / 4.x。本課程專案使用 Spring AI 2.0.2，符合需求。'
+              ],
+              bullets: [
+                '路線一（推薦）：引用 spring-ai-agent-utils 的 SkillsTool，以 Markdown + YAML frontmatter 定義可重用知識模組',
+                '路線二：自行實作最小核心 — 掃描 skills/ 目錄、解析 SKILL.md、把描述注入 system prompt（原理與套件相同）',
+                'Skill 檔案本身是純 Markdown、與平台無關，可在 Claude Code 與 Spring Boot 應用間共用同一份'
+              ]
+            },
+            {
+              title: 'spring-ai-agent-utils 提供的 Agent 工具總覽',
+              type: 'text',
+              paragraphs: [
+                '這個套件不只有 Skills，而是一整組 Claude Code 啟發的 Agent 工具，皆以 Spring AI 的 Tool 形式提供，可依需求個別掛入 ChatClient，讓你的 Spring Boot 應用具備接近 Coding Agent 的能力。'
+              ],
+              bullets: [
+                'SkillsTool：載入 SKILL.md 知識模組，支援漸進式載入與技能路由',
+                'FileSystemTools / GrepTool / GlobTool：檔案讀寫編輯、純 Java 的內容搜尋與檔名匹配',
+                'ShellTools：讓 AI 執行 Shell 命令（生產環境務必搭配權限控管）',
+                'TaskTool：子代理（subagent）協調，支援 Markdown 定義的本地子代理與 A2A 遠端代理',
+                'AutoMemoryTools：跨對話的持久化長期記憶',
+                'SmartWebFetchTool / BraveWebSearchTool：網頁擷取摘要與網路搜尋',
+                'AskUserQuestionTool / TodoWriteTool：執行期間向使用者提問、結構化任務清單管理',
+                'Skill 檔案來源可搭配 anthropics/skills（Anthropic 官方開源庫）與 VoltAgent/awesome-agent-skills（社群精選 1000+），格式通用可直接取用'
+              ]
+            },
+            {
+              title: '加入 spring-ai-agent-utils 依賴（pom.xml）',
+              type: 'code',
+              paragraphs: [
+                '套件發布於 Maven Central（groupId 為 org.springaicommunity），官方建議透過 BOM 統一管理版本，再引入核心函式庫。'
+              ],
+              code: {
+                language: 'xml',
+                title: 'pom.xml — 引入 spring-ai-agent-utils（BOM + 核心庫）',
+                content: '<!-- 1. dependencyManagement：以 BOM 統一管理 agent-utils 版本 -->\n<dependencyManagement>\n    <dependencies>\n        <dependency>\n            <groupId>org.springaicommunity</groupId>\n            <artifactId>spring-ai-agent-utils-bom</artifactId>\n            <version>0.9.0</version>\n            <type>pom</type>\n            <scope>import</scope>\n        </dependency>\n    </dependencies>\n</dependencyManagement>\n\n<!-- 2. dependencies：引入核心函式庫（版本由 BOM 決定） -->\n<dependency>\n    <groupId>org.springaicommunity</groupId>\n    <artifactId>spring-ai-agent-utils</artifactId>\n</dependency>\n\n<!-- 注意：0.9.0 要求 Spring AI 2.0.0-RC1+ / Java 17+ / Spring Boot 3.x 或 4.x -->'
+              }
+            },
+            {
+              title: 'ChatClient 掛上 SkillsTool 與 Agent 工具',
+              type: 'code',
+              paragraphs: [
+                '把 SkillsTool 與需要的 Agent 工具透過 defaultTools 掛入 ChatClient：SkillsTool 啟動時讀取指定路徑下的 SKILL.md，平時只讓模型看到技能描述，任務匹配時才載入完整內容（漸進式載入）— 與 Claude Code 載入 Skill 的行為一致。'
+              ],
+              code: {
+                language: 'java',
+                title: 'ChatClient 整合 SkillsTool（節錄）',
+                content: '// 建立 ChatClient 時掛上 Skills 與 Agent 工具\n// skillPaths：SKILL.md 所在的資源路徑清單（例如 classpath:/skills/ 下各技能目錄）\nChatClient chatClient = chatClientBuilder\n        .defaultSystem("你是智慧商城助手。")\n        .defaultTools(\n                // Skills：載入 Markdown + YAML frontmatter 定義的知識模組\n                SkillsTool.builder()\n                        .addSkillsResources(skillPaths)\n                        .build(),\n                // 依需求選掛其他 Agent 工具（檔案存取、Shell 執行等）\n                FileSystemTools.builder().build()\n        )\n        .build();'
               }
             }
           ]
@@ -2789,7 +3194,7 @@ window.COURSE = {
           summary: '整合兩天成果，從資料庫、後端 API、AI 能力到 React 前端逐項驗證完整系統，並整理後續延伸學習方向。',
           source: 'docs/Day2-8-WrapUp.md',
           heroImage: 'assets/teaching-site/00-course-overview.png',
-          diagramImage: 'assets/teaching-site/26-diagram-fullstack-overview.svg',
+          diagramImage: 'assets/diagrams/d2-u8.png',
           diagramCaption: 'Day 1 的工程底盤撐起 Day 2 的 AI 能力與前端介面，五個區塊組成完整的智慧商城系統。',
           goals: [
             '能完成前後端專案啟動、驗證與展示流程',
@@ -2798,7 +3203,7 @@ window.COURSE = {
           ],
           tasks: [
             { id: 'd2-u8-t1', text: '啟動資料庫與後端應用服務' },
-            { id: 'd2-u8-t2', text: '完成客服模式與 RAG 模式驗證' },
+            { id: 'd2-u8-t2', text: '完成商城展示、商品上架與 AI 客服（庫存、訂單、商品細節）驗證' },
             { id: 'd2-u8-t3', text: '啟動 React 前端並完成 SSE 串流對話驗證' },
             { id: 'd2-u8-t4', text: '整理延伸學習與擴充方向' }
           ],
@@ -2815,15 +3220,29 @@ window.COURSE = {
               imageCaption: '這一章的任務，是把前面所有零件組成完整系統。'
             },
             {
+              title: '完成畫面樣本（照課程提示詞實際做出來的結果）',
+              type: 'text',
+              paragraphs: [
+                '以下截圖來自用本課程提示詞從頭實作一遍的演練專案（Spring Boot 4 + Spring AI 2.0.2 + Muse Spark），可以拿來對照自己的成果。注意第 4 張的回答裡有「我來幫你查…正在幫你查…」的過場話與「編號ORD」黏字，這兩個問題在 2-1 章提示詞已加上修正，照最新版做就不會出現，可以當作「看圖找問題」的練習。'
+              ],
+              bullets: [
+                '訪客首頁：未登入就能看到商品圖片、價格、庫存，智慧檯燈顯示缺貨標籤<br><a href="assets/samples/01-visitor-home.jpg" target="_blank"><img src="assets/samples/01-visitor-home.jpg" alt="訪客首頁：未登入就能看到商品圖片、價格、庫存，智慧檯燈顯示缺貨標籤" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                'admin 登入後的「商品上架」表單，送出後首頁立即出現新商品<br><a href="assets/samples/02-admin-add-product.jpg" target="_blank"><img src="assets/samples/02-admin-add-product.jpg" alt="admin 登入後的「商品上架」表單，送出後首頁立即出現新商品" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                'user 問「無線耳機 Pro 還有多少庫存？」，AI 呼叫工具查資料庫回答<br><a href="assets/samples/03-chat-stock.jpg" target="_blank"><img src="assets/samples/03-chat-stock.jpg" alt="user 問「無線耳機 Pro 還有多少庫存？」，AI 呼叫工具查資料庫回答" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                'user 問「我的訂單出貨了嗎？」，只列出自己的 3 筆訂單與狀態<br><a href="assets/samples/04-chat-orders.jpg" target="_blank"><img src="assets/samples/04-chat-orders.jpg" alt="user 問「我的訂單出貨了嗎？」，只列出自己的 3 筆訂單與狀態" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                '課程 backend 範例專案的商品目錄（另一套示範商品與圖片）<br><a href="assets/samples/05-backend-catalog.jpg" target="_blank"><img src="assets/samples/05-backend-catalog.jpg" alt="課程 backend 範例專案的商品目錄（另一套示範商品與圖片）" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>'
+              ]
+            },
+            {
               title: 'Day 1 / Day 2 學習路徑回顧',
               type: 'text',
               paragraphs: [
                 'Day 1 解決的是「一個可維護的後端長什麼樣」：REST 分層、資料庫容器化與遷移、JPA 持久化，再用 API 文件、例外處理、Log、AOP 與 Security 補齊工程品質。',
-                'Day 2 解決的是「如何把 AI 與前端接回同一個應用」：ChatClient 對話、工具呼叫、RAG 知識檢索、MCP 與 Skills 擴充，最後以 React 完成 SSE 串流介面與對話歷史長期記憶。'
+                'Day 2 解決的是「如何把 AI 與前端接回同一個應用」：ChatClient 對話、工具呼叫、RAG 知識檢索，接著以 React 完成 SSE 串流介面與對話歷史長期記憶，讓核心產品先完整可用，最後才用 MCP 與 Skills 把能力開放給其他 AI 工具。補充章介紹如何用 Cloudflare Tunnel 把成果分享給別人試用。'
               ],
               bullets: [
                 'Day 1：環境 → REST → Docker/Flyway → JPA → API 文件 → 例外 → Log → AOP → Security',
-                'Day 2：ChatClient → 工具呼叫 → RAG → MCP 與 Skills → React 入門 → SSE 聊天室 → 對話歷史 RAG → 總結',
+                'Day 2：ChatClient → 工具呼叫 → RAG → React 入門 → SSE 聊天室 → 對話歷史 RAG → MCP 與 Skills 擴充 → 總結 →（補充）Cloudflare Tunnel 分享',
                 '前後端合起來，正是一個完整應用所需的全端開發路徑'
               ]
             },
@@ -2865,7 +3284,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請幫我對這個兩天課程完成的全端智慧商城專案做一次完整驗證：\n1. 檢查 docker-compose 的 PostgreSQL（pgvector）容器是否為 Up 狀態。\n2. 啟動 Spring Boot 後端，確認 Flyway migration 成功套用、應用正常啟動（看到 Started 訊息）。\n3. 逐項測試以下功能並回報結果：\n   - 聊天介面能回答商品價格與庫存（後端日誌看得到工具呼叫紀錄）\n   - RAG 介面能根據上傳的文件回答問題，而不是泛泛常識\n   - React 前端能啟動，並透過 SSE 逐字顯示 AI 串流回覆\n4. 把每一項的測試結果整理成一份 Markdown 驗證報告：標出通過與失敗的項目，失敗的項目請附上可能原因與排查建議。'
+                content: '請幫我對這個兩天課程完成的智慧商城專案做一次完整驗證，並寫成 e2e 腳本以便重跑：\n1. 環境：docker compose 的 PostgreSQL（pgvector）容器為 Up；用 docker exec 查 flyway_schema_history 確認 V1、V2 的 success 為 t（第二次啟動後日誌只會顯示 up to date）；後端用 mvn spring-boot:run 2>&1 | Tee-Object logs/backend.log 啟動並看到 Started 訊息（工具呼叫紀錄從 logs/backend.log 搜尋 [工具呼叫]）；React 前端可啟動。\n2. 商城展示：未登入開啟首頁，看得到資料庫的商品卡片（含價格、庫存、缺貨標籤）。\n3. 商品上架：admin 登入後上架一個新商品，首頁列表立即出現；user 呼叫 POST /api/products 得到 403。\n4. AI 客服（以 user 登入，在聊天視窗逐字顯示回覆）：\n   - 問庫存：「無線耳機 Pro 還有多少庫存？」→ 數字與資料庫一致，後端日誌有 getProductDetail 工具呼叫\n   - 問訂單：「我的訂單出貨了嗎？」→ 只列出 user 自己的訂單與正確狀態，且不得出現 admin 的訂單編號\n   - 問商品細節：「無線耳機 Pro 防水嗎？保固多久？」→ 答案來自 2-3 上傳的規格文件\n   - 問不存在的商品 → 回答查不到，而不是編造\n5. Playwright 腳本放在 e2e/，等待 AI 回覆的逾時至少 120 秒（推理模型單輪可能 10～30 秒）；測試會留下上架商品與對話紀錄，庫存數字不要寫死。\n6. 把每一項結果整理成 Markdown 驗證報告，標出通過與失敗；失敗項目附可能原因與排查建議。'
               }
             },
             {
@@ -2901,13 +3320,111 @@ window.COURSE = {
               ]
             }
           ]
+        },
+        {
+          id: 'd2-u9',
+          chapter: '2-9',
+          title: '額外補充：Cloudflare Tunnel 分享你的專案',
+          summary: '在 docker-compose 加一個 cloudflared 服務，免開防火牆、免設路由器就能讓外部連進本機；先用免註冊的隨機網址分享，有自己的網域再免費綁定固定網址。',
+          source: 'docs/Day2-9-Cloudflare-Tunnel.md',
+          heroImage: 'assets/teaching-site/13-ch2-9-cloudflare-tunnel.png',
+          diagramImage: 'assets/diagrams/d2-u9.png',
+          diagramCaption: 'cloudflared 從你的電腦主動連出到 Cloudflare，外部使用者連 Cloudflare 的網址就會被轉進本機服務。',
+          goals: [
+            '理解 Cloudflare Tunnel 為何不需要公開 IP 與開放連接埠',
+            '用 Quick Tunnel（免註冊）在 docker-compose 中一行服務產生公開網址',
+            '知道綁定自有網域的流程，以及兩種模式的限制與適用時機'
+          ],
+          tasks: [
+            { id: 'd2-u9-t1', text: '在 docker-compose.yml 加入 cloudflared 服務並取得 trycloudflare.com 網址' },
+            { id: 'd2-u9-t2', text: '用手機（關閉 Wi-Fi）開啟該網址，確認可看到商城頁面' },
+            { id: 'd2-u9-t3', text: '（選做）有網域者建立 Named Tunnel 並綁定子網域' }
+          ],
+          sections: [
+            {
+              title: '為什麼要用 Cloudflare Tunnel',
+              type: 'text',
+              paragraphs: [
+                '專案做完想給同事、客戶或朋友試用，傳統做法是租雲端主機部署，或在路由器設定 Port Forwarding。前者要花錢與時間，後者常被公司網路或電信 NAT 擋住。',
+                'Cloudflare Tunnel 的做法反過來：在你的電腦跑一個 <code>cloudflared</code>，由它<strong>主動連出</strong>到 Cloudflare，外部使用者連 Cloudflare 給的網址，流量再沿著這條通道送回你的電腦。不用公開 IP、不用開防火牆，還自動有 HTTPS。'
+              ],
+              image: 'assets/teaching-site/27-diagram-cloudflare-tunnel.svg',
+              imageAlt: 'Cloudflare Tunnel 連線示意圖',
+              imageCaption: '箭頭方向是重點：連線由你的電腦往外建立，所以不用開任何對外連接埠。'
+            },
+            {
+              title: '優點與限制',
+              type: 'text',
+              bullets: [
+                '✅ <strong>初期分享專案最方便</strong>：不用買主機、不用部署，改完程式重啟容器就是最新版本。',
+                '✅ Quick Tunnel 免註冊、免費，Named Tunnel 綁自有網域也免費（網域本身要自己買）。',
+                '⚠️ <strong>電腦必須保持開機</strong>且 Docker 在跑，關機或睡眠時網址就連不到；不適合當正式上線環境。',
+                '⚠️ Quick Tunnel 每次重啟網址都會變（隨機子網域），沒有可用性保證，同時處理中的請求上限約 200 個。',
+                '⚠️ <strong>Quick Tunnel 不支援 SSE</strong>：串流聊天會收不到逐字回覆。要展示 SSE 聊天室請改用下方的 Named Tunnel，或在展示時改用非串流的 <code>.call()</code> 端點。',
+                '⚠️ 網址一公開任何人都連得到：分享前確認已有登入保護（1-9 章的 Spring Security），並注意 AI API 額度可能被別人用掉。'
+              ]
+            },
+            {
+              title: '模式一：Quick Tunnel（免註冊，網址隨機）',
+              type: 'code',
+              paragraphs: [
+                '在現有的 <code>backend/docker-compose.yml</code> 加入一個服務即可。它把流量轉給同一個 compose 網路裡的 <code>nginx</code>（服務名稱就是主機名稱），nginx 再分送前端頁面與 <code>/api</code>。'
+              ],
+              code: {
+                language: 'yaml',
+                title: 'docker-compose.yml — 新增 cloudflared 服務（Quick Tunnel）',
+                content: 'services:\n  # ...postgres、nginx 維持原樣...\n\n  # Cloudflare Quick Tunnel：免註冊，啟動後在 log 取得隨機網址\n  tunnel:\n    image: cloudflare/cloudflared:latest\n    container_name: spring-tunnel\n    # 把外部流量轉給同一網路中的 nginx（80 埠）\n    command: tunnel --no-autoupdate --url http://nginx:80\n    depends_on:\n      - nginx\n    restart: unless-stopped'
+              }
+            },
+            {
+              title: '啟動並取得公開網址',
+              type: 'code',
+              paragraphs: [
+                '啟動後從容器 log 找 <code>trycloudflare.com</code> 那一行，就是可以分享出去的網址。驗證時請用手機關掉 Wi-Fi 走行動網路開啟，才是真正的「外部連線」。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell — 啟動 tunnel 並找出網址',
+                content: 'cd backend\ndocker compose up -d tunnel\n\n# 從 log 篩出公開網址（約 5～10 秒後出現）\ndocker compose logs tunnel | Select-String "trycloudflare.com"\n# 輸出範例：|  https://random-words-1234.trycloudflare.com  |\n\n# 不分享時關掉\ndocker compose stop tunnel'
+              }
+            },
+            {
+              title: '模式二：Named Tunnel 綁定自有網域（需註冊，免費）',
+              type: 'text',
+              paragraphs: [
+                '有自己的網域時，可以得到固定網址（例如 <code>shop.example.com</code>），重啟也不會變，而且支援 SSE。前提是網域的 DNS 交給 Cloudflare 管理。'
+              ],
+              bullets: [
+                '① 到 dash.cloudflare.com 免費註冊帳號，選 <code>Add a domain</code> 加入你的網域，依畫面指示到網域註冊商把 Nameserver 改成 Cloudflare 提供的兩組（生效需數分鐘到數小時）。',
+                '② 進入 <code>Zero Trust</code> → <code>Networks</code> → <code>Tunnels</code> → <code>Create a tunnel</code>，類型選 <code>Cloudflared</code>，取名（如 learn-spring）。',
+                '③ 安裝畫面選 Docker，複製指令裡 <code>--token</code> 後面那一長串 Token，存成環境變數 <code>CLOUDFLARE_TUNNEL_TOKEN</code>（不要寫進 Git）。',
+                '④ 在 <code>Public Hostname</code> 新增：Subdomain 填 <code>shop</code>、Domain 選你的網域、Service 填 <code>http://nginx:80</code>。Cloudflare 會自動建立 DNS 記錄。',
+                '⑤ 把 compose 裡的 tunnel 服務改成下方寫法後重新啟動，開 <code>https://shop.你的網域</code> 驗證。'
+              ],
+              code: {
+                language: 'yaml',
+                title: 'docker-compose.yml — Named Tunnel（固定網域）',
+                content: '  tunnel:\n    image: cloudflare/cloudflared:latest\n    container_name: spring-tunnel\n    # 轉發規則（shop.你的網域 → http://nginx:80）設定在 Cloudflare 後台\n    command: tunnel --no-autoupdate run\n    environment:\n      # Token 從環境變數或 .env 讀入，不要寫死在檔案裡\n      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}\n    depends_on:\n      - nginx\n    restart: unless-stopped'
+              }
+            },
+            {
+              title: '常見錯誤與排查',
+              type: 'text',
+              bullets: [
+                '網址開啟顯示 502 / 1033：tunnel 有起來但連不到後端，確認 <code>nginx</code> 容器在跑、<code>--url</code> 用的是服務名稱 <code>nginx</code> 而不是 <code>localhost</code>（容器裡的 localhost 是 cloudflared 自己）。',
+                '後端跑在本機（<code>mvn spring-boot:run</code>）而非容器：轉發目標改成 <code>http://host.docker.internal:8080</code>。',
+                'log 裡找不到 trycloudflare 網址：檢查電腦能否連外，公司網路若擋 UDP 7844，可加參數 <code>--protocol http2</code>。',
+                '聊天室沒有逐字輸出：Quick Tunnel 不支援 SSE，改用 Named Tunnel；Named Tunnel 仍卡住時，檢查 nginx 對串流路徑是否設了 <code>proxy_buffering off</code>。'
+              ]
+            }
+          ]
         }
       ]
     }
   ],
   appendix: {
     terminology: [
-      '版本描述統一使用 Spring AI 2.0.0-M8',
+      '版本描述統一使用 Spring AI 2.0.2',
       '工具呼叫作為主詞，首次出現可補充 Tool Calling / Function Calling',
       'pgvector 指 PostgreSQL 擴充套件，VectorStore 指 Spring AI 的抽象層'
     ],

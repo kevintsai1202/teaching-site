@@ -19,6 +19,8 @@
             --accent: oklch(49% 0.13 230);
             --accent-soft: color-mix(in oklab, var(--accent) 16%, transparent);
             --accent-deep: oklch(34% 0.09 230);
+            /* 固定白底元件（主要按鈕、淺色徽章）上的文字色，不隨深色模式翻轉 */
+            --ink-on-light: oklch(34% 0.09 230);
             --accent-2: oklch(72% 0.16 72);
             --accent-2-soft: color-mix(in oklab, var(--accent-2) 20%, white);
             --accent-2-deep: oklch(56% 0.15 72);
@@ -56,10 +58,25 @@
             --accent-2-soft: color-mix(in oklab, var(--accent-2) 24%, transparent);
             --success-soft: color-mix(in oklab, var(--success) 22%, transparent);
             --code-bg: oklch(15% 0.016 250);
+            /* 深色模式下強調文字需改用淺色，否則 Chapter 標籤、DAY 標籤、章節編號會看不見 */
+            --accent-deep: oklch(82% 0.1 225);
         }
 
         * {
             box-sizing: border-box;
+        }
+
+        /* 長字串（環境變數、URL）不撐破版面；pre 內的程式碼維持水平捲動 */
+        :not(pre) > code {
+            overflow-wrap: anywhere;
+        }
+
+        .unit-card, .section, .content, .hero-copy, .summary-card, .goal-item, .code-block {
+            min-width: 0;
+        }
+
+        p, li {
+            text-wrap: pretty;
         }
 
         html {
@@ -370,8 +387,12 @@
         .top-theme-toggle {
             border: 1px solid color-mix(in oklab, var(--border) 84%, transparent);
             border-radius: 999px;
-            padding: 10px 16px;
-            background: color-mix(in oklab, var(--surface) 82%, transparent);
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            font-size: 1.2rem;
+            line-height: 1;
+            background: color-mix(in oklab, var(--surface) 92%, transparent);
             color: var(--fg);
             font: inherit;
             font-weight: 700;
@@ -418,7 +439,17 @@
             height: 100%;
             object-fit: cover;
             mix-blend-mode: luminosity;
-            opacity: 0.42;
+            opacity: 0.22;
+            filter: blur(2px);
+        }
+
+        /* 左側暗色漸層：保證 Hero 標題與說明文字的對比 */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, oklch(16% 0.03 248 / 0.78) 0%, oklch(16% 0.03 248 / 0.35) 60%, transparent 100%);
+            pointer-events: none;
         }
 
         .hero-overlay {
@@ -435,8 +466,9 @@
         .hero-copy h2 {
             margin: 18px 0 18px;
             font-size: clamp(2.8rem, 5vw, 5.4rem);
-            line-height: 0.96;
-            letter-spacing: -0.05em;
+            line-height: 1.12;
+            letter-spacing: -0.02em;
+            text-wrap: balance;
             color: white;
         }
 
@@ -486,7 +518,7 @@
 
         .primary-button {
             background: white;
-            color: var(--accent-deep);
+            color: var(--ink-on-light);
         }
 
         .secondary-button {
@@ -853,7 +885,7 @@
 
         .section-badge.verification {
             background: color-mix(in oklab, var(--accent) 18%, white);
-            color: var(--accent-deep);
+            color: var(--ink-on-light);
         }
 
         .section-badge.warning {
@@ -1185,7 +1217,7 @@
 <body>
 <button id="sidebar-restore" class="sidebar-restore-btn" type="button">☰ 選單</button>
 <div class="top-actions">
-    <button id="theme-toggle" class="top-theme-toggle" type="button">切換深色模式</button>
+    <button id="theme-toggle" class="top-theme-toggle" type="button" aria-label="切換深色模式" title="切換深色模式">🌙</button>
 </div>
 <div class="shell">
     <aside class="sidebar">
@@ -1280,7 +1312,12 @@
     /** 套用主題。 */
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        document.getElementById('theme-toggle').textContent = theme === 'dark' ? '切換淺色模式' : '切換深色模式';
+        // 圖示按鈕：顯示「切換後」的模式圖示，文字放在 aria-label / title 供輔助工具與滑鼠提示
+        const toggleBtn = document.getElementById('theme-toggle');
+        const toggleLabel = theme === 'dark' ? '切換淺色模式' : '切換深色模式';
+        toggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        toggleBtn.setAttribute('aria-label', toggleLabel);
+        toggleBtn.title = toggleLabel;
     }
 
     /** 切換側邊選單顯示／隱藏，並持久化狀態。 */
@@ -1392,6 +1429,8 @@
             createElement('article', { className: 'summary-card', attrs: { style: 'margin-top: 24px;' } }, [
                 createElement('small', { text: '課前準備' }),
                 createElement('h4', { text: `適合對象：${meta.audience}` }),
+                // 課程總時數（來自 course-data.js 的 meta.totalHours）
+                createElement('p', { text: `課程時數：${meta.totalHours}` }),
                 createElement('ul', {}, meta.prerequisites.map((item) => createElement('li', { text: item })))
             ])
         ]);
@@ -1411,7 +1450,7 @@
                 attrs: { 'data-task-id': task.id }
             }, [
                 checkbox,
-                createElement('span', { className: 'task-label', text: task.text })
+                createElement('span', { className: 'task-label', ...formatMarkdownLinks(task.text) })
             ]);
         }));
     }
