@@ -1023,7 +1023,8 @@ window.COURSE = {
               title: '示範商品圖片（先下載放進專案）',
               type: 'text',
               paragraphs: [
-                '課程準備了 6 張示範商品圖片（AI 生成，600×600 JPG），讓商城首頁一開始就有像樣的畫面。請先下載，2-4 章建立前端後放到 <code>frontend/public/images/products/</code>；資料庫的 <code>image_url</code> 存相對路徑 <code>/images/products/檔名</code>，前端直接當 <code>&lt;img src&gt;</code> 使用。'
+                '課程準備了 6 張示範商品圖片（AI 生成，600×600 JPG），讓商城首頁一開始就有像樣的畫面。請先下載，2-4 章建立前端後放到 <code>frontend/public/images/products/</code>；資料庫的 <code>image_url</code> 存相對路徑 <code>/images/products/檔名</code>，前端直接當 <code>&lt;img src&gt;</code> 使用。',
+                '📦 <strong>一次下載全部：</strong><a href="assets/downloads/product-images.zip" download>product-images.zip</a>（6 張商品圖，約 165 KB，解壓後放進 <code>frontend/public/images/products/</code>）；也可以從下方逐張下載。'
               ],
               bullets: [
                 '無線耳機 Pro：<a href="assets/products/earphone-pro.jpg" download>earphone-pro.jpg</a><br><img src="assets/products/earphone-pro.jpg" alt="無線耳機 Pro" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
