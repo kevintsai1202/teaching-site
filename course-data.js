@@ -1,7 +1,7 @@
 window.COURSE = {
   meta: {
     title: '新一代全端 AI 開發流程實戰',
-    subtitle: '結合 Spring Boot 4 與 React 19，從後端分層、向量資料庫到前端 uiuxpromax 客服介面，完成具備 RAG 長期記憶與 MCP 工具鏈的智慧電商客服系統。',
+    subtitle: '結合 Spring Boot 4 與 React 19，從後端分層、向量資料庫到以 ui-ux-pro-max 設計系統打造的前端客服介面，完成具備 RAG 長期記憶與 MCP 工具鏈的智慧電商客服系統。',
     audience: '具備 Java 基礎，想建立 Spring Boot 與 AI 應用整合能力的開發者',
     totalHours: '共 12 小時（Day 0 開場導覽 + Day 1 + Day 2）',
     projectName: '智慧商城客服系統',
@@ -81,6 +81,7 @@ window.COURSE = {
           ],
           tasks: [
             { id: 'd0-u1-t0', text: '在 VS Code 安裝 Claude Code 延伸模組並登入，選取一段程式碼用 Alt+K 引用後提問' },
+            { id: 'd0-u1-t0b', text: '請 AI Agent 用 winget 安裝 Node.js LTS 與 Python 3，確認 node、npm、python 版本都印得出來' },
             { id: 'd0-u1-t1', text: '用 `/plugin` 安裝一個官方插件（例如 context7），並確認 `/plugin` 清單中已啟用' },
             { id: 'd0-u1-t2', text: '安裝 deep-memory 技能，完成一次任務後確認 `~/.deep-memory/cold-notes/raw.jsonl` 有新紀錄' },
             { id: 'd0-u1-t3', text: '執行 `gh auth login` 登入，並用 `gh repo create` 把課程專案推上 GitHub' },
@@ -119,6 +120,20 @@ window.COURSE = {
                 '權限模式可在輸入框切換：Manual（每次改檔都問，初學建議）、Edit automatically、Plan（先出計畫給你批註再動手）、Auto。',
                 '課程中所有「AI Agent 提示詞」都貼到這個面板執行；<code>/plugin</code>、<code>/model</code> 等斜線指令也在這裡輸入。'
               ]
+            },
+            {
+              title: '先裝好 Node.js 與 Python：技能與工具的執行環境',
+              type: 'code',
+              paragraphs: [
+                '接下來安裝的技能和工具，背後都要靠這兩個執行環境：<code>npx skills add</code>（安裝 deep-memory 等技能）、Playwright、2-4 章的 React（Vite）需要 <strong>Node.js</strong>；deep-memory 的記憶腳本、2-5 章的 ui-ux-pro-max 設計搜尋需要 <strong>Python 3</strong>。少了任何一個，後面會在第一次執行時直接報錯。',
+                '和 1-1 章安裝 JDK 一樣，直接請 AI Agent 用 Windows 內建的 <code>winget</code> 安裝。裝完一定要<strong>關掉並重開 VS Code</strong>，新的 Path 才會生效。',
+                '常見問題：輸入 <code>python</code> 卻跳出 Microsoft Store，是 Windows 的「應用程式執行別名」攔截了指令。到「設定 → 應用程式 → 進階應用程式設定 → 應用程式執行別名」把 python.exe、python3.exe 關掉即可。'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞 — 安裝 Node.js LTS 與 Python 3',
+                content: '我使用 Windows 11，請用 winget 幫我安裝：\n1. Node.js LTS（winget install --id OpenJS.NodeJS.LTS -e）\n2. Python 3.12（winget install --id Python.Python.3.12 -e）\n安裝完成後請用 PowerShell 執行 node -v、npm -v、python --version，把結果顯示給我確認。\n如果 python 指令打開了 Microsoft Store，請告訴我怎麼關掉「應用程式執行別名」。\n\n# 驗證（重開 VS Code 後在 PowerShell 執行）\n# node -v      → v22.x 或更新\n# npm -v       → 10.x 或更新\n# python --version → Python 3.12.x'
+              }
             },
             {
               title: 'Claude Code 是什麼，插件又是什麼',
@@ -1024,7 +1039,7 @@ window.COURSE = {
               type: 'text',
               paragraphs: [
                 '課程準備了 6 張示範商品圖片（AI 生成，600×600 JPG），讓商城首頁一開始就有像樣的畫面。請先下載，2-4 章建立前端後放到 <code>frontend/public/images/products/</code>；資料庫的 <code>image_url</code> 存相對路徑 <code>/images/products/檔名</code>，前端直接當 <code>&lt;img src&gt;</code> 使用。',
-                '📦 <strong>一次下載全部：</strong><a href="assets/downloads/product-images.zip" download>product-images.zip</a>（6 張商品圖，約 165 KB，解壓後放進 <code>frontend/public/images/products/</code>）；也可以從下方逐張下載。'
+                '📦 <strong>一次下載全部：</strong><a href="assets/downloads/product-images.zip" download>product-images.zip</a>（6 張商品圖放進 <code>frontend/public/images/products/</code>；<code>brand/</code> 資料夾是 2-5 章末升級品牌官網用的 Hero、分類圖與客服頭像）；商品圖也可以從下方逐張下載。'
               ],
               bullets: [
                 '無線耳機 Pro：<a href="assets/products/earphone-pro.jpg" download>earphone-pro.jpg</a><br><img src="assets/products/earphone-pro.jpg" alt="無線耳機 Pro" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
@@ -2716,7 +2731,7 @@ window.COURSE = {
           id: 'd2-u5',
           chapter: '2-4',
           title: 'React 快速入門與前端優化指引',
-          summary: '掌握 Node.js 環境、使用 Vite 建立 React 19 專案、JSX 語法元件結構，並學習如何以 Proxy 串接後端 API 及套用 uiuxpromax 優化前端視覺體驗。',
+          summary: '掌握 Node.js 環境、使用 Vite 建立 React 19 專案、JSX 語法元件結構，並學習如何以 Proxy 串接後端 API 先做出功能正確的基本版商城（2-5 結尾再用 ui-ux-pro-max 升級視覺）。',
           source: 'docs/Day2-5-React-Intro.md',
           heroImage: 'assets/teaching-site/10-ch10-react-intro.png',
           diagramImage: 'assets/diagrams/d2-u5.png',
@@ -2726,13 +2741,13 @@ window.COURSE = {
             '學會使用 Vite 初始化 React 19 專案的指令步驟',
             '掌握 JSX 語法特色與 Functional Component 元件結構',
             '理解為何需要開發代理 (Vite Proxy) 以免除 CORS 限制',
-            '掌握 uiuxpromax 視覺優化要點（毛玻璃、漸層Header、微動畫與骨架屏）'
+            '先做出功能正確的基本版商城首頁，視覺升級留到 2-5 結尾對照'
           ],
           tasks: [
-            { id: 'd2-u5-t1', text: '安裝 Node.js 並執行 npm 驗證' },
+            { id: 'd2-u5-t1', text: '確認 Node.js 與 npm 可用（0-1 章已安裝）' },
             { id: 'd2-u5-t2', text: '使用 Vite 建立 React 19 專案並以 npm install 安裝' },
             { id: 'd2-u5-t3', text: '配置 vite.config.js 的 server.proxy 代理' },
-            { id: 'd2-u5-t4', text: '套用 CSS 動畫實作骨架屏與毛玻璃視覺效果' },
+            { id: 'd2-u5-t4', text: '商品載入中顯示骨架屏，缺貨商品顯示標籤' },
             { id: 'd2-u5-t5', text: '完成商城首頁商品卡片列表（免登入可見，缺貨顯示標籤）' }
           ],
           sections: [
@@ -2781,28 +2796,23 @@ window.COURSE = {
               }
             },
             {
-              title: 'uiuxpromax 前端視覺優化指引',
+              title: '先求功能正確，視覺之後再升級',
               type: 'text',
               paragraphs: [
-                '一個優秀的 Web 應用不僅要能跑，更要能 WOW 使用者。在智慧客服專案中，我們採用 uiuxpromax 的設計哲學，利用 Vanilla CSS 優化整體視覺，徹底告別單調的 MVP 樣式：'
-              ],
-              bullets: [
-                '🎨 毛玻璃效果 (Glassmorphism)：卡片使用 `backdrop-filter: blur(14px)` 搭配半透明邊框，營造精緻浮空感。',
-                '🌈 漸層極光配色：Header 使用 linear-gradient(135deg, indigo, purple) 漸層配色，搭配狀態指示燈 (Pulse LED) 動態閃爍。',
-                '⚡ 微懸停動畫 (Micro-interactions)：滑鼠懸停於商品、訂單卡片時，加入 `transform: translateY(-4px) scale(1.01)` 與 `transition` 讓卡片活起來。',
-                '⏳ 骨架屏載入動畫 (Skeleton Screen)：當 AI 正在思考或呼叫 Tool 時，在對話框中顯示灰白色的骨架屏閃爍 (shimmer keyframe)，極大降地等待期間的無聊感。'
+                '這一章的提示詞刻意只描述<strong>功能與版面位置</strong>，不指定配色與風格，讓 AI 用它的預設口味做。做出來多半是漸層 Header、毛玻璃卡片這類「一看就是 AI 做的」樣子——這是故意的。',
+                '先把商品列表、詳情、缺貨標籤、骨架屏這些功能做對；等 2-5 章把登入、上架、AI 客服都完成後，章末會用 ui-ux-pro-max 設計技能把整個商城升級成品牌官網。前後兩版放在一起比，就能看出「讓 AI 自由發揮」和「先定設計系統再實作」的差別。'
               ]
             },
             {
               title: 'AI Agent 提示詞 — 建立 React 前端專案',
               type: 'code',
               paragraphs: [
-                '理解 React 專案結構、Proxy 原理與視覺優化要點後，複製以下提示詞給 AI Agent，從零建立聊天室的前端專案骨架。'
+                '理解 React 專案結構與 Proxy 原理後，複製以下提示詞給 AI Agent，從零建立聊天室的前端專案骨架。'
               ],
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請幫我建立智慧商城的 React 前端專案：\n1. 在專案根目錄用 Vite 建立 React 19 專案：npx create-vite@latest frontend --template react（AI Agent 的終端機不能回答互動問題，若出現提問請改用非互動方式），並執行 npm install。\n2. 設定 vite.config.js 的 server.proxy，把 /api 開頭的請求代理到 http://localhost:8080。\n3. 把 1-3 章下載的 6 張商品圖片放到 frontend/public/images/products/（檔名不變），資料庫的 image_url 就能直接當圖片網址。\n4. 建立商城首頁 ProductList：呼叫 GET /api/products（免登入），用卡片格狀排版（每張卡片的 class 為 product-card）顯示商品圖片、名稱、價格、庫存，庫存為 0 顯示「缺貨」標籤；點卡片開啟商品詳情（GET /api/products/{id}）。\n5. 版面：漸層色 Header（顯示商城名稱，右側預留登入按鈕位置）、毛玻璃卡片、商品載入中顯示骨架屏（skeleton shimmer），右下角預留 AI 客服聊天視窗的開關按鈕。\n6. 元件需有中文註解。\n完成後請告訴我如何啟動開發伺服器，並確認未登入時首頁就能看到資料庫裡的商品與商品圖片。'
+                content: '請幫我建立智慧商城的 React 前端專案：\n1. 在專案根目錄用 Vite 建立 React 19 專案：npx create-vite@latest frontend --template react（AI Agent 的終端機不能回答互動問題，若出現提問請改用非互動方式），並執行 npm install。\n2. 設定 vite.config.js 的 server.proxy，把 /api 開頭的請求代理到 http://localhost:8080。\n3. 把 1-3 章下載的 6 張商品圖片放到 frontend/public/images/products/（檔名不變），資料庫的 image_url 就能直接當圖片網址。\n4. 建立商城首頁 ProductList：呼叫 GET /api/products（免登入），用卡片格狀排版（每張卡片的 class 為 product-card）顯示商品圖片、名稱、價格、庫存，庫存為 0 顯示「缺貨」標籤；點卡片開啟商品詳情（GET /api/products/{id}）。\n5. 版面：Header 顯示商城名稱，右側預留登入按鈕位置；商品載入中顯示骨架屏；右下角預留 AI 客服聊天視窗的開關按鈕。樣式請你自行設計，做得好看一點。\n6. 元件需有中文註解。\n完成後請告訴我如何啟動開發伺服器，並確認未登入時首頁就能看到資料庫裡的商品與商品圖片。'
               }
             }
           ]
@@ -2826,7 +2836,8 @@ window.COURSE = {
             { id: 'd2-u6-t1', text: '理解 SSE (Server-Sent Events) 單向串流原理與安全限制' },
             { id: 'd2-u6-t2', text: '升級後端 JwtAuthenticationFilter 支援網址 Query Token' },
             { id: 'd2-u6-t3', text: '使用 React 實作 EventSource 帶 Token 監聽與狀態更新' },
-            { id: 'd2-u6-t4', text: '完成登入表單與 ADMIN 商品上架表單，上架後首頁立即出現新商品' }
+            { id: 'd2-u6-t4', text: '完成登入表單與 ADMIN 商品上架表單，上架後首頁立即出現新商品' },
+            { id: 'd2-u6-t9', text: '安裝 ui-ux-pro-max，用升級提示詞把商城改成品牌官網，截圖和升級前比較' }
           ],
           sections: [
             {
@@ -2883,7 +2894,7 @@ window.COURSE = {
               title: '對應的 CSS 樣式支援 (ChatRoom.css)',
               type: 'code',
               paragraphs: [
-                '以下是聊天室的精美樣式，包含對話泡泡、思考中加載動畫、快速觸發按鈕的毛玻璃與 Hover 效果。'
+                '以下是聊天室的精美樣式，包含對話泡泡、思考中加載動畫與快速觸發按鈕的 Hover 效果。這裡的樣式先維持與 2-4 章基本版一致，章末升級時會一起換成品牌風格。'
               ],
               code: {
                 language: 'css',
@@ -2926,7 +2937,7 @@ window.COURSE = {
               ],
               image: 'assets/teaching-site/demo-ai-chat.png',
               imageAlt: 'AI 基礎對話運行畫面',
-              imageCaption: 'AI 基礎對話運行畫面：結合毛玻璃效果與漸層 Header 設計，極具美感與科技感。'
+              imageCaption: 'AI 基礎對話運行畫面：機器人主動打招呼並列出支援的功能與快捷指令。'
             },
             {
               title: '系統運行展示：商品資訊詢問卡片',
@@ -2957,6 +2968,23 @@ window.COURSE = {
               image: 'assets/teaching-site/demo-rag-recommend.png',
               imageAlt: '語意推薦運行畫面',
               imageCaption: '語意推薦運行畫面：結合長期記憶 RAG 與向量檢索，分析用戶的潛在喜好，進行高精確度的商品與折扣卡片推薦。'
+            },
+            {
+              title: '章末升級：用 ui-ux-pro-max 把商城變成品牌官網',
+              type: 'code',
+              paragraphs: [
+                '到這裡商城的功能都齊了，但畫面還是 2-4 章 AI 自由發揮的樣子。請先把目前的首頁截圖存起來，接著用 <strong>ui-ux-pro-max</strong> 設計技能升級：它內建風格、配色、字體與 UX 規則資料庫，會先依產品類型產生<strong>設計系統</strong>（配色、字體、間距、要避免的樣式），AI 再照設計系統實作，視覺就有依據，不再是模型的預設口味。',
+                '安裝（在 Claude Code 對話框輸入）：<code>/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill</code>，再輸入 <code>/plugin install ui-ux-pro-max@ui-ux-pro-max-skill</code>，重開 VS Code。它的搜尋腳本需要 Python 3（0-1 章已安裝）。',
+                '素材：Hero 大圖、分類情境圖、客服頭像已放在 1-3 章的<a href="assets/downloads/product-images.zip" download>素材包 product-images.zip</a> 的 <code>brand/</code> 資料夾，解壓後放到 <code>frontend/public/images/brand/</code>。',
+                '<strong>技能提供素材，方向由你決定</strong>：實測用「premium consumer electronics brand store apple minimal」查設計系統，會得到 Liquid Glass（毛玻璃）風格與黑金配色——這正是我們要避開的 AI 感。所以提示詞分兩步：設計系統只取字體、版面與 UX 檢查清單，配色另外用 color 領域查「Monochrome + blue accent」。這就是用設計技能的正確姿勢：讓它列出有根據的選項，你負責取捨並說明理由。',
+                '提示詞最後會請 AI 用 0-1 章學的 Playwright 寫一支 <code>e2e/verify-upgrade.mjs</code> 驗證升級結果；2-8 章的完整 e2e 會再把登入、上架、AI 客服全部驗一次。',
+                '升級後的首頁：深色 Hero 主打商品、購物保障、分類大圖、本週精選、可篩選的全部商品；商品改為獨立頁面，可一鍵把商品帶進 AI 客服提問。<br><a href="assets/samples/01-visitor-home.jpg" target="_blank"><img src="assets/samples/01-visitor-home.jpg" alt="升級後的品牌官網首頁" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>'
+              ],
+              code: {
+                language: 'text',
+                title: 'AI Agent 提示詞 — 用 ui-ux-pro-max 升級成品牌官網',
+                content: '請用 ui-ux-pro-max 技能，把目前的商城前端升級成「類 Apple 的品牌官網購物網站」，後端 API 不要修改：\n0. 設計系統：先用 ui-ux-pro-max 跑兩次查詢——(a) 設計系統：premium consumer electronics brand store apple minimal，取它的字體、版面與 UX 檢查清單；(b) 配色：用 color 領域查 monochrome minimal blue accent，採用「Monochrome + blue accent」這組配色。列出你採用與捨棄的建議並說明原因。方向固定為：白底與淺灰底、近黑文字、只用一個藍色強調色、大圖留白；不使用漸層、毛玻璃（backdrop-filter）與 3D 效果，建議若與此衝突（例如 Liquid Glass 風格）以限制為準。顏色、字體、圓角定義成 :root 的 CSS 變數。\n1. 素材：素材包 brand 資料夾的 hero.jpg、category-3c.jpg、category-home.jpg、ai-avatar.png、placeholder.svg 放到 frontend/public/images/brand/（商品圖維持 2-4 章放的 frontend/public/images/products/）。\n2. 首頁由上到下：\n   - Header：白色、捲動時固定在頂端（position: sticky），左側品牌名，中間「首頁」「全部商品」連結（「全部商品」捲到全部商品區並清除篩選），右側保留原本的登入／登出／商品上架按鈕。\n   - Hero：class 為 hero，深色滿版、背景 hero.jpg，主打無線耳機 Pro（商品 id 為 1），「立即選購」連到 #/product/1。\n   - 四項購物保障：免運、7 天鑑賞期、一年保固、AI 客服，圖示用 SVG。\n   - 兩張分類大圖卡：class 為 category-card，分類值為 3C、居家；點擊後捲到全部商品區並套用該分類篩選。\n   - 本週精選：有庫存且價格最高的 3 件，卡片 class 用 featured-card（不可用 product-card，e2e 會用 product-card 計數）。\n   - 全部商品：預設顯示全部，上方有「全部／3C／居家」三個篩選按鈕。\n   - 深色 Footer。\n3. 商品詳情改成獨立頁：用網址 hash 路由 #/product/{id}（不安裝路由套件），頁面根元素 class 為 product-page、商品名稱用 h1；左大圖右資訊（分類、價格、說明、庫存），含「問 AI 客服」按鈕，按下開啟聊天視窗並把「商品名 還有庫存嗎？」放進輸入框（不自動送出）。沒有圖片的商品顯示 placeholder.svg。\n4. AI 客服視窗：標題列加 ai-avatar.png 頭像與關閉鈕。登入後先顯示一則問候，class 用 chat-greeting（不可用 msg-ai，e2e 用 msg-ai 計算 AI 回覆數），問候下方放 3 個快捷問題按鈕「有哪些耳機？」「我的訂單到哪了？」「預算 2000 推薦什麼？」，點一下就直接送出。未登入時視窗內放一個登入按鈕（class 不可用 login-btn，避免和 Header 的登入鈕重複）。\n5. 保留既有的 class 與欄位名稱不變：product-card、sold-out-tag、login-btn、greeting、add-product-btn、logout-btn、chat-toggle、chat-input、chat-send、msg-ai、chat-login-hint，以及登入、上架表單 input 的 name。e2e 測試依賴它們。\n6. 可用性：按鈕與輸入框至少 44px 高、鍵盤焦點框看得見、圖示用 SVG 不用 emoji、支援 prefers-reduced-motion；手機（390px 寬）全部商品一排兩欄，本週精選改為可左右滑動。元件需有中文註解。\n完成後請在 e2e/ 寫一支 Playwright 腳本 verify-upgrade.mjs 並執行：未登入時首頁有 .hero、2 張 .category-card、.product-card 數量與 GET /api/products 筆數相同；點第一張 .product-card 後出現 .product-page h1 且文字等於商品名稱；再用 user / user123 登入，按「問 AI 客服」確認輸入框已帶入問題。最後截圖首頁（桌機與手機）、商品頁與客服視窗給我看。'
+              }
             }
           ]
         },
