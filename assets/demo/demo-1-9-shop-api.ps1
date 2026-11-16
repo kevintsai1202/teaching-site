@@ -10,6 +10,7 @@
     C. 取消：PENDING 取消（200，庫存退回）-> 再取消一次（409）
     D. 出貨：再下一單 -> user 出貨（403）-> admin 出貨（200）-> user 取消已出貨（409）-> admin 再出貨（409）
     E. 結帳時庫存不足：user 先把某商品全部庫存放進購物車，admin 搶先買走 1 件 -> user 結帳 409，details 列出哪一項
+       （details 依 1-9 結帳提示詞是字串陣列，例如「香氛加濕器（需要 18 件，庫存 17 件）」；物件陣列也能印出）
   每段之間可加 -Pause 停下來讓講師講解（按 Enter 繼續）。
   結束時一定清理（含中途失敗）：取消仍是 PENDING 的測試訂單（API 退回庫存）、清空兩個帳號的購物車；
   已出貨的訂單無法用 API 退庫存，必須提供資料庫容器，由 psql 針對「本腳本建立的訂單編號」補回庫存並刪除。
@@ -74,6 +75,30 @@ function Clear-Cart {
     }
 }
 
+<#
+  把錯誤回應 details 的一個元素轉成可讀文字。
+  提示詞規定 details 是字串陣列（例如「香氛加濕器（需要 18 件，庫存 17 件）」），字串就直接回傳；
+  學員的實作若做成物件（例如 productName、requested／quantity、stock），組成同樣格式的句子；
+  其他形狀就印成壓縮的 JSON，至少看得到內容，不會印出空白。
+#>
+function Format-Detail {
+    param($Item)
+    if ($null -eq $Item) { return '' }
+    if ($Item -is [string]) { return $Item }
+    $props = $Item.PSObject.Properties.Name
+    $name = @('productName', 'name', 'product') | Where-Object { $props -contains $_ } | Select-Object -First 1
+    if ($name) {
+        $need = @('requested', 'quantity', 'required', 'need') | Where-Object { $props -contains $_ } | Select-Object -First 1
+        $stock = @('stock', 'available') | Where-Object { $props -contains $_ } | Select-Object -First 1
+        $parts = @()
+        if ($need) { $parts += "需要 $($Item.$need) 件" }
+        if ($stock) { $parts += "庫存 $($Item.$stock) 件" }
+        if ($parts.Count -gt 0) { return "$($Item.$name)（$($parts -join '，')）" }
+        return [string]$Item.$name
+    }
+    return ($Item | ConvertTo-Json -Compress -Depth 5)
+}
+
 <# 執行一步並記錄：印出預期與實際狀態碼，回傳 API 結果供後續使用 #>
 function Step {
     param([string]$Title, [int]$Expected, [string]$Method, [string]$Path, [string]$Token, $Body)
@@ -83,7 +108,9 @@ function Step {
     Write-Host "       $Method $Path -> 預期 $Expected，實際 $($r.Status)"
     if ($r.Status -ge 400 -and $r.Body.message) {
         Write-Host "       message：$($r.Body.message)"
-        if ($r.Body.details) { Write-Host "       details：$($r.Body.details -join '；')" }
+        # details 可能是字串陣列（提示詞規定的格式）或物件陣列（其他實作），兩種都轉成可讀文字
+        $details = @($r.Body.details) | Where-Object { $null -ne $_ } | ForEach-Object { Format-Detail $_ }
+        if ($details) { Write-Host "       details：$($details -join '；')" }
     }
     $results.Add([pscustomobject]@{ 步驟 = $Title; 預期 = $Expected; 實際 = $r.Status; 結果 = ($ok ? 'OK' : '差異') })
     $r

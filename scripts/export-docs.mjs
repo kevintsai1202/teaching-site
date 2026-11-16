@@ -10,8 +10,29 @@ global.window = {};
 await import('file://' + path.join(SITE, 'course-data.js').replace(/\\/g, '/'));
 const C = window.COURSE;
 
-/** 網站的 assets/... 路徑轉成從 docs/ 看出去的相對路徑 */
-const assetPath = (p) => (/^(https?:|#|mailto:)/.test(p) ? p : '../teaching-site/' + p.replace(/^\.?\//, ''));
+/** 單元 id（例如 d2-u10）→ 講義檔名（例如 Day2-10-AI-Workflow.md），用來把網站內的章節錨點轉成講義之間的連結 */
+const unitDoc = new Map();
+for (const day of C.days) {
+  for (const u of day.units) {
+    if (!u.source) continue;
+    const base = path.basename(u.source);
+    // 檔名必須以「Day章號-」開頭（例如 2-4 章 → Day2-4-），避免檔名章號與內容錯位
+    if (!base.startsWith(`Day${u.chapter}-`)) {
+      throw new Error(`${u.id}（${u.chapter}）的 source 檔名 ${base} 與章號不符，應以 Day${u.chapter}- 開頭`);
+    }
+    unitDoc.set(u.id, base);
+  }
+}
+
+/** 網站的 assets/... 路徑轉成從 docs/ 看出去的相對路徑；#d2-u10 這類章節錨點轉成該章的講義檔名 */
+const assetPath = (p) => {
+  const anchor = /^#(d\d+-u\d+)$/.exec(p);
+  if (anchor) {
+    if (!unitDoc.has(anchor[1])) throw new Error(`找不到錨點 ${p} 對應的章節講義`);
+    return unitDoc.get(anchor[1]);
+  }
+  return /^(https?:|#|mailto:)/.test(p) ? p : '../teaching-site/' + p.replace(/^\.?\//, '');
+};
 
 /** 把網站段落裡的簡單 HTML 轉成 Markdown（圖片、連結、粗體、程式碼、換行） */
 function md(html = '') {
