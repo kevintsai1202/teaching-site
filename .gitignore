@@ -11,3 +11,6 @@ Thumbs.db
 
 # 生圖批次日誌
 logs-gen-diagrams.log
+
+# 驗證與示範產生的 log、資料庫備份（含資料，不進版控）
+logs/
