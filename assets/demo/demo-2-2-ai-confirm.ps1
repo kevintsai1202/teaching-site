@@ -104,15 +104,19 @@ function Check-Log {
 
 <#
   送出一則聊天訊息，邊收邊印 SSE 回覆（data: 開頭的行），收到 [DONE] 結束。
-  用 HttpClient 讀串流，才能一段一段即時顯示；訊息先做 URL 編碼。
+  串流端點是 POST /api/ai/stream：Token 放 Authorization 標頭、問題放 JSON 本文 {"message": "..."}（UTF-8）。
+  用 HttpClient 讀串流，才能一段一段即時顯示。
 #>
 function Ask {
     param([string]$Message)
     $mark = Get-LogMark
     Write-Host "`n  使用者：$Message" -ForegroundColor White
     Write-Host '  客服：' -NoNewline -ForegroundColor Cyan
-    $req = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::Get, "$BaseUrl/api/ai/stream?message=$([uri]::EscapeDataString($Message))")
+    $req = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::Post, "$BaseUrl/api/ai/stream")
     $req.Headers.Authorization = [System.Net.Http.Headers.AuthenticationHeaderValue]::new('Bearer', $token)
+    # 問題放 JSON 本文（不放網址，問題與 Token 都不會出現在存取日誌）
+    $body = @{ message = $Message } | ConvertTo-Json -Compress
+    $req.Content = [System.Net.Http.StringContent]::new($body, [System.Text.Encoding]::UTF8, 'application/json')
     $resp = $client.SendAsync($req, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
     if (-not $resp.IsSuccessStatusCode) { throw "聊天 API 回 HTTP $([int]$resp.StatusCode)" }
     $reader = [System.IO.StreamReader]::new($resp.Content.ReadAsStream(), [System.Text.Encoding]::UTF8)

@@ -17,7 +17,7 @@
   <rect x="24" y="60" width="200" height="32" rx="10" fill="#7c3aed"/>
   <rect x="24" y="80" width="200" height="12" fill="#7c3aed"/>
   <text x="124" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="white">React 前端 :5173</text>
-  <text x="124" y="114" text-anchor="middle" font-size="10" fill="#6d28d9">聊天室（EventSource SSE）</text>
+  <text x="124" y="114" text-anchor="middle" font-size="10" fill="#6d28d9">聊天室（fetch 串流 SSE）</text>
   <text x="124" y="134" text-anchor="middle" font-size="10" fill="#6d28d9">商品 / 訂單 / 推薦卡片</text>
   <text x="124" y="154" text-anchor="middle" font-size="10" fill="#6d28d9">毛玻璃 + 骨架屏 UI</text>
   <text x="124" y="178" text-anchor="middle" font-size="9" fill="#94a3b8">Vite Proxy 代理 /api → 8080</text>

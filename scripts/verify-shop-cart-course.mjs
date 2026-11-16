@@ -3,6 +3,8 @@
 //       講師示範腳本（assets/demo/*.ps1）可下載、頁面上有下載連結，總時數為 14 小時，
 //       task ID 不重複，且頁面沒有 404 與 console 錯誤；並截 1-9 併發陷阱段落存證。
 //       2-5「完成畫面樣本」引用 06～11 號範例圖，圖片可下載（200、jpg、< 300KB），並截該段落存證。
+//       AI 串流為 fetch + POST（Authorization 標頭、JSON 本文）：新寫法關鍵句存在，EventSource 與 ?token= 等舊做法
+//       除 2-5 比較段落外不可出現在任何一章，示範腳本不可把問題或 Token 放在網址。
 // 前置：先啟動本機伺服器（npm run serve，預設 http://localhost:3000）
 // 執行：node scripts/verify-shop-cart-course.mjs
 import { createRequire } from 'node:module';
@@ -19,6 +21,9 @@ try {
   ({ chromium } = require(path.join(process.env.APPDATA, 'npm', 'node_modules', 'playwright')));
 }
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000/';
+
+// 2-5 說明「為什麼不用 EventSource」的比較段落標題：全站只有這一段可以提到 EventSource（見下方 STREAM_LEGACY）
+const STREAM_COMPARE_TITLE = '為什麼不用 EventSource：改用 fetch 讀取串流';
 
 // 各章必須渲染的新段落標題（標題存在即代表段落已渲染）
 const EXPECTED = {
@@ -58,6 +63,8 @@ const EXPECTED = {
     // 購物前端完成畫面樣本（scripts/capture-shop-samples.mjs 從參考實作擷取）
     '完成畫面樣本：購物袋、確認框、我的訂單與訂單管理',
     'AI Agent 提示詞 — 購物流程 e2e',
+    // AI 串流改 fetch + POST：比較段落（唯一允許提到 EventSource 的地方）
+    STREAM_COMPARE_TITLE,
   ],
   '2-8': [
     '購物流程 e2e：重跑與擴充',
@@ -81,7 +88,9 @@ const MUST = {
     '寫 V3 時可能被權限擋下',                                  // 任務 4
     '跑測試可能被權限擋下',                                    // 任務 3
   ],
-  '2-1': ['moderation、embedding 都設為 none', '$token = (Invoke-RestMethod', 'Successfully validated 3 migrations', 'Started ShopApplication'],
+  '2-1': ['moderation、embedding 都設為 none', '$token = (Invoke-RestMethod', 'Successfully validated 3 migrations', 'Started ShopApplication',
+    // AI 串流改 POST：端點、@RequestBody 範例、PowerShell 7 以管線把 UTF-8 JSON 交給 curl.exe
+    'POST /api/ai/stream', '@RequestBody ChatRequest request', "--data-binary '@-'"],
   '2-2': [
     '不要另外加假金鑰',
     // 程式層確認（同意／拒絕詞由後端直接處理，不交給模型）
@@ -93,13 +102,17 @@ const MUST = {
     '由系統直接處理，不會交給你',                               // 系統提示詞原文（rehearsal2 現行版）
     '單獨的「取消」也算拒絕',
     '同意、拒絕、被拒絕的執行都要寫',                           // 寫入短期記憶
+    '@RequestBody ChatRequest request',                         // 串流端點範例為 POST
   ],
-  '2-6': ['DirectConfirmationHandler）直接回覆時不經過模型串流'], // 程式層確認也寫入長期記憶
+  '2-6': ['DirectConfirmationHandler）直接回覆時不經過模型串流', '@RequestBody ChatRequest request'], // 程式層確認也寫入長期記憶；範例為 POST
   '2-3': ['提到到貨後 7 天內的鑑賞期', 'GET /api/rag/query?question=', 'filename（上傳的檔名）'],
   '2-4': ['class 為 sold-out-tag', 'class 為 login-btn', 'class 為 chat-toggle', 'image_url 是空的商品'],
   '2-5': [
-    '只有 SSE 聊天端點 GET /api/ai/stream',                    // 安全
-    'POST 換一次性票證',
+    // AI 串流改 fetch + POST（Token 只走 Authorization 標頭、問題放 JSON 本文）
+    'POST /api/ai/stream',
+    'response.body.getReader()', 'new TextDecoder', '依空行切出完整事件', 'AbortController',
+    '所有 API（含 AI 串流）都只認 Authorization 標頭',
+    'HttpOnly Cookie', 'SameSite', '一次性票證', 'polyfill',  // 其他替代方案與取捨
     'class chat-login-hint', 'class add-product-btn', 'name 為 username、password', // #14
     '確保以下 class 與欄位名稱都存在',
     '重跑本章購物前端之後寫好的 e2e/verify-cart.mjs',          // #15
@@ -110,10 +123,18 @@ const MUST = {
     '選擇器只用提示詞指定的 class、data 屬性、input name 與按鈕文字', // 升級後 verify-cart 仍可沿用
     '只更新 verify-cart 的操作步驟；斷言與檢查項目一律不可改',
     '實作時 class 以提示詞為準',                                // ChatRoom 範例與提示詞的 class
-    '只有 SSE 聊天端點 /api/ai/stream 接受網址 Query Token',     // 任務措辭
   ],
-  '2-8': ['原封不動重跑', '提示詞只能減少、無法保證', '操作步驟過時', '斷言與檢查項目一律不可改'],
+  '2-8': ['原封不動重跑', '提示詞只能減少、無法保證', '操作步驟過時', '斷言與檢查項目一律不可改',
+    '攔截 POST /api/ai/stream'],
 };
+
+// AI 串流舊做法（EventSource + GET ?token=&message=）不可再出現在任何一章。
+// 唯一例外：2-5 的比較段落（STREAM_COMPARE_TITLE）可以提到 EventSource；比對時只把這一個段落排除，其他段落照樣檢查
+const STREAM_LEGACY = [
+  'EventSource', '?token=', '&token=', 'stream?message=', 'GET /api/ai/stream',
+  '@GetMapping(value = \\"/stream\\"', '@GetMapping(value = \\"/api/ai/stream\\"',
+  '只有 SSE 聊天端點', 'Query Token',
+];
 const MUST_NOT = {
   '1-9': ['商品查詢 API 需登入身分即可', 'SECRET_STRING', 'CustomUserDetailsService', '新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\\n# [OK  ] user 結帳（庫存只剩不夠了）\\n#        POST /api/orders/checkout -> 預期 409，實際 409\\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件）\\n'],
   '2-1': ['LearnSpringApplication', 'validated 2 migrations'],
@@ -190,6 +211,26 @@ try {
   }
   console.log(`PASS 驗證報告修正關鍵句：${Object.values(MUST).flat().length} 句存在、${Object.values(MUST_NOT).flat().length} 句已移除`);
 
+  // AI 串流舊做法：每一章（排除 2-5 比較段落後）都不可再出現；比較段落本身必須存在且確實提到 EventSource，避免例外條件空過
+  const legacyView = await page.evaluate((title) => {
+    const out = {};
+    let exempted = 0;
+    for (const u of window.COURSE.days.flatMap((d) => d.units)) {
+      const copy = { ...u, sections: (u.sections || []).filter((s) => {
+        const skip = u.chapter === '2-5' && s.title === title && JSON.stringify(s).includes('EventSource');
+        if (skip) exempted++;
+        return !skip;
+      }) };
+      out[u.chapter] = JSON.stringify(copy);
+    }
+    return { out, exempted };
+  }, STREAM_COMPARE_TITLE);
+  assert.strictEqual(legacyView.exempted, 1, `2-5 應有且只有一個提到 EventSource 的比較段落「${STREAM_COMPARE_TITLE}」`);
+  for (const [chapter, json] of Object.entries(legacyView.out)) {
+    for (const p of STREAM_LEGACY) assert.ok(!json.includes(p), `${chapter} 仍把舊串流做法當現行做法：${p}`);
+  }
+  console.log(`PASS AI 串流舊做法（${STREAM_LEGACY.length} 種寫法）在所有章節都已移除（只保留 2-5 比較段落）`);
+
   // 講義匯出檔名依章號（#16）：每章 source 以 Day章號- 開頭，且檔案存在；章節錨點不可殘留在講義中
   const sources = await page.evaluate(() => window.COURSE.days.flatMap((d) => d.units.map((u) => [u.chapter, u.source])));
   const docsDir = path.resolve(import.meta.dirname, '..', '..', 'docs');
@@ -245,6 +286,13 @@ try {
       for (const bad of ['確定，請結帳', '較穩定', '再回一次確認']) {
         assert.ok(!text.includes(bad), `2-2 示範腳本仍有舊說明：${bad}`);
       }
+      // 聊天串流改 POST：問題放 JSON 本文，網址不帶問題
+      assert.ok(text.includes('[System.Net.Http.HttpMethod]::Post'), '2-2 示範腳本的聊天請求應為 POST');
+      assert.ok(!text.includes('stream?message='), '2-2 示範腳本仍把問題放在網址');
+    }
+    // 所有示範腳本都不可再用網址帶 Token
+    for (const bad of ['?token=', '&token=']) {
+      assert.ok(!text.includes(bad), `${name} 仍把 Token 放在網址：${bad}`);
     }
   }
   console.log(`PASS ${DEMOS.length} 支講師示範腳本都有連結且可下載`);
