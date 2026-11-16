@@ -17,8 +17,12 @@
 .EXAMPLE
   pwsh -File .\demo-1-9-tdd-red-green.ps1 -RepoPath D:\GitHub\learn-spring-rehearsal2
 .EXAMPLE
-  # 改示範「結帳」這個 commit 的紅綠燈
-  pwsh -File .\demo-1-9-tdd-red-green.ps1 -RepoPath D:\GitHub\learn-spring-rehearsal2 -CommitGrep '結帳：交易內條件式扣庫存' -Tests CheckoutServiceTest
+  # 保留暫存資料夾，跑完用 VS Code 打開 CartApiTest.java 與 CartController.java 對照講解
+  pwsh -File .\demo-1-9-tdd-red-green.ps1 -RepoPath D:\GitHub\learn-spring-rehearsal2 -Keep
+.NOTES
+  只有「透過 HTTP 呼叫 API」的測試類別（例如 CartApiTest）能在沒有實作時編譯並得到 404 紅燈；
+  直接呼叫 Service／Controller 方法的測試（CartServiceTest、OrderLifecycleTest、AdminOrdersApiTest）
+  在重播時會停在編譯錯誤，腳本會提示「這是編譯錯誤，不是紅燈」。
 #>
 param(
     # 參考實作的 git repo 路徑

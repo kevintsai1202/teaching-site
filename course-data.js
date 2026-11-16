@@ -2274,7 +2274,7 @@ window.COURSE = {
               title: '步驟 0：Testcontainers——測試有自己的乾淨資料庫',
               type: 'code',
               paragraphs: [
-                'TDD 要能一直重跑，測試就不能用 25432 的示範資料庫：測試會建立訂單、扣庫存，跑幾次資料就亂了；反過來，你在畫面上點的資料也會讓測試時好時壞。<strong>Testcontainers</strong> 在每次 <code>mvn test</code> 時自動起一個全新的 PostgreSQL 容器、跑同樣的 Flyway 遷移，測完就丟掉。你只需要有 Docker（1-3 章已安裝）。',
+                'TDD 要能一直重跑，測試就不能用 1-3 章那個示範資料庫：測試會建立訂單、扣庫存，跑幾次資料就亂了；反過來，你在畫面上點的資料也會讓測試時好時壞。<strong>Testcontainers</strong> 在每次 <code>mvn test</code> 時自動起一個全新的 PostgreSQL 容器、跑同樣的 Flyway 遷移，測完就丟掉。你只需要有 Docker（1-3 章已安裝）。',
                 '同一個測試類別裡的測試仍共用這個容器，所以每個測試前後要自己還原資料（清購物車、刪測試訂單、還原種子商品的庫存與價格、種子訂單的狀態）。課前演練就踩過兩次：結帳測試改了商品價格沒還原，下一個測試的總金額變成 5000；AI 工具測試取消了種子訂單沒還原，<code>/api/orders/me</code> 的測試看到 CANCELLED。'
               ],
               bullets: [
@@ -2285,7 +2285,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 建立 Testcontainers 測試基礎',
-                content: '目前專案只有預設的啟動測試，沒有測試資料庫。請改用 Testcontainers，讓每次測試都有乾淨的 PostgreSQL：\n1. pom.xml 加入 spring-boot-testcontainers、org.testcontainers 的 testcontainers-junit-jupiter 與 testcontainers-postgresql（scope 都是 test，版本交給 Spring Boot 管理）。\n2. 建立 TestcontainersConfig（@TestConfiguration）：容器使用 pgvector/pgvector:pg18（與 docker-compose 相同，要加 asCompatibleSubstituteFor("postgres")），並加上 @ServiceConnection，讓資料來源與 Flyway 自動指向這個容器。\n3. 建立 AbstractIntegrationTest（@SpringBootTest + @AutoConfigureMockMvc + @Import(TestcontainersConfig.class)）：提供 MockMvc、JdbcTemplate，以及 bearer("user") 以示範帳號登入、回傳 Authorization 標頭的小工具（同一帳號只登入一次）。另外寫一個 resetData()，在每個測試前後還原資料：清空 cart_items（V3 之後才有，先預留）、刪除種子以外的訂單與明細、還原 6 筆種子商品的庫存與價格、還原 4 筆種子訂單的狀態。\n4. src/test/resources/application.properties：給測試專用的 JWT 金鑰（依 JwtService 讀取的屬性名稱設定，例如 JWT_SECRET=test-only-至少32字元的字串），讓 mvn test 不依賴 PowerShell 的環境變數；spring.datasource.url 刻意指向連不上的位址（例如 jdbc:postgresql://unreachable-test-host.invalid:1/x），避免漏接容器時連到 25432 的示範資料庫。\n5. 執行 mvn test，確認既有的啟動測試在 Testcontainers 上通過，並告訴我 Flyway 在測試容器套用了哪些版本。'
+                content: '目前專案只有預設的啟動測試，沒有測試資料庫。請改用 Testcontainers，讓每次測試都有乾淨的 PostgreSQL：\n1. pom.xml 加入 spring-boot-testcontainers、org.testcontainers 的 testcontainers-junit-jupiter 與 testcontainers-postgresql（scope 都是 test，版本交給 Spring Boot 管理）。\n2. 建立 TestcontainersConfig（@TestConfiguration）：容器使用 pgvector/pgvector:pg18（與 docker-compose 相同，要加 asCompatibleSubstituteFor("postgres")），並加上 @ServiceConnection，讓資料來源與 Flyway 自動指向這個容器。\n3. 建立 AbstractIntegrationTest（@SpringBootTest + @AutoConfigureMockMvc + @Import(TestcontainersConfig.class)）：提供 MockMvc、JdbcTemplate，以及 bearer("user") 以示範帳號登入、回傳 Authorization 標頭的小工具（同一帳號只登入一次）。另外寫一個 resetData()，在每個測試前後還原資料：清空 cart_items（V3 之後才有，先預留）、刪除種子以外的訂單與明細、還原 6 筆種子商品的庫存與價格、還原 4 筆種子訂單的狀態。\n4. src/test/resources/application.properties：給測試專用的 JWT 金鑰（依 1-9 章 JwtUtils 讀取的屬性名稱設定，例如 JWT_SECRET=test-only-至少32字元的字串），讓 mvn test 不依賴 PowerShell 的環境變數；spring.datasource.url 刻意指向連不上的位址（例如 jdbc:postgresql://unreachable-test-host.invalid:1/x），避免漏接容器時連到 1-3 章的示範資料庫。\n5. 執行 mvn test，確認既有的啟動測試在 Testcontainers 上通過，並告訴我 Flyway 在測試容器套用了哪些版本。'
               }
             },
             {
@@ -2304,7 +2304,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — V3 遷移（先紅後綠）',
-                content: '請先讀 src/main/resources/db/migration 的 V1、V2 與 Order Entity，告訴我目前 orders 的欄位、狀態 CHECK 限制的名稱與 4 筆種子訂單，再開始下面兩步。\n\n【紅：只寫測試】\n寫 MigrationV3Test（繼承 AbstractIntegrationTest，用 JdbcTemplate 查 information_schema 與資料）驗證：cart_items 表存在；orders 已沒有 product_id、quantity 欄位；4 筆舊訂單都搬進 order_items 且單價 = total_price / quantity；狀態可以存 CANCELLED；sequence order_no_seq 可以取號。\n再寫一個 OrdersMeApiTest：user 登入後 GET /api/orders/me，ORD-20261109-003 的 items[0].productName 是行動電源、quantity 是 2。\n只寫測試、不要寫 V3。執行 mvn test，把失敗訊息給我看，說明每個失敗是不是因為「V3 還不存在」。\n\n【綠：新增 V3 與 Entity】\n新增 V3__cart_and_order_items.sql，不准修改 V1、V2：\n- cart_items：id、username、product_id（外鍵到 products）、quantity（CHECK > 0）、created_at，UNIQUE(username, product_id)\n- order_items：id、order_id（外鍵到 orders）、product_id（外鍵到 products）、quantity（CHECK > 0）、unit_price NUMERIC(10,2)；order_id 建索引\n- 舊訂單搬進 order_items（unit_price = total_price / quantity），再刪除 orders 的 product_id、quantity\n- 狀態 CHECK 加上 CANCELLED（先 DROP 剛才讀到的舊限制再加回）\n- CREATE SEQUENCE order_no_seq START WITH 1000\n同時新增 OrderItem Entity，Order 改成 @OneToMany 關聯明細；GET /api/orders/me 改回傳 OrderView（orderNo、status、totalPrice、createdAt、items：productId、productName、quantity、unitPrice、subtotal），查詢用 @EntityGraph 一次載入明細與商品。\n不准修改測試。完成後執行 mvn test 全部通過，再用 mvn spring-boot:run 啟動，確認 25432 的資料庫也套用了 V3。'
+                content: '請先讀 src/main/resources/db/migration 的 V1、V2 與 Order Entity，告訴我目前 orders 的欄位、狀態 CHECK 限制的名稱與 4 筆種子訂單，再開始下面兩步。\n\n【紅：只寫測試】\n寫 MigrationV3Test（繼承 AbstractIntegrationTest，用 JdbcTemplate 查 information_schema 與資料）驗證：cart_items 表存在；orders 已沒有 product_id、quantity 欄位；4 筆舊訂單都搬進 order_items 且單價 = total_price / quantity；狀態可以存 CANCELLED；sequence order_no_seq 可以取號。\n再寫一個 OrdersMeApiTest：user 登入後 GET /api/orders/me，挑一筆你剛才讀到的 user 種子訂單，斷言它的 items[0] 的 productName 與 quantity 和 V2 的資料一致。\n只寫測試、不要寫 V3。執行 mvn test，把失敗訊息給我看，說明每個失敗是不是因為「V3 還不存在」。\n\n【綠：新增 V3 與 Entity】\n新增 V3__cart_and_order_items.sql，不准修改 V1、V2：\n- cart_items：id、username、product_id（外鍵到 products）、quantity（CHECK > 0）、created_at，UNIQUE(username, product_id)\n- order_items：id、order_id（外鍵到 orders）、product_id（外鍵到 products）、quantity（CHECK > 0）、unit_price NUMERIC(10,2)；order_id 建索引\n- 舊訂單搬進 order_items（unit_price = total_price / quantity），再刪除 orders 的 product_id、quantity\n- 狀態 CHECK 加上 CANCELLED（先 DROP 剛才讀到的舊限制再加回）\n- CREATE SEQUENCE order_no_seq START WITH 1000\n同時新增 OrderItem Entity，Order 改成 @OneToMany 關聯明細；GET /api/orders/me 改回傳 OrderView（orderNo、status、totalPrice、createdAt、items：productId、productName、quantity、unitPrice、subtotal），查詢用 @EntityGraph 一次載入明細與商品。\n不准修改測試。完成後執行 mvn test 全部通過，再用 mvn spring-boot:run 啟動，確認 1-3 章的示範資料庫也套用了 V3。'
               }
             },
             {
@@ -2380,7 +2380,7 @@ window.COURSE = {
                 '<strong>步驟 1</strong>：執行腳本，畫面先顯示「紅燈：只有測試、還沒有實作」，約 1 分鐘後印出 <code>Tests run: 8, Failures: 7</code> 與 <code>Status expected:&lt;409&gt; but was:&lt;404&gt;</code>。停在這裡問學員：失敗原因是不是「功能還沒做」？哪一個測試沒失敗、為什麼？',
                 '<strong>步驟 2</strong>：腳本接著放上實作，印出 <code>Tests run: 8, Failures: 0</code>、<code>BUILD SUCCESS</code>。強調「測試檔一個字都沒改」。',
                 '<strong>步驟 3（選做）</strong>：加 <code>-Keep</code> 保留暫存資料夾，用 VS Code 打開 <code>CartApiTest.java</code> 與 <code>CartController.java</code> 對照講解。',
-                '<strong>換一個功能重播</strong>：<code>-CommitGrep \'取消（退回庫存）與管理員出貨\' -Tests OrderLifecycleTest</code>。只選「透過 HTTP 呼叫 API」的測試類別；直接呼叫 Service 的測試在沒有實作時編譯不過，腳本會提示那是編譯錯誤、不是紅燈。',
+                '<strong>為什麼只重播 CartApiTest</strong>：它只透過 HTTP 呼叫 API，實作不存在時仍能編譯，失敗原因是 404。其他測試類別（CartServiceTest、OrderLifecycleTest、AdminOrdersApiTest）會直接呼叫還不存在的 Service 或 Controller 方法，重播時會停在編譯錯誤（課前實測 CartServiceTest 即是如此，腳本會提示「這是編譯錯誤，不是紅燈」）——正好用來說明為什麼紅燈提示詞要先建立空的方法簽章。',
                 '<strong>可能出錯</strong>：<code>Could not find a valid Docker environment</code> → Docker Desktop 沒啟動；找不到 commit → 用 <code>-CommitGrep</code> 換成 <code>git log --oneline</code> 看到的訊息關鍵字；mvn 輸出存在暫存資料夾的 <code>mvn-red.log</code>、<code>mvn-green.log</code>，腳本結束時會印出路徑。'
               ],
               code: {
@@ -2470,13 +2470,13 @@ window.COURSE = {
               ],
               bullets: [
                 '<strong>修法 A：比對刪除列數</strong>。<code>deleteByUsername</code> 回傳實際刪除的列數，和一開始讀到的品項數不同，就代表購物車已被另一個結帳處理掉，丟出 ConflictException，讓整筆交易（含已扣的庫存、已建的訂單）回滾。改動最小，第二個請求得到 409。',
-                '<strong>修法 B：悲觀鎖</strong>。讀購物車的查詢加 <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code>（SQL 變成 <code>SELECT ... FOR UPDATE</code>），第二個交易會等第一個提交後才讀，讀到的是空購物車，回 400。語意最直接；代價是查詢有 join fetch 商品時，商品列也會一起被鎖，同商品的結帳會排隊。',
+                '<strong>修法 B：悲觀鎖</strong>。另寫一個<strong>結帳專用</strong>的讀購物車查詢，加上 <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code>（SQL 變成 <code>SELECT ... FOR UPDATE</code>），第二個交易會等第一個提交後才讀，讀到的是空購物車，回 400。不要直接加在原本的查詢上：參考實作的 <code>getCart</code>（查購物車）也用同一個查詢，加了鎖連看購物車都要排隊。代價是鎖定期間同帳號的其他購物車操作要等待，鎖的範圍要用測試確認。',
                 '兩種修法都要先有<strong>會失敗的測試</strong>，修完測試轉綠才算數——見下方進階任務。下面的程式碼是示意，參考實作沒有套用（刻意保留問題）。'
               ],
               code: {
                 language: 'java',
                 title: '兩種修法示意（OrderService.checkout／CartItemRepository）',
-                content: '// 修法 A：OrderService.checkout 最後清空購物車時比對刪除列數\nint deleted = cartItemRepository.deleteByUsername(username);\nif (deleted != cartItems.size()) {\n    // 購物車在本交易讀取之後已被另一個結帳清掉：丟例外讓整筆交易（扣庫存、建訂單）回滾\n    throw new ConflictException("這份購物車已在另一個結帳請求中處理，這次沒有建立訂單");\n}\n\n// 修法 B：讀購物車時加悲觀鎖（SELECT ... FOR UPDATE），第二個交易會等第一個提交\n@Lock(LockModeType.PESSIMISTIC_WRITE)\n@Query("select c from CartItem c join fetch c.product where c.username = :username order by c.product.id")\nList<CartItem> findByUsernameOrderByProductId(@Param("username") String username);'
+                content: '// 修法 A：OrderService.checkout 最後清空購物車時比對刪除列數\nint deleted = cartItemRepository.deleteByUsername(username);\nif (deleted != cartItems.size()) {\n    // 購物車在本交易讀取之後已被另一個結帳清掉：丟例外讓整筆交易（扣庫存、建訂單）回滾\n    throw new ConflictException("這份購物車已在另一個結帳請求中處理，這次沒有建立訂單");\n}\n\n// 修法 B：結帳專用的加鎖查詢（SELECT ... FOR UPDATE），第二個交易會等第一個提交；\n// getCart 仍用原本不加鎖的查詢，checkout 改呼叫這一個\n@Lock(LockModeType.PESSIMISTIC_WRITE)\n@Query("select c from CartItem c join fetch c.product where c.username = :username order by c.product.id")\nList<CartItem> findForCheckout(@Param("username") String username);'
               }
             },
             {
@@ -2509,7 +2509,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 修正同帳號並行結帳（進階）',
-                content: '同一個帳號同時送出兩次 POST /api/orders/checkout，會把同一份購物車結成兩筆訂單、庫存扣兩份。請用 TDD 修正：\n\n【紅：先寫會失敗的測試】\n在 ConcurrentCheckoutTest 新增測試「同帳號同時結帳兩次只成立一筆」：user 的購物車放 2 個商品各 1 件，兩個執行緒用 CyclicBarrier 同時呼叫 orderService.checkout("user")，重複 10 輪；斷言每輪只新增 1 筆訂單、每個商品庫存只扣 1 件、另一個請求得到 BadRequestException（購物車是空的）或 ConflictException。不加 @Transactional，資料由 resetData() 清除。\n執行 mvn test，確認這個測試在目前的程式上會失敗，並把失敗訊息給我看（應該是新增了 2 筆訂單）。如果幾輪都沒有失敗，增加輪數，不要改斷言。\n\n【綠：選一種修法】\n先說明兩種修法的取捨，再實作你建議的那一種：\n(A) 清空購物車時比對 deleteByUsername 回傳的刪除列數，與一開始讀到的品項數不同就丟 ConflictException，讓整筆交易回滾；\n(B) 讀購物車的查詢加 @Lock(LockModeType.PESSIMISTIC_WRITE)，第二個交易會等第一個提交後才讀到空購物車。\n不准修改測試；完成後 mvn test 全部通過，再用 demo-1-9-double-checkout.ps1 重跑，確認每輪只建立 1 筆訂單。'
+                content: '同一個帳號同時送出兩次 POST /api/orders/checkout，會把同一份購物車結成兩筆訂單、庫存扣兩份。請用 TDD 修正：\n\n【紅：先寫會失敗的測試】\n在 ConcurrentCheckoutTest 新增測試「同帳號同時結帳兩次只成立一筆」：user 的購物車放 2 個商品各 1 件，兩個執行緒用 CyclicBarrier 同時呼叫 orderService.checkout("user")，重複 10 輪；斷言每輪只新增 1 筆訂單、每個商品庫存只扣 1 件、另一個請求得到 BadRequestException（購物車是空的）或 ConflictException。不加 @Transactional，資料由 resetData() 清除。\n執行 mvn test，確認這個測試在目前的程式上會失敗，並把失敗訊息給我看（應該是新增了 2 筆訂單）。如果幾輪都沒有失敗，增加輪數，不要改斷言。\n\n【綠：選一種修法】\n先說明兩種修法的取捨，再實作你建議的那一種：\n(A) 清空購物車時比對 deleteByUsername 回傳的刪除列數，與一開始讀到的品項數不同就丟 ConflictException，讓整筆交易回滾；\n(B) 另寫一個結帳專用的讀購物車查詢，加 @Lock(LockModeType.PESSIMISTIC_WRITE)，第二個交易會等第一個提交後才讀到空購物車（不要加在 getCart 也在用的查詢上）。\n不准修改測試；完成後 mvn test 全部通過，再用 demo-1-9-double-checkout.ps1 重跑，確認每輪只建立 1 筆訂單。'
               }
             }
           ]
@@ -2961,7 +2961,7 @@ window.COURSE = {
               bullets: [
                 '<strong>路徑一（確定）</strong>：放 1 件機械鍵盤進購物車 →「幫我結帳」→ AI 列出品項、總金額 1890 元並問「確定要結帳嗎？」；腳本檢查庫存、購物車、訂單<strong>都沒變</strong> →「確定，請結帳」→ 日誌出現 <code>[待確認] 武裝</code>、<code>confirmPendingAction</code>、<code>執行 CHECKOUT</code>，AI 回覆訂單編號；腳本檢查多了 1 筆訂單、庫存扣 1、購物車清空。',
                 '<strong>路徑二（不要）</strong>：再放 1 件 →「幫我結帳」→「不要，我再想想」→ AI 回「沒有執行結帳，購物車還保留著」；日誌只有 <code>[待確認] 武裝</code>，沒有 confirmPendingAction；腳本檢查沒有新訂單、購物車還在。下一則訊息再進來時，日誌會出現 <code>[待確認] 作廢</code>。',
-                '<strong>課前實測的隨機性</strong>：使用者只回「確定」兩個字時，模型有時會再呼叫一次 prepareCheckout、重新列出摘要再問一次（同一環境 4 次中出現 2 次，對話記憶累積越多越常見）。後端只會建立新的待確認動作，<strong>不會誤結帳</strong>；腳本偵測到時會自動再回一次。這正好可以讓學員看到：模型會出錯，但錯的方向被後端限制在「安全的那一邊」。想示範這個現象就加 <code>-ConfirmText 確定</code>。',
+                '<strong>課前實測的隨機性</strong>：使用者只回「確定」兩個字時，模型有時會再呼叫一次 prepareCheckout、重新列出摘要再問一次（課前在同一個對話記憶已累積很多的環境實測，回「確定」的 4 輪中有 3 輪如此，其中一次自動重試也一樣；改回「確定，請結帳」則一次成功）。後端只會建立新的待確認動作，<strong>不會誤結帳</strong>；腳本偵測到時會自動再回一次，但重試不保證成功。這正好可以讓學員看到：模型會出錯，但錯的方向被後端限制在「安全的那一邊」。想示範這個現象就加 <code>-ConfirmText 確定</code>。',
                 '<strong>可能出錯</strong>：聊天 API 回 401 → token 失效（後端重啟換了 JWT_SECRET），重跑腳本即可；一直沒有回覆 → 檢查模型金鑰與網路，HttpClient 逾時 3 分鐘；中文變亂碼 → 確認是用 pwsh（PowerShell 7）執行。'
               ],
               code: {
@@ -3420,7 +3420,7 @@ window.COURSE = {
               title: '購物前端：購物袋、抽屜、確認框與訂單頁',
               type: 'text',
               paragraphs: [
-                '後端的購物車、訂單、管理員 API 都在 1-9 章完成了，這一段把它們接到畫面上。元件分工如下，括號內是 e2e 與章末升級都要保留的 class。'
+                '後端的購物車、訂單、管理員 API 都在 1-9 章完成了，這一段把它們接到畫面上。元件分工如下，括號內是 e2e 與章末升級都要保留的 class。頁面切換先用最簡單的網址 hash（<code>#/orders</code>、<code>#/admin/orders</code>），章末升級的商品頁 <code>#/product/{id}</code> 會沿用同一套機制。'
               ],
               bullets: [
                 '<strong>Header 購物袋</strong>（<code>cart-btn</code>、數量徽章 <code>cart-badge</code>）：未登入點擊時開登入表單；徽章只在有商品時顯示。',
@@ -3429,7 +3429,7 @@ window.COURSE = {
                 '<strong>結帳結果</strong>（<code>checkout-result</code>、<code>order-no</code>）：成功顯示訂單編號與「查看我的訂單」；失敗顯示後端的 message，庫存不足時列出 details，購物車保留。',
                 '<strong>我的訂單 <code>#/orders</code></strong>（<code>orders-page</code>、每筆 <code>order-row</code>，帶 <code>data-order-no</code>、<code>data-status</code> 屬性）：明細、狀態標籤、PENDING 可取消（<code>cancel-btn</code>）。這一頁<strong>沒有</strong>出貨按鈕。',
                 '<strong>訂單管理 <code>#/admin/orders</code></strong>（<code>admin-orders-page</code>，入口 <code>admin-orders-link</code> 只有 ADMIN 看得到）：列出所有帳號的訂單與下單帳號（<code>order-user</code>）、狀態篩選（<code>status-filter</code>）、PENDING 可出貨（<code>ship-btn</code>）。<strong>出貨只在這一頁</strong>；一般使用者直接開這個網址會看到「僅限管理員」。',
-                '<strong>AI 客服同步</strong>：快捷問題多一個「我的購物車有什麼？」；每次 AI 回覆結束（收到 <code>[DONE]</code>）就重新讀取購物車、商品與訂單——AI 工具可能已經在後端改了購物車，前端狀態是舊的。'
+                '<strong>AI 客服同步</strong>：加一個快捷問題「我的購物車有什麼？」（class <code>chat-chip</code>）；每次 AI 回覆結束（收到 <code>[DONE]</code>）就重新讀取購物車、商品與訂單——AI 工具可能已經在後端改了購物車，前端狀態是舊的。'
               ]
             },
             {
@@ -3454,7 +3454,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有前端加入購物功能（後端 1-9 章的購物車、訂單與管理員 API 已完成，不要修改後端）：\n1. api.js：共用的 request(url, {method, token, body})：先看狀態碼再解析 body（401/403 的 body 是空的）；失敗時丟 ApiError(status, message, details)，message 取後端錯誤格式的 message。401 = 未登入或 token 失效 -> 清除登入並提示「登入已失效，請重新登入」（只在發出請求的 token 仍是目前 token 時才清除）；403 = 已登入但沒權限 -> 只顯示「沒有權限執行此操作」，不可登出。\n2. Header 購物袋：按鈕 class cart-btn，數量徽章 class cart-badge（totalQuantity > 0 才顯示）；未登入點擊時開登入表單。登入後與每次購物車變動後，徽章數字都要正確。\n3. 購物車抽屜 CartDrawer（class cart-drawer，右側滑出，關閉鈕 drawer-close）：每個品項 class cart-item，數量加減（qty-minus／qty-plus，呼叫 PATCH）、移除（remove-btn，呼叫 DELETE）、小計與總金額；有品項超過庫存時顯示警示並停用結帳鈕（class checkout-btn）。\n4. 確認框 ConfirmDialog（class confirm-dialog，確認鈕 confirm-ok、取消鈕 confirm-cancel）：結帳、取消訂單、出貨前都先跳畫面內確認框，不可使用 window.confirm／alert；Esc 或點背景等同取消；處理中停用按鈕。\n5. 結帳結果：成功在抽屜顯示 class checkout-result，內含訂單編號（class order-no）與「查看我的訂單」連結；失敗顯示後端 message，庫存不足時列出 details，購物車保留。\n6. 商品頁「加入購物袋」真的呼叫 POST /api/cart/items（可選數量）；缺貨時停用；成功或失敗都在按鈕旁顯示結果。\n7. 我的訂單 #/orders（根元素 class orders-page）：每筆訂單 class order-row，並加上 data-order-no 與 data-status 屬性；顯示明細、狀態標籤（待出貨／已出貨／已送達／已取消）、總金額；PENDING 訂單有「取消訂單」（class cancel-btn，先確認）。這一頁不放出貨按鈕。\n8. 訂單管理 #/admin/orders（只有 ADMIN 在 Header 看得到入口 class admin-orders-link；根元素 class admin-orders-page）：呼叫 GET /api/admin/orders 列出所有帳號的訂單，顯示下單帳號（class order-user，order-row 加 data-username）；狀態篩選下拉（class status-filter：全部／待出貨／已出貨／已送達／已取消）；PENDING 訂單有「出貨」（class ship-btn，先確認）呼叫 PATCH /api/orders/{orderNo}/ship。一般使用者直接開這個網址顯示「僅限管理員」；後端回 403 時顯示錯誤但不登出。\n9. AI 客服：快捷問題加「我的購物車有什麼？」；每次 AI 回覆結束（收到 [DONE]）後，重新讀取購物車、商品與訂單（AI 工具可能已經在後端改了購物車）。\n10. 元件需有中文註解。\n完成後請示範：user 在商品頁加入 2 件 -> 徽章顯示 2 -> 抽屜改數量 -> 結帳（確認框）-> 看到訂單編號 -> 我的訂單看到這筆 -> 取消 -> 庫存回到原值；再以 admin 在訂單管理頁篩選待出貨，出貨 user 的一筆訂單，回到 user 確認這筆不能取消。'
+                content: '請在現有前端加入購物功能（後端 1-9 章的購物車、訂單與管理員 API 已完成，不要修改後端）：\n1. api.js：共用的 request(url, {method, token, body})：先看狀態碼再解析 body（401/403 的 body 是空的）；失敗時丟 ApiError(status, message, details)，message 取後端錯誤格式的 message。401 = 未登入或 token 失效 -> 清除登入並提示「登入已失效，請重新登入」（只在發出請求的 token 仍是目前 token 時才清除）；403 = 已登入但沒權限 -> 只顯示「沒有權限執行此操作」，不可登出。\n2. Header 購物袋：按鈕 class cart-btn，數量徽章 class cart-badge（totalQuantity > 0 才顯示）；未登入點擊時開登入表單。登入後與每次購物車變動後，徽章數字都要正確。\n3. 購物車抽屜 CartDrawer（class cart-drawer，右側滑出，關閉鈕 drawer-close）：每個品項 class cart-item，數量加減（qty-minus／qty-plus，呼叫 PATCH）、移除（remove-btn，呼叫 DELETE）、小計與總金額；有品項超過庫存時顯示警示並停用結帳鈕（class checkout-btn）。\n4. 確認框 ConfirmDialog（class confirm-dialog，確認鈕 confirm-ok、取消鈕 confirm-cancel）：結帳、取消訂單、出貨前都先跳畫面內確認框，不可使用 window.confirm／alert；Esc 或點背景等同取消；處理中停用按鈕。\n5. 結帳結果：成功在抽屜顯示 class checkout-result，內含訂單編號（class order-no）與「查看我的訂單」連結；失敗顯示後端 message，庫存不足時列出 details，購物車保留。\n6. 商品詳情（目前是點商品卡片開啟的詳情視窗；章末升級後會改成獨立商品頁）加上「加入購物袋」按鈕，真的呼叫 POST /api/cart/items（可選數量）；缺貨時停用；成功或失敗都在按鈕旁顯示結果。\n   頁面切換用網址 hash（#/orders、#/admin/orders），不安裝路由套件：讀 location.hash 並監聽 hashchange，回首頁用 #/；章末升級的商品頁 #/product/{id} 會沿用這個機制。\n7. 我的訂單 #/orders（根元素 class orders-page）：每筆訂單 class order-row，並加上 data-order-no 與 data-status 屬性；顯示明細、狀態標籤（待出貨／已出貨／已送達／已取消）、總金額；PENDING 訂單有「取消訂單」（class cancel-btn，先確認）。這一頁不放出貨按鈕。\n8. 訂單管理 #/admin/orders（只有 ADMIN 在 Header 看得到入口 class admin-orders-link；根元素 class admin-orders-page）：呼叫 GET /api/admin/orders 列出所有帳號的訂單，顯示下單帳號（class order-user，order-row 加 data-username）；狀態篩選下拉（class status-filter：全部／待出貨／已出貨／已送達／已取消）；PENDING 訂單有「出貨」（class ship-btn，先確認）呼叫 PATCH /api/orders/{orderNo}/ship。一般使用者直接開這個網址顯示「僅限管理員」；後端回 403 時顯示錯誤但不登出。\n9. AI 客服：聊天視窗加一個快捷問題按鈕（class chat-chip）「我的購物車有什麼？」，點一下直接送出（章末升級會再補上其他快捷問題）；每次 AI 回覆結束（收到 [DONE]）後，重新讀取購物車、商品與訂單（AI 工具可能已經在後端改了購物車）。\n10. 元件需有中文註解。\n完成後請示範：user 在商品詳情加入 2 件 -> 徽章顯示 2 -> 抽屜改數量 -> 結帳（確認框）-> 看到訂單編號 -> 我的訂單看到這筆 -> 取消 -> 庫存回到原值；再以 admin 在訂單管理頁篩選待出貨，出貨 user 的一筆訂單，回到 user 確認這筆不能取消。'
               }
             },
             {
@@ -3466,9 +3466,9 @@ window.COURSE = {
               ],
               bullets: [
                 '<strong>步驟 1（未登入）</strong>：點 Header 購物袋 → 跳出登入表單。以 user 登入，購物袋沒有徽章。',
-                '<strong>步驟 2（加入）</strong>：進「機械鍵盤」商品頁，數量選 2，按「加入購物袋」→ 徽章變 2。',
-                '<strong>步驟 3（抽屜）</strong>：開抽屜，按 ＋ 變 3、按 − 回 2，小計與總金額跟著變；按結帳 → 出現畫面內確認框，先按「取消」→ 什麼都沒發生（到商品頁看庫存沒變）。',
-                '<strong>步驟 4（結帳）</strong>：再按結帳 →「確認結帳」→ 抽屜顯示訂單編號（ORD-今天日期-1000 以後），徽章消失；商品頁庫存少 2。',
+                '<strong>步驟 2（加入）</strong>：開「機械鍵盤」的商品詳情（章末升級前是彈出視窗，升級後是商品頁），數量選 2，按「加入購物袋」→ 徽章變 2。',
+                '<strong>步驟 3（抽屜）</strong>：開抽屜，按 ＋ 變 3、按 − 回 2，小計與總金額跟著變；按結帳 → 出現畫面內確認框，先按「取消」→ 什麼都沒發生（商品庫存沒變）。',
+                '<strong>步驟 4（結帳）</strong>：再按結帳 →「確認結帳」→ 抽屜顯示訂單編號（ORD-今天日期-1000 以後），徽章消失；商品庫存少 2。',
                 '<strong>步驟 5（我的訂單）</strong>：點「查看我的訂單」→ 新訂單在最上面、狀態待出貨、有明細；這一頁沒有出貨鈕。按「取消訂單」→ 確認 → 狀態變已取消，庫存回到原值。',
                 '<strong>步驟 6（admin 出貨）</strong>：user 再買 1 件。切到 admin 視窗 → Header 出現「訂單管理」→ 篩選「待出貨」→ 找到 user 的訂單（下單帳號 user）→ 按「出貨」→ 確認 → 從待出貨清單消失；切回「全部」顯示已出貨、出貨鈕消失。回到 user 視窗重新整理，這筆沒有取消鈕。',
                 '<strong>步驟 7（AI 同步，選做）</strong>：user 在客服視窗問「幫我把行動電源加入購物車」，回覆結束時徽章自動 +1，不必重新整理。',
@@ -3495,7 +3495,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 用 ui-ux-pro-max 升級成品牌官網',
-                content: '請用 ui-ux-pro-max 技能，把目前的商城前端升級成「類 Apple 的品牌官網購物網站」，後端 API 不要修改：\n0. 設計系統：先用 ui-ux-pro-max 跑兩次查詢——(a) 設計系統：premium consumer electronics brand store apple minimal，取它的字體、版面與 UX 檢查清單；(b) 配色：用 color 領域查 monochrome minimal blue accent，採用「Monochrome + blue accent」這組配色。列出你採用與捨棄的建議並說明原因。方向固定為：白底與淺灰底、近黑文字、只用一個藍色強調色、大圖留白；不使用漸層、毛玻璃（backdrop-filter）與 3D 效果，建議若與此衝突（例如 Liquid Glass 風格）以限制為準。顏色、字體、圓角定義成 :root 的 CSS 變數。\n1. 素材：素材包 brand 資料夾的 hero.jpg、category-3c.jpg、category-home.jpg、ai-avatar.png、placeholder.svg 放到 frontend/public/images/brand/（商品圖維持 2-4 章放的 frontend/public/images/products/）。\n2. 首頁由上到下：\n   - Header：白色、捲動時固定在頂端（position: sticky），左側品牌名，中間「首頁」「全部商品」連結（「全部商品」捲到全部商品區並清除篩選），右側保留原本的登入／登出／商品上架按鈕。\n   - Hero：class 為 hero，深色滿版、背景 hero.jpg，主打無線耳機 Pro（商品 id 為 1），「立即選購」連到 #/product/1。\n   - 四項購物保障：免運、7 天鑑賞期、一年保固、AI 客服，圖示用 SVG。\n   - 兩張分類大圖卡：class 為 category-card，分類值為 3C、居家；點擊後捲到全部商品區並套用該分類篩選。\n   - 本週精選：有庫存且價格最高的 3 件，卡片 class 用 featured-card（不可用 product-card，e2e 會用 product-card 計數）。\n   - 全部商品：預設顯示全部，上方有「全部／3C／居家」三個篩選按鈕。\n   - 深色 Footer。\n   - 購物車抽屜、確認框、我的訂單、訂單管理也套用同一套設計系統：抽屜白底、品項之間用細分隔線；確認框置中、主要按鈕用藍色強調色；訂單狀態標籤用同一色系的淺底色區分（待出貨、已出貨、已送達、已取消），不要用紅綠大色塊。\n3. 商品詳情改成獨立頁：用網址 hash 路由 #/product/{id}（不安裝路由套件），頁面根元素 class 為 product-page、商品名稱用 h1；左大圖右資訊（分類、價格、說明、庫存），含「問 AI 客服」按鈕，按下開啟聊天視窗並把「商品名 還有庫存嗎？」放進輸入框（不自動送出）。沒有圖片的商品顯示 placeholder.svg。\n4. AI 客服視窗：標題列加 ai-avatar.png 頭像與關閉鈕。登入後先顯示一則問候，class 用 chat-greeting（不可用 msg-ai，e2e 用 msg-ai 計算 AI 回覆數），問候下方放 4 個快捷問題按鈕（class chat-chip）「有哪些耳機？」「我的訂單到哪了？」「預算 2000 推薦什麼？」「我的購物車有什麼？」，點一下就直接送出。未登入時視窗內放一個登入按鈕（class 不可用 login-btn，避免和 Header 的登入鈕重複）。\n5. 保留既有的 class 與欄位名稱不變：product-card、sold-out-tag、login-btn、greeting、add-product-btn、logout-btn、chat-toggle、chat-input、chat-send、msg-ai、chat-login-hint、chat-chip、chat-close；購物與訂單的 cart-btn、cart-badge、cart-drawer、drawer-close、cart-item、qty-minus、qty-plus、remove-btn、checkout-btn、checkout-result、order-no、confirm-dialog、confirm-ok、confirm-cancel、orders-page、order-row（含 data-order-no、data-status、data-username 屬性）、cancel-btn、admin-orders-link、admin-orders-page、order-user、status-filter、ship-btn；以及登入、上架表單 input 的 name。e2e 測試依賴它們。\n6. 可用性：按鈕與輸入框至少 44px 高、鍵盤焦點框看得見、圖示用 SVG 不用 emoji、支援 prefers-reduced-motion；手機（390px 寬）全部商品一排兩欄，本週精選改為可左右滑動。元件需有中文註解。\n完成後請在 e2e/ 寫一支 Playwright 腳本 verify-upgrade.mjs 並執行：未登入時首頁有 .hero、2 張 .category-card、.product-card 數量與 GET /api/products 筆數相同；點第一張 .product-card 後出現 .product-page h1 且文字等於商品名稱；再用 user / user123 登入，按「問 AI 客服」確認輸入框已帶入問題。接著重跑購物流程的 e2e（2-8 章的 e2e/verify-cart.mjs，若已建立）確認購物功能沒被改壞。最後截圖首頁（桌機與手機）、商品頁、購物車抽屜、我的訂單、訂單管理與客服視窗給我看。'
+                content: '請用 ui-ux-pro-max 技能，把目前的商城前端升級成「類 Apple 的品牌官網購物網站」，後端 API 不要修改：\n0. 設計系統：先用 ui-ux-pro-max 跑兩次查詢——(a) 設計系統：premium consumer electronics brand store apple minimal，取它的字體、版面與 UX 檢查清單；(b) 配色：用 color 領域查 monochrome minimal blue accent，採用「Monochrome + blue accent」這組配色。列出你採用與捨棄的建議並說明原因。方向固定為：白底與淺灰底、近黑文字、只用一個藍色強調色、大圖留白；不使用漸層、毛玻璃（backdrop-filter）與 3D 效果，建議若與此衝突（例如 Liquid Glass 風格）以限制為準。顏色、字體、圓角定義成 :root 的 CSS 變數。\n1. 素材：素材包 brand 資料夾的 hero.jpg、category-3c.jpg、category-home.jpg、ai-avatar.png、placeholder.svg 放到 frontend/public/images/brand/（商品圖維持 2-4 章放的 frontend/public/images/products/）。\n2. 首頁由上到下：\n   - Header：白色、捲動時固定在頂端（position: sticky），左側品牌名，中間「首頁」「全部商品」連結（「全部商品」捲到全部商品區並清除篩選），右側保留原本的登入／登出／商品上架按鈕，以及購物袋（含數量徽章）、「我的訂單」、ADMIN 才看得到的「訂單管理」入口。\n   - Hero：class 為 hero，深色滿版、背景 hero.jpg，主打無線耳機 Pro（商品 id 為 1），「立即選購」連到 #/product/1。\n   - 四項購物保障：免運、7 天鑑賞期、一年保固、AI 客服，圖示用 SVG。\n   - 兩張分類大圖卡：class 為 category-card，分類值為 3C、居家；點擊後捲到全部商品區並套用該分類篩選。\n   - 本週精選：有庫存且價格最高的 3 件，卡片 class 用 featured-card（不可用 product-card，e2e 會用 product-card 計數）。\n   - 全部商品：預設顯示全部，上方有「全部／3C／居家」三個篩選按鈕。\n   - 深色 Footer。\n   - 購物車抽屜、確認框、我的訂單、訂單管理也套用同一套設計系統：抽屜白底、品項之間用細分隔線；確認框置中、主要按鈕用藍色強調色；訂單狀態標籤用同一色系的淺底色區分（待出貨、已出貨、已送達、已取消），不要用紅綠大色塊。\n3. 商品詳情改成獨立頁：用網址 hash 路由 #/product/{id}（沿用購物前端建立的 hash 路由，不安裝路由套件），原本詳情視窗的「加入購物袋」移到這一頁，頁面根元素 class 為 product-page、商品名稱用 h1；左大圖右資訊（分類、價格、說明、庫存），含「問 AI 客服」按鈕，按下開啟聊天視窗並把「商品名 還有庫存嗎？」放進輸入框（不自動送出）。沒有圖片的商品顯示 placeholder.svg。\n4. AI 客服視窗：標題列加 ai-avatar.png 頭像與關閉鈕（class chat-close）。登入後先顯示一則問候，class 用 chat-greeting（不可用 msg-ai，e2e 用 msg-ai 計算 AI 回覆數），問候下方放 4 個快捷問題按鈕（class chat-chip）「有哪些耳機？」「我的訂單到哪了？」「預算 2000 推薦什麼？」「我的購物車有什麼？」，點一下就直接送出。未登入時視窗內放一個登入按鈕（class 不可用 login-btn，避免和 Header 的登入鈕重複）。\n5. 保留既有的 class 與欄位名稱不變：product-card、sold-out-tag、login-btn、greeting、add-product-btn、logout-btn、chat-toggle、chat-input、chat-send、msg-ai、chat-login-hint、chat-chip；購物與訂單的 cart-btn、cart-badge、cart-drawer、drawer-close、cart-item、qty-minus、qty-plus、remove-btn、checkout-btn、checkout-result、order-no、confirm-dialog、confirm-ok、confirm-cancel、orders-page、order-row（含 data-order-no、data-status、data-username 屬性）、cancel-btn、admin-orders-link、admin-orders-page、order-user、status-filter、ship-btn；以及登入、上架表單 input 的 name。e2e 測試依賴它們。\n6. 可用性：按鈕與輸入框至少 44px 高、鍵盤焦點框看得見、圖示用 SVG 不用 emoji、支援 prefers-reduced-motion；手機（390px 寬）全部商品一排兩欄，本週精選改為可左右滑動。元件需有中文註解。\n完成後請在 e2e/ 寫一支 Playwright 腳本 verify-upgrade.mjs 並執行：未登入時首頁有 .hero、2 張 .category-card、.product-card 數量與 GET /api/products 筆數相同；點第一張 .product-card 後出現 .product-page h1 且文字等於商品名稱；再用 user / user123 登入，按「問 AI 客服」確認輸入框已帶入問題。接著重跑購物流程的 e2e（2-8 章的 e2e/verify-cart.mjs，若已建立）確認購物功能沒被改壞。最後截圖首頁（桌機與手機）、商品頁、購物車抽屜、我的訂單、訂單管理與客服視窗給我看。'
               }
             }
           ]
@@ -3868,14 +3868,14 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 '重點不是「跑過了」，而是讓學員看到<strong>連續跑兩次都過</strong>，以及前後的庫存、訂單數完全一樣——這才代表測試會自己收拾。',
-                '<strong>示範前置</strong>：PostgreSQL 容器（25432）、後端（8080）、前端（5173）都已啟動；Playwright 已安裝（0-1 章）。不要同時跑其他 e2e 或建置，會互相拖慢造成假的逾時。'
+                '<strong>示範前置</strong>：PostgreSQL 容器、後端（8080）、前端（5173）都已啟動；Playwright 已安裝（0-1 章）。不要同時跑其他 e2e 或建置，會互相拖慢造成假的逾時。'
               ],
               bullets: [
                 '<strong>步驟 1</strong>：先用 psql 查一次庫存與訂單數，寫在白板上。',
                 '<strong>步驟 2</strong>：執行 <code>node e2e/verify-cart.mjs</code>，邊跑邊解說 PASS 項目：結帳、取消、偽造 ADMIN 的 403、AI 回覆後徽章自動更新、admin 出貨。',
                 '<strong>步驟 3</strong>：最後三行應是「結束：全部商品庫存與開始前一致」「結束：訂單總數與開始前一致」「結束：購物車已清空」與 <code>ALL PASS</code>；再查一次 psql，數字和白板一樣。',
                 '<strong>步驟 4</strong>：立刻再跑一次，仍然全部通過。',
-                '<strong>可能出錯</strong>：某一步逾時 → 先看 <code>e2e/screenshots/</code> 的截圖與 console 錯誤，不要直接把等待時間調長；清理時找不到容器 → 腳本用 <code>docker ps --filter publish=25432</code> 找容器，確認資料庫有對外開 25432；第二次跑失敗 → 第一次的清理沒做完，先用 demo-snapshot.ps1 或 psql 檢查遺留的訂單。'
+                '<strong>可能出錯</strong>：某一步逾時 → 先看 <code>e2e/screenshots/</code> 的截圖與 console 錯誤，不要直接把等待時間調長；清理時找不到容器 → 參考實作的腳本用 <code>docker ps --filter publish=埠號</code> 找資料庫容器，確認埠號與 1-3 章 docker-compose 的設定一致；第二次跑失敗 → 第一次的清理沒做完，先用 demo-snapshot.ps1 或 psql 檢查遺留的訂單。'
               ],
               code: {
                 language: 'powershell',
