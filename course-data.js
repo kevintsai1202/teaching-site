@@ -87,7 +87,8 @@ window.COURSE = {
             { id: 'd0-u1-t2', text: '安裝 deep-memory 技能，完成一次任務後確認 `~/.deep-memory/cold-notes/raw.jsonl` 有新紀錄' },
             { id: 'd0-u1-t3', text: '執行 `gh auth login` 登入，並用 `gh repo create` 把課程專案推上 GitHub' },
             { id: 'd0-u1-t4', text: '安裝 Playwright，請 AI 寫一支開網頁並截圖的腳本放進 `e2e/` 並實際執行' },
-            { id: 'd0-u1-t5', text: '請 AI 開分支、列出變更、commit，並用 gh 開一個 Pull Request' }
+            { id: 'd0-u1-t5', text: '請 AI 開分支、列出變更、commit，並用 gh 開一個 Pull Request' },
+            { id: 'd0-u1-t6', text: '把「把規則寫進 CLAUDE.md」段的精簡範本放進自己課程專案的根目錄，開新對話問 AI「這個專案有哪些開發規則」，確認它答得出任務分級' }
           ],
           sections: [
             {
@@ -207,7 +208,8 @@ window.COURSE = {
               type: 'text',
               paragraphs: [
                 'Claude Code 每開一個新對話就會忘記上一次學到的事：上週踩過的坑、某個指令的正確參數、你偏好的寫法。<strong>deep-memory</strong> 技能把這些經驗存到本機 <code>~/.deep-memory</code>，下次開工時自動找出相關的紀錄帶進對話。',
-                '它採<strong>冷熱兩層</strong>設計：每個回合結束都先快速寫一筆到<strong>冷庫</strong>（不挑、不判斷，原始紀錄全留）；累積一段時間後，說一聲「幫我精煉冷庫」，AI 會把重複的合併、過時的淘汰、真正有用的整理成<strong>熱庫</strong>的知識條目（<code>knowledge-base/</code>）與技能經驗（<code>experience/</code>）。'
+                '它採<strong>冷熱兩層</strong>設計：每個回合結束都先快速寫一筆到<strong>冷庫</strong>（不挑、不判斷，原始紀錄全留）；累積一段時間後，說一聲「幫我精煉冷庫」，AI 會把重複的合併、過時的淘汰、真正有用的整理成<strong>熱庫</strong>的知識條目（<code>knowledge-base/</code>）與技能經驗（<code>experience/</code>）。',
+                '這裡只列安裝與基本概念；每回合實際做了什麼、精煉與備份的指令、隱私注意事項，完整說明見<a href="#d2-u10">補充章節 2-10「AI 開發工作流程」</a>。'
               ],
               bullets: [
                 '<strong>冷庫</strong> <code>cold-notes/raw.jsonl</code>：每回合自動寫入，什麼都記，事後才篩。',
@@ -339,6 +341,29 @@ window.COURSE = {
                 language: 'text',
                 title: 'TDD 三段提示詞範例',
                 content: '【紅：只寫測試】\n我要做「加入購物車」功能：同一商品再次加入時數量累加，超過庫存要回 409。\n請先只寫測試（CartServiceTest），不要寫實作。寫完執行 mvn test，把失敗訊息給我看，\n並說明每個測試失敗的原因是不是「功能還沒實作」。\n\n【綠：實作到通過】\n失敗原因正確。現在請實作 CartService，讓這些測試通過。不准修改測試的斷言；\n如果你認為測試寫錯了，先停下來告訴我原因。完成後執行 mvn test 給我看結果。\n\n【重構：測試保護下整理】\n測試都通過了。請檢查 CartService 有沒有重複的程式碼或命名不清楚的地方，\n整理後再跑一次 mvn test，確認仍然全部通過。'
+              }
+            },
+            {
+              title: '把規則寫進 CLAUDE.md：精簡範本、任務分級與權限',
+              type: 'text',
+              paragraphs: [
+                'AI 每開一個新對話都從零開始，上次交代的「用繁體中文」「改完要跑測試」它不會記得。把這些規則寫進 <code>CLAUDE.md</code>，Claude Code 每次開工都會先讀。放在專案根目錄的 <code>CLAUDE.md</code> 只對這個專案有效，可以進版控和同事共用；放在 <code>~/.claude/CLAUDE.md</code> 則套用到你所有的專案。',
+                '下方範本是講師自己使用的規則精簡版。第一天就把它放進課程專案的根目錄，再依自己的習慣刪改：在專案根目錄的 PowerShell 執行 <code>code CLAUDE.md</code>，貼上範本後存檔；或直接請 AI「在專案根目錄建立 CLAUDE.md，內容如下」。之後開新對話問 AI「這個專案有哪些開發規則」，答得出來就代表讀到了。',
+                '範本裡最重要的是<strong>任務分級</strong>：不是每件事都要走完整流程。開工前先判斷一次層級，查資料就不必寫測試，改功能就一定要先確認理解、先寫測試。'
+              ],
+              bullets: [
+                '<strong>T0 查詢</strong>：不改任何檔案，例如問版本、讀程式、解釋架構。可以省略規劃與 TDD，但結論要有讀檔或跑指令的證據，不憑印象回答。',
+                '<strong>T1 單檔機械修改</strong>：只動 1 個檔，而且行為不變或內容由你指定，例如改錯字、改常數、改文案、rename。不碰 API 契約、資料庫、交易、權限。改完仍要跑相關測試或 build。',
+                '<strong>T2 非程式產出</strong>：文件、報告、一次性的資料分析。可以省略 TDD，但會被重跑的腳本要寫成檔案並實際跑過。',
+                '<strong>T3 其他</strong>：新功能、修 bug、多檔改動、任何改變既有行為的變更。先說明理解等你確認 → 有邏輯變動先寫會失敗的測試（TDD）→ 修 bug 先重現、找出根因再改，不憑猜測連續試改。',
+                '<strong>分級的用法</strong>：只在開工前判定一次；做到一半發現要動第二個檔、其實是行為變更，立刻升到 T3 補走流程；判定有疑義時取較高的層級；你明確指定流程（例如「先用 TDD 做」）時照你說的做。省略 TDD 不等於省略驗證，任何層級改完程式都要有實跑證據。',
+                '<strong>⚠ 權限被擋下時不要叫 AI 繞過</strong>：auto mode 會擋下它判斷為破壞性的動作，課前驗證時含 <code>DROP COLUMN</code> 的 Flyway 腳本就被擋過。正確做法是先看清楚 AI 要做什麼、為什麼被擋，確認無誤再由你放行（<code>/permissions</code> 的 Recently blocked 分頁），或在設定加一條範圍明確的允許規則；不要叫 AI 改用別的指令把檔案寫進去。',
+                '<strong>延伸閱讀</strong>：每條規則的理由、完整版範本、subagent 派工、advisor、權限規則的寫法，見<a href="#d2-u10">補充章節 2-10「AI 開發工作流程」</a>（課後自學）。'
+              ],
+              code: {
+                language: 'markdown',
+                title: 'CLAUDE.md — 精簡版範本（放在專案根目錄）',
+                content: '# 專案開發規則（CLAUDE.md）\n\n## 語言與環境\n- 回覆、文件、commit 訊息、程式註解用繁體中文；技術名詞與識別字維持原文。\n- 給我手動執行的指令用 PowerShell 7 語法。\n- 本專案：後端 Spring Boot 4 + Spring AI 2.0（backend/），前端 React 19 + Vite（frontend/）。\n  各目錄的建置指令與慣例寫在該目錄自己的 CLAUDE.md。\n\n## 寫程式\n- 新寫或大幅改寫的函式加中文函式級註解，重要的變數與物件也要註解。\n- 只做這次任務需要的部分。順手發現的重構、額外功能列在回報裡，由我決定。\n- 不准為了讓測試通過去改測試的斷言；認為測試寫錯就先停下來說明原因。\n\n## 任務分級（開工前判定一次）\n- T0 查詢：不修改檔案。結論要有實際查證（讀檔、跑指令），不憑印象。\n- T1 單檔機械修改：只動 1 個檔，行為不變或內容由我指定。改完跑相關測試或 build。\n- T2 非程式產出：文件、報告。可省略 TDD；會重跑的腳本仍要寫成檔案並實際跑過。\n- T3 其他：新功能、修 bug、多檔改動。先說明你的理解等我確認；有邏輯變動先寫會失敗的測試；\n  修 bug 先重現、找出根因再改。\n- 做到一半發現超出原層級，立刻升到 T3；判定有疑義時取較高的層級。\n\n## 驗證\n- 「改好了」要附實跑證據：測試、build 或 Playwright 腳本的輸出。\n- 全套測試、建置這類長時間指令，輸出 tee 到 logs/ 底下的檔案。\n- 收尾只跑和這次改動有關的測試，回報時列出跑了哪些、沒跑哪些與原因。\n- 操作瀏覽器時，先把步驟寫成 e2e/ 或 scripts/ 底下的腳本再執行。\n\n## 安全\n- 金鑰只放環境變數或 .env，.env 不進 Git。\n- 權限被擋下時停下來告訴我原因，不要換個方式繞過。\n- git reset --hard、push --force、刪資料表這類不可逆操作，先說明影響，等我同意再做。'
               }
             },
             {
@@ -3744,6 +3769,7 @@ window.COURSE = {
                 '安裝（在 Claude Code 對話框輸入）：<code>/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill</code>，再輸入 <code>/plugin install ui-ux-pro-max@ui-ux-pro-max-skill</code>，重開 VS Code。它的搜尋腳本需要 Python 3（0-1 章已安裝）。',
                 '素材：Hero 大圖、分類情境圖、客服頭像已放在 1-3 章的<a href="assets/downloads/product-images.zip" download>素材包 product-images.zip</a> 的 <code>brand/</code> 資料夾，解壓後放到 <code>frontend/public/images/brand/</code>。',
                 '<strong>技能提供素材，方向由你決定</strong>：實測用「premium consumer electronics brand store apple minimal」查設計系統，會得到 Liquid Glass（毛玻璃）風格與黑金配色——這正是我們要避開的 AI 感。所以提示詞分兩步：設計系統只取字體、版面與 UX 檢查清單，配色另外用 color 領域查「Monochrome + blue accent」。這就是用設計技能的正確姿勢：讓它列出有根據的選項，你負責取捨並說明理由。',
+                'ui-ux-pro-max 的完整用法（<code>--domain</code> 補查單一領域、<code>--persist</code> 保存設計系統、三個調整旋鈕、<code>--stack</code> 技術堆疊規則）見<a href="#d2-u10">補充章節 2-10「AI 開發工作流程」</a>。',
                 '提示詞最後會請 AI 用 0-1 章學的 Playwright 寫一支 <code>e2e/verify-upgrade.mjs</code> 驗證升級結果；2-8 章的完整 e2e 會再把登入、上架、AI 客服全部驗一次。',
                 '升級後的首頁：深色 Hero 主打商品、購物保障、分類大圖、本週精選、可篩選的全部商品；商品改為獨立頁面，可一鍵把商品帶進 AI 客服提問。<br><a href="assets/samples/01-visitor-home.jpg" target="_blank"><img src="assets/samples/01-visitor-home.jpg" alt="升級後的品牌官網首頁" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>'
               ],
@@ -4351,6 +4377,421 @@ window.COURSE = {
                 '<strong>⚠ 聊天沒有逐字輸出，先懷疑 Quick Tunnel</strong>：Quick Tunnel 不支援 SSE。AI 遇到串流異常時可能去改前後端程式；先改用 Named Tunnel 或非串流端點確認，不要動已經驗證過的程式。',
                 '<strong>容器裡的 localhost 是自己</strong>：AI 常把轉發目標寫成 <code>localhost:8080</code>。cloudflared 在容器裡時要用服務名稱 <code>nginx</code>，後端跑在本機時用 <code>host.docker.internal</code>。',
                 '<strong>用外部網路驗證</strong>：AI 只能從本機測，看不到真正的外部連線。請它給你網址後，用手機關掉 Wi-Fi 開啟，從登入到問一次客服完整走一遍。'
+              ]
+            }
+          ]
+        },
+        {
+          id: 'd2-u10',
+          chapter: '2-10',
+          title: '補充：AI 開發工作流程 — 規則、Subagent、Advisor 與技能（課後自學）',
+          summary: '講師實際使用的 AI 開發規則逐條解說、任務分級、subagent 派工與自建 agent、advisor、權限與 auto mode，以及 deep-memory 與 ui-ux-pro-max 的完整用法。課後自學，不計入 14 小時。',
+          source: 'docs/Day2-10-AI-Workflow.md',
+          heroImage: 'assets/teaching-site/14-ch0-1-claude-code-memory-git.png',
+          diagramImage: 'assets/teaching-site/14-ch0-1-claude-code-memory-git.png',
+          diagramCaption: '規則告訴 AI 怎麼做，subagent 分工，advisor 把關，技能補上記憶與設計素材。',
+          goals: [
+            '知道全域、專案、子目錄 CLAUDE.md 的載入方式，能寫出自己的開發規則',
+            '理解講師每條規則背後的理由，會用任務分級 T0～T3 決定流程',
+            '會寫派工簡報、判斷什麼該派給 subagent，並能自建一個唯讀的 agent',
+            '分得清 Claude Code 的 advisor 與 Spring AI 的 Advisor，知道何時呼叫 advisor',
+            '會處理 auto mode 的權限阻擋，並完整使用 deep-memory 與 ui-ux-pro-max'
+          ],
+          tasks: [
+            { id: 'd2-u10-t1', text: '從完整版範本寫出自己的 <code>~/.claude/CLAUDE.md</code>，開新對話確認 AI 能說出你的任務分級' },
+            { id: 'd2-u10-t2', text: '在課程專案建立唯讀的 <code>.claude/agents/spring-reviewer.md</code>，審查 CartService 且 <code>git status</code> 沒有任何修改' },
+            { id: 'd2-u10-t3', text: '用「目標、已排除、範圍、驗收」四段簡報請 Explore 盤點管理員 API 的授權方式，並抽查兩筆' },
+            { id: 'd2-u10-t4', text: '設定 <code>/advisor</code> 做一個 T3 任務並用 Ctrl+O 看建議；在專案設定加一條 Edit 允許規則' },
+            { id: 'd2-u10-t5', text: 'deep-memory 跑 <code>refine_experience.py --dry-run</code>，或 ui-ux-pro-max 用 <code>--persist</code> 產生 MASTER.md 並寫下取捨理由（二選一）' }
+          ],
+          sections: [
+            {
+              title: '本章定位：課後自學，不計入 14 小時',
+              type: 'text',
+              paragraphs: [
+                '這一章把講師平常用 Claude Code 開發時實際遵守的規則、會派工的 subagent、advisor，以及課程用到的兩個技能（deep-memory、ui-ux-pro-max）集中說明。課堂上只在 0-1 章介紹精簡版 CLAUDE.md 範本與任務分級，其餘都放在這裡，<strong>課後自學，不計入課程的 14 小時</strong>。',
+                '內容都來自講師的實際設定與兩次課前演練、一次逐字驗證的紀錄，不是理想狀況的建議清單。每一段都可以單獨閱讀，遇到相關問題時再回來查即可。'
+              ],
+              bullets: [
+                '<strong>講師環境</strong>：Windows 11、PowerShell 7、VS Code 的 Claude Code 延伸模組。給你手動執行的指令都是 PowerShell 7 語法。',
+                '<strong>macOS</strong>：本章最後一段附 macOS 對照指令，依官方文件整理，講師未在 Mac 實測。',
+                '<strong>建議閱讀順序</strong>：CLAUDE.md 規則與任務分級 → 權限與 auto mode → subagent 與 advisor → 兩個技能 → 練習任務。',
+                '<strong>名詞提醒</strong>：本章的 advisor 是 Claude Code 的開發輔助工具，和 2-1～2-3 章 Spring AI 的 <code>QuestionAnswerAdvisor</code> 等 Advisor 完全不同，後面有一段專門比較。'
+              ]
+            },
+            {
+              title: '為什麼要把規則寫進 CLAUDE.md：全域、專案與子目錄',
+              type: 'text',
+              paragraphs: [
+                'CLAUDE.md 是寫給 AI 看的開發手冊。Claude Code 每次開新對話都會先讀，等於每次都把同一份交代重講一遍。沒寫下來的規則，AI 只能每次猜，猜錯了你再糾正，下一個對話又重來。',
+                '它有好幾個層級，彼此不是互相覆蓋，而是<strong>全部串在一起</strong>交給 AI：從檔案系統最上層讀到你啟動 Claude Code 的目錄，越接近工作目錄的越晚讀到。兩份規則互相矛盾時，官方文件說明 AI 可能任選一條，所以真正的「覆蓋順序」要靠你自己寫清楚。'
+              ],
+              bullets: [
+                '<strong>全域</strong> <code>~/.claude/CLAUDE.md</code>：只有你自己、所有專案都套用。放語言、註解、驗證習慣這類個人偏好。講師的任務分級、advisor 呼叫時機都寫在這裡。',
+                '<strong>專案</strong> <code>./CLAUDE.md</code> 或 <code>./.claude/CLAUDE.md</code>：進版控和團隊共用。放建置指令、架構、專案慣例。本課專案的根目錄就有一份，列出 backend、frontend、mcp、teaching-site 各自的用途。',
+                '<strong>子目錄</strong> <code>backend/CLAUDE.md</code>、<code>frontend/CLAUDE.md</code>：不會一開始就載入，AI 讀寫該目錄的檔案時才讀進來。前後端的指令與陷阱分開寫，做前端時就不會被一大段 Maven 說明干擾。',
+                '<strong>個人專案設定</strong> <code>./CLAUDE.local.md</code>：只對你、只對這個專案，記得加進 <code>.gitignore</code>，適合放本機的埠號、測試帳號。',
+                '<strong>誰優先要寫明</strong>：講師的全域規則寫了「技能裡的強制流程和這裡衝突時，以這裡為準」「我明確指定流程時，照我說的做，分級不適用」。這類句子比依賴載入順序可靠。',
+                '<strong>寫短、寫具體</strong>：官方建議每份 CLAUDE.md 控制在 200 行內，越長越容易被忽略；只跟部分檔案有關的規則可以拆到 <code>.claude/rules/</code>。第一次可以用 <code>/init</code> 讓 AI 掃專案產生起始版，再自己補上 AI 掃不出來的規則。',
+                '<strong>CLAUDE.md 是交代，不是鎖</strong>：AI 把它當成脈絡，大多數時候會照做，但不保證。真的不允許發生的事（例如讀 <code>.env</code>），要用權限規則擋，見後面「權限與 auto mode」段。'
+              ]
+            },
+            {
+              title: '講師的開發規則（一）：語言、註解與範圍',
+              type: 'text',
+              paragraphs: [
+                '以下逐條說明講師全域 CLAUDE.md 的規則：<strong>規則</strong>是什麼、<strong>為什麼</strong>這樣定、<strong>你可以怎麼寫</strong>。不必全部照抄，挑你真的會在意的。'
+              ],
+              bullets: [
+                '<strong>語言統一</strong>：規則是文件、commit 訊息、程式註解都用繁體中文，技術名詞與識別字維持原文。為什麼：不寫的話，AI 常中英混雜，commit 訊息一半英文。你可以寫：「回覆、文件、commit 訊息、註解用繁體中文；類別名稱、套件名稱、指令維持原文。」',
+                '<strong>指令用 PowerShell 7</strong>：規則是給你手動執行、寫進文件或腳本的指令用 PowerShell 7 語法；AI 自己探索、驗證時不受限。為什麼：Claude Code 在 Windows 上的 Bash 工具其實是 Git Bash，AI 常把 <code>export</code>、<code>&amp;&amp;</code> 這類 Bash 語法寫進講義，你貼到 PowerShell 就失敗。你可以寫：「給我執行的指令用 PowerShell 7 語法。」',
+                '<strong>分領域寫 CLAUDE.md</strong>：規則是專案分前端、後端等領域時，CLAUDE.md 分別寫在各領域的目錄下。為什麼：前端的 npm 指令和後端的 Maven 指令放在同一份，AI 做前端時也會讀到一大段無關內容。你可以寫：「新增領域目錄時，在該目錄建立自己的 CLAUDE.md。」',
+                '<strong>中文函式級註解</strong>：規則是新寫或大幅改寫的函式加中文函式級註解，重要的變數與物件也要註解。為什麼：這些專案常隔一段時間才回來維護，註解是留給之後讀程式的人，包括幾個月後的你和下一次的 AI。你可以寫：「新寫或大幅改寫的函式要加中文函式級註解。」',
+                '<strong>只做任務需要的部分</strong>：規則是順手發現的重構、額外功能、預先抽象化，列在回報裡讓你決定，不要自己動手。為什麼：AI 很喜歡「順便」改，一次 diff 混進三件事，出錯時很難判斷是哪一件造成的。1-2 章 AI 順手加 JPA、H2 就是例子。你可以寫：「只做這次任務需要的部分，其他發現列在回報裡。」',
+                '<strong>先規劃工具呼叫</strong>：規則是彼此獨立的讀取、搜尋同一輪一起發出；寫檔與驗證不放在同一輪。為什麼：獨立的讀取一起發比較快；寫檔和驗證同時發，驗證可能讀到寫入前的舊檔，得到假的結果。你可以寫：「彼此獨立的讀取一起執行；寫檔完成後再驗證。」'
+              ]
+            },
+            {
+              title: '講師的開發規則（二）：實跑證據、長時指令與瀏覽器自動化',
+              type: 'text',
+              paragraphs: [
+                '這一組規則都是踩過坑之後才加上去的，所以每條都附上當時發生的事。'
+              ],
+              bullets: [
+                '<strong>要有實跑證據</strong>：規則是任何層級改完程式都要有測試、build 或執行結果，不能只靠讀程式判斷「應該沒問題」。為什麼：AI 說「改好了」的語氣，和真的改好時一模一樣。你可以寫：「改完要附實跑證據，沒有輸出就當作還沒驗證。」',
+                '<strong>長時指令 tee 到 log</strong>：規則是全套測試、建置、部署的輸出，要用 <code>Tee-Object</code> 寫進專案內的 log 檔。為什麼：背景執行的指令一結束，畫面上的輸出就找不回來；寫進檔案，事後可以查、AI 也讀得到。你可以寫：「長時間的指令用 <code>2&gt;&amp;1 | Tee-Object logs/xxx.log</code> 保留輸出。」',
+                '<strong>看產出物判斷是否還活著</strong>：規則是背景執行時看 log 行數、測試報告檔案數有沒有增加，不看 CPU 或 java 程序在不在。為什麼：2026-08-27 講師曾因為 IDE 的 Java 語言伺服器也是常駐的 java 程序，被誤判為「測試還在跑」而空等 2 小時，實際重跑只要 2 分鐘。你可以寫：「判斷背景工作是否還在跑，看 log 有沒有增加。」',
+                '<strong>超過約 10 分鐘沒動靜就當作卡死</strong>：規則是 log 完全沒成長約 10 分鐘，就看 log 尾端與錯誤輸出，然後重跑。為什麼：等下去不會變好，早點看證據比較省時間。',
+                '<strong>收尾只跑相關測試</strong>：規則是（2026-10-11 起）只改前端就不跑後端全套；e2e 只跑新寫的、或改到的畫面對應的 spec；語音這類耗時測試只驗新增的部分；回報列出跑了哪些、沒跑哪些與原因。為什麼：每次都跑全套太慢，大家就開始偷懶不跑；只跑相關的，反而每次都會跑。',
+                '<strong>e2e 不和重工作同時跑</strong>：規則是多裝置或吃 CPU 的 e2e，不要和建置、語音產生同時執行。為什麼：互相拖慢會造成假的逾時失敗，接著 AI 就會去「修」一個不存在的問題。',
+                '<strong>瀏覽器自動化先寫腳本</strong>：規則是用 Playwright 操作瀏覽器時，先把步驟寫成 <code>e2e/</code> 或 <code>scripts/</code> 底下的腳本並加中文註解，再執行。為什麼：一次性的互動操作做完就沒了；腳本可以重跑、失敗時能逐行查，慢慢就累積成自動化測試。本站的驗證也全是這樣寫的。',
+                '<strong>記憶協議（選用）</strong>：講師的規則要求開新任務先執行 deep-memory 技能、每個有內容的回合結束寫一筆冷庫。這是個人化的做法，裝了 deep-memory 再考慮加，見後面 deep-memory 段。'
+              ]
+            },
+            {
+              title: '任務分級 T0～T3：先判斷要走多完整的流程',
+              type: 'text',
+              paragraphs: [
+                '0-1 章已列出四個層級的定義。這裡補充講師在全域規則裡怎麼用它：分級的目的是<strong>小事不拖、大事不省</strong>。改一個錯字不需要先寫規格；但新增一個 API，如果跳過確認理解和測試，返工的時間會比省下的多。'
+              ],
+              bullets: [
+                '<strong>T0～T2 可以省略什麼</strong>：T0 查詢省略規劃、TDD、除錯流程，但結論要有查證；T1 單檔機械修改省略規劃與規格確認，改完跑相關測試或 build；T2 文件與報告省略 TDD，會重跑的腳本仍要實際跑過。',
+                '<strong>T3 的完整流程</strong>：① 動工前讀完規格，把理解（範圍、假設、不確定的地方）跟你確認；創作類任務先發想幾個方案再選 ② 確認後、動手前呼叫一次 advisor ③ 有邏輯變動先寫會失敗的測試，再實作到通過 ④ 修 bug 先重現、找出根因再改。',
+                '<strong>和插件技能的關係</strong>：若裝了 superpowers 這類流程插件，T3 就用它的 brainstorming、test-driven-development、systematic-debugging 技能；沒裝就照上面自己做。插件的強制流程和你的分級衝突時，在 CLAUDE.md 寫明以誰為準。',
+                '<strong>中途升級</strong>：做到一半發現要動第二個檔、其實是行為變更、牽動 API 契約或資料，立刻升到 T3 補走流程。不要因為「已經開始了」「只差一點」繼續走簡化路徑。',
+                '<strong>有疑義取高</strong>：不確定是 T1 還是 T3 時當 T3。多花的是幾分鐘確認，少花的可能是一個上線後才發現的 bug。',
+                '<strong>你的指定優先</strong>：你明確說「先 brainstorm」「用 TDD 做」時照你說的做，分級不適用。'
+              ]
+            },
+            {
+              title: '完整版 CLAUDE.md 範本（放在 ~/.claude/）',
+              type: 'code',
+              paragraphs: [
+                '0-1 章的精簡版放在專案根目錄、只管這個專案；這份完整版放在全域 <code>~/.claude/CLAUDE.md</code>，套用到你所有的專案。內容是講師全域規則去掉個人化設定後的版本，前面兩段已逐條說明每條規則的理由。',
+                '建立方式（PowerShell 7）：<code>New-Item -ItemType Directory -Force "$HOME\\.claude"</code>，再 <code>code "$HOME\\.claude\\CLAUDE.md"</code> 貼上存檔。全域與專案的 CLAUDE.md 會同時載入，兩邊重複的規則可以只留一邊；互相矛盾的一定要刪掉其中一條。',
+                '「Advisor 使用時機」與「記憶」兩段要裝了對應功能才有意義，沒用到就刪掉，避免 AI 每次都去找一個不存在的工具。'
+              ],
+              code: {
+                language: 'markdown',
+                title: '~/.claude/CLAUDE.md — 完整版範本（去除個人化內容）',
+                content: '# 全域開發規則（~/.claude/CLAUDE.md）\n\n這份是我給 AI 的長期指示，適用所有專案。\n\n## 語言與環境\n- 文件、commit 訊息、程式註解用繁體中文；技術名詞與識別字維持原文。\n- 給我手動執行的指令，以及寫進文件或腳本的指令，用 PowerShell 7 語法。\n  你自己探索、驗證時不受此限。\n- 專案分前端、後端等領域時，CLAUDE.md 分別寫在各領域的目錄下。\n\n## 撰寫程式\n- 新寫或大幅改寫的函式要加中文函式級註解，重要的變數與物件也要註解。\n- 只做這次任務需要的部分。順手發現的重構、額外功能、預先抽象化，列在回報裡讓我決定。\n- 測試失敗就改實作，不准為了通過去改測試的斷言；認為測試寫錯，先停下來說明。\n\n## 任務分級（開工前判定一次）\n| 層級 | 條件 | 可省略 | 仍要做 |\n| --- | --- | --- | --- |\n| T0 查詢 | 不修改任何檔案 | 規劃、TDD、除錯流程 | 結論要有實際查證 |\n| T1 單檔機械修改 | 只動 1 個檔；行為等價或內容由我指定；不碰 API 契約、資料庫、交易、權限 | 規劃、TDD、規格確認 | 改完跑相關測試或 build |\n| T2 非程式產出 | 文件、報告、一次性資料分析 | TDD | 會重跑的腳本要寫成檔案並實際跑過 |\n| T3 其他 | 新功能、修 bug、多檔改動、改變既有行為 | — | 完整流程（見下） |\n\nT3 完整流程：\n- 動工前讀完規格，把理解（範圍、假設、不確定的地方）跟我確認。\n- 有邏輯變動先寫會失敗的測試，再實作到通過。\n- 修 bug 先重現、找出根因再改，不要憑猜測連續試改。\n\n分級的運用：\n- 做到一半發現超出原層級，立刻升到 T3 補走流程。\n- 判定有疑義時取較高的層級。\n- 我明確指定流程時照我說的做，分級不適用。\n- 省略 TDD 不等於省略驗證：任何層級改完程式都要有實跑證據。\n\n## Advisor 使用時機（有啟用 advisor 才需要）\n- T3 任務：跟我確認完理解、動手寫程式前，呼叫一次。\n- 同一個錯誤修了兩次還沒過，先呼叫 advisor 再試第三次。\n- 要換做法或擴大範圍前呼叫。\n- 回報完成前呼叫一次；呼叫前先把成果寫進檔案。\n- T0、T1 不必呼叫。\n\n## 長時指令與收尾驗證\n- 全套測試、建置等長時指令，輸出 tee 到專案內的 log 檔。\n- 背景執行時，看 log 行數、報告檔案數有沒有增加來判斷是否還活著，不看 CPU 或程序在不在。\n- 約 10 分鐘完全沒成長就視為卡死：看 log 尾端，然後重跑。\n- 收尾只跑和這次改動有關的測試；回報時列出跑了哪些、沒跑哪些與原因。\n- 吃 CPU 的 e2e 不要和建置等重工作同時跑。\n\n## 瀏覽器自動化\n- 用 Playwright 操作瀏覽器時，先把步驟寫成腳本檔（e2e/ 或 scripts/）並加中文註解，再執行。\n\n## 派工給 subagent\n- 簡報寫清楚目標、已排除的事、範圍、驗收方式。\n- 不要讓 subagent 讀參考答案或別人的報告；這類檔案不放在專案目錄。\n- subagent 回報「完成」後，主對話自己再驗一次。\n\n## 權限\n- 權限被擋下時停下來告訴我原因，不要換個方式繞過。\n- 不可逆操作（git reset --hard、push --force、刪資料表）先說明影響，等我同意。\n\n## 規劃工具呼叫\n- 彼此獨立的讀取、搜尋同一輪一起發；寫檔與驗證不放在同一輪。\n\n## 記憶（選用：有安裝 deep-memory 才加）\n- 開新任務時，先讀取並執行 deep-memory 技能。\n- 有實質內容的回合結束前寫一筆冷庫；任務完成且我滿意時，問我要不要寫進熱庫。'
+              }
+            },
+            {
+              title: 'Subagent 是什麼：內建與自訂',
+              type: 'text',
+              paragraphs: [
+                'Subagent（子代理）是主對話派出去做事的另一個 AI。它有自己的對話視窗，只看得到你給它的簡報，做完只把結論交回來。好處是大量讀檔、搜尋的過程不會塞滿主對話；也可以限制它能用的工具（例如只能讀不能改）和使用的模型。',
+                '代價也要知道：它只知道簡報裡寫的事，回報時一定會漏掉細節；它出錯時的語氣和找到答案時一樣肯定；同時派很多個，token 會一次用很多。所以<strong>派工前先想清楚值不值得</strong>，不是每件事都要派。'
+              ],
+              bullets: [
+                '<strong>內建的 subagent</strong>：Explore（唯讀、快速搜尋程式庫）、Plan（Plan 模式中收集資料再提出計畫）、general-purpose（可讀可寫的多步驟任務）。不必設定就能用。',
+                '<strong>自訂的 subagent</strong>：一個 Markdown 檔，開頭用 YAML frontmatter 寫名稱、說明、可用工具、模型，內文寫它的工作守則。放在 <code>~/.claude/agents/</code> 所有專案都能用；放在專案的 <code>.claude/agents/</code> 只給這個專案用，也可以進版控給團隊。',
+                '<strong>同名時誰優先</strong>：專案的 <code>.claude/agents/</code> 優先於 <code>~/.claude/agents/</code>。講師就用同名檔替換了內建的 Explore 與 general-purpose，加上繁體中文回報格式與模型選擇。',
+                '<strong>主對話怎麼知道要派給誰</strong>：靠 frontmatter 的 <code>description</code>。寫清楚「什麼情況派給它」，必要時加上 use proactively，主對話就會主動派工；你也可以直接說「請用 code-reviewer 審查剛才的修改」。',
+                '<strong>可以巢狀</strong>：subagent 預設也能再派 subagent（最多往下三層）。不想讓某個 agent 再派工，就不要在 <code>tools</code> 列出 Agent。'
+              ]
+            },
+            {
+              title: '講師常用的 subagent 一覽',
+              type: 'text',
+              paragraphs: [
+                '下列是講師 <code>~/.claude/agents/</code> 裡和本課程開發相關的定義（其他領域的 agent 略過）。「工具」是 frontmatter 的 <code>tools</code>，沒寫就代表繼承全部工具；「模型」是 frontmatter 的 <code>model</code>。'
+              ],
+              bullets: [
+                '<strong>dev-worker（實作）</strong>：工具未限制；預設 Sonnet，依難度改用 Haiku 或 Opus（見下一段）。何時派：主對話規劃好、範圍明確的實作，例如「照計畫新增 CartController 與測試」。守則是只做交付範圍、改完一定實跑測試、任務比描述複雜就停下來回報。',
+                '<strong>code-reviewer（程式審查）</strong>：工具 Read、Grep、Glob（唯讀）；講師用 Fable（沒有 Fable 權限可改 opus）。何時派：寫完或改完程式之後。輸出分成必須修、應該修、小地方、疑問四級，不准為了「我會寫得不一樣」挑毛病。',
+                '<strong>debugger（除錯）</strong>：工具未限制；講師用 Fable。何時派：錯誤、測試失敗、行為不如預期。流程是先抓到錯誤訊息與重現步驟，提出 2～3 個假設逐一查證，最後給最小修法並說明為什麼排除其他假設。',
+                '<strong>test-writer（補測試）</strong>：工具 Read、Edit、Write、Bash、Grep、Glob；Sonnet。何時派：替既有程式補測試。先列出測試清單（正常路徑、邊界、錯誤分支）再寫；不 mock 自己的程式，只在網路與程序邊界 mock。',
+                '<strong>react-specialist（React）</strong>：工具未限制；Sonnet。何時派：2-4、2-5 章的 React 19 元件設計、hooks、效能問題。原則包括不用 <code>useEffect</code> 同步兩個 state、列表 key 不用陣列索引。',
+                '<strong>security-auditor（資安審查）</strong>：工具 Read、Grep、Glob（唯讀）；Opus。何時派：1-9 章 JWT、授權規則完成後，或處理輸入、金鑰的程式。依 OWASP Top 10 檢查，每個發現要附具體攻擊方式，無法確認的標「待驗證」。',
+                '<strong>doc-writer（文件）</strong>：工具 Read、Edit、Write、Grep（不能跑指令）；Haiku。何時派：README、API 文件、使用範例。範例要能實際執行，不寫「簡單地」「強大的」這類空話。',
+                '<strong>Explore（大範圍搜尋，內建、講師覆寫）</strong>：工具 Read、Grep、Glob、Bash，並用 <code>disallowedTools</code> 禁止 Write、Edit；Haiku。何時派：要翻很多檔案、你只需要結論的搜尋，例如「列出所有用到 @PreAuthorize 的地方」。只定位不審查。',
+                '<strong>general-purpose（多步驟研究，內建、講師覆寫）</strong>：工具未限制；沿用主對話的模型，大範圍盤點時指定 opus。何時派：要讀很多檔再歸納、比較的研究，或多步驟任務。',
+                '<strong>Plan（規劃，內建）</strong>：唯讀。何時用：在 Plan 模式（輸入框切換或 <code>/plan</code>）中由主對話自動使用，收集資料後提出計畫，你批准前不會改任何檔案。適合 T3 任務的第一步。'
+              ]
+            },
+            {
+              title: 'dev-worker 依難度選模型',
+              type: 'text',
+              paragraphs: [
+                'dev-worker 的 <code>description</code> 寫了選模型的規則，主對話派工時照著用 <code>model</code> 參數指定。目的是<strong>簡單的事用便宜快速的模型，難的事才用貴的</strong>，同樣的額度可以做更多事。'
+              ],
+              bullets: [
+                '<strong>Haiku</strong>：機械性、單檔、照指定內容改。例如 rename、改常數、改文案、調格式、照現有範本補一組測試。',
+                '<strong>Sonnet（預設）</strong>：需要理解多個檔案的邏輯、新增分支、除錯、跨模組修改。本課大部分實作提示詞都在這一級。',
+                '<strong>Opus（升級用）</strong>：Sonnet 做不動的跨模組重構，也就是牽動多個模組的契約或資料流、而且 Sonnet 已經試過仍然失敗。不要一開始就用 Opus。',
+                '<strong>你可以怎麼用</strong>：直接跟主對話說「這個改常數的工作派 dev-worker 用 haiku 做」；或把規則寫進你自己的 agent description，讓主對話自動判斷。',
+                '<strong>別名指向哪個版本</strong>：<code>haiku</code>、<code>sonnet</code>、<code>opus</code> 是別名，會跟著 Claude Code 版本更新；想固定版本，可以在 <code>settings.json</code> 的 <code>env</code> 設 <code>ANTHROPIC_DEFAULT_HAIKU_MODEL</code> 這類變數，或在 frontmatter 寫完整的模型 ID。'
+              ]
+            },
+            {
+              title: '派工簡報怎麼寫：目標、已排除的事、範圍、驗收',
+              type: 'code',
+              paragraphs: [
+                'Subagent 只知道你寫在簡報裡的事。簡報寫得好不好，直接決定它回來的東西能不能用。講師的固定格式是四段：<strong>目標</strong>（要回答什麼問題或完成什麼）、<strong>已知與已排除</strong>（你已經查過的，省得它重查，或帶著你的猜測去「證實」）、<strong>範圍</strong>（哪些檔案可以讀、可以改，哪些不准碰）、<strong>驗收</strong>（交回來的格式與怎樣才算完成）。',
+                '<strong>背景與平行</strong>：從主對話派出的 subagent 預設在背景執行，你可以繼續對話；它需要權限時，會在主對話跳出詢問並標明是哪個 subagent。彼此獨立的工作，請 AI 在同一則訊息裡一次派出多個，就會同時進行（預設上限 20 個）。',
+                '<strong>真實案例：隔離資訊</strong>：課前逐字驗證時，執行 1-9 章提示詞的 subagent 讀到專案根目錄的驗證報告，看到報告記錄的編譯問題，就刻意改變測試的寫法避開它，結果驗證不到真正的問題。之後的派工簡報都加上「不要讀 VERIFY-REPORT.md」，參考答案與報告也移出專案目錄。'
+              ],
+              bullets: [
+                '<strong>不該派的情況</strong>：幾個工具呼叫就能完成的查詢；你已經知道檔案在哪裡的查找；需要你邊看邊決定的工作。這些自己做比較快，也不會遺失細節。',
+                '<strong>派了就不要自己也做</strong>：同一件事派出去又自己查一遍，花兩次錢、還可能得到兩個互相矛盾的結論。等它回來再決定。',
+                '<strong>要第二意見時給程式碼，不給結論</strong>：請 code-reviewer 審查時，給它要看的檔案或 diff，不要附上「我覺得這裡沒問題」。帶著你的假設去審，它多半會幫你證實。',
+                '<strong>回報要驗收</strong>：subagent 說「全部通過」時，主對話要自己看一次測試輸出或截圖。課前驗證時，有 subagent 違反簡報規定改用 heredoc 改檔，也有 subagent 沒照規定格式回報，都是主對話檢查時才發現。'
+              ],
+              code: {
+                language: 'text',
+                title: '派工簡報範例（請 Explore 搜尋，以及請 dev-worker 做機械性修改）',
+                content: '【目標】\n找出 backend/src/main 裡所有管理員 API，列出每個端點用的是 URL 授權規則、@PreAuthorize，\n還是兩者都沒有。\n\n【已知／已排除】\n- 授權規則集中在 config/SecurityConfig.java。\n- AuthController 的登入端點本來就公開，不用檢查。\n\n【範圍】\n- 只讀 backend/src/main，不修改任何檔案。\n- 不要讀 logs/、docs/ 與任何 *-REPORT.md（參考答案與報告會影響判斷）。\n\n【驗收】\n- 回報清單：路徑:行號、HTTP 方法與路徑、授權方式。\n- 找不到或不確定的寫「找不到」，不要猜。\n\n────────────────────────────────\n派給 dev-worker 的例子（機械性修改，指定 haiku）：\n\n請派 dev-worker（model: haiku）：\n把 OrderService.VALID_STATUSES 的 "CANCELED" 改成 "CANCELLED"，只改這一個常數。\n改完執行 mvn test -Dtest=OrderLifecycleTest，把結果貼回來；\n測試失敗就停下來回報，不要改測試。'
+              }
+            },
+            {
+              title: '自己建一個 subagent：.md 範例',
+              type: 'code',
+              paragraphs: [
+                '下面是一個簡化版的範例：只能讀、不能改的 Spring Boot 後端審查員。把它存成專案的 <code>.claude/agents/spring-reviewer.md</code>（只給這個專案用），或 <code>~/.claude/agents/spring-reviewer.md</code>（所有專案都能用）。',
+                '建立方式（在專案根目錄的 PowerShell 7 執行）：<code>New-Item -ItemType Directory -Force .claude\\agents</code>，再 <code>code .claude\\agents\\spring-reviewer.md</code> 貼上存檔。手動新增的檔案，開一個新對話才會載入；也可以在 Claude Code 輸入 <code>/agents</code> 用介面建立與管理。'
+              ],
+              bullets: [
+                '<strong>name</strong>：唯一名稱，只用小寫英文與連字號；同名時專案層級優先。',
+                '<strong>description</strong>：主對話靠它決定什麼時候派工，寫「什麼情況下用它」，不是寫它多厲害。',
+                '<strong>tools</strong>：只列需要的工具。審查員只給 Read、Grep、Glob，就算簡報寫錯要它修，它也改不了檔案。沒寫 <code>tools</code> 會繼承全部工具；也可以用 <code>disallowedTools</code> 從全部工具中扣掉幾個。',
+                '<strong>model</strong>：<code>haiku</code>、<code>sonnet</code>、<code>opus</code>、完整模型 ID，或 <code>inherit</code>（沿用主對話）。另有 <code>effort</code>、<code>permissionMode</code> 等選填欄位，第一次不用加。',
+                '<strong>內文</strong>：寫成你會交代新同事的話：先讀什麼、檢查什麼、回報什麼格式、不准做什麼。',
+                '<strong>試用</strong>：存檔、開新對話後說「請用 spring-reviewer 審查 CartService 最近的修改」，確認它的回報照你定的四個等級，而且沒有改任何檔案。'
+              ],
+              code: {
+                language: 'markdown',
+                title: '.claude/agents/spring-reviewer.md — 唯讀的後端審查員',
+                content: '---\nname: spring-reviewer\ndescription: 審查 Spring Boot 後端的修改。寫完或改完 backend/ 的程式後主動使用（use proactively after backend changes）。只讀不改。\ntools: Read, Grep, Glob\nmodel: sonnet\n---\n你是這個專案的 Spring Boot 程式審查員，只負責找問題，不修改任何檔案。\n\n審查前：\n- 先讀專案根目錄與 backend/ 的 CLAUDE.md，依專案慣例判斷，不用你個人的偏好。\n\n重點檢查：\n- 業務判斷寫在 Service；Controller 只處理參數與狀態碼。\n- @Transactional 放在 Service；扣庫存、建立訂單這類寫入在同一個交易內。\n- 授權：管理員 API 有 URL 規則或 @PreAuthorize；使用者只查得到自己的資料。\n- 例外：GlobalExceptionHandler 只處理自訂的業務例外，沒有攔截 Exception.class。\n- 金鑰、密碼沒有寫死在程式或設定檔。\n\n回報格式（繁體中文）：\n- 必須修正：路徑:行號 — 問題 → 建議修法\n- 建議修正：同上\n- 小地方：同上\n- 疑問：意圖不清楚的地方\n沒有問題就直接說沒有問題，不要為了湊數挑毛病。'
+              }
+            },
+            {
+              title: 'Advisor：卡關與收尾前，找更強的模型看一眼',
+              type: 'code',
+              paragraphs: [
+                'Claude Code 的 <strong>advisor</strong> 是一個實驗功能：替主模型配一個通常更強的「顧問」模型。主模型在關鍵時刻呼叫它，顧問會看完<strong>整段對話</strong>（每個工具呼叫與結果），給出建議後主模型再繼續。呼叫不帶任何參數，什麼時候呼叫由主模型自己決定；你也可以在提示詞裡要求「先問 advisor」。',
+                '設定方式有三種：對話框的 <code>/advisor</code>、設定檔的 <code>advisorModel</code>、啟動時的 <code>--advisor</code> 參數。顧問模型的等級必須不低於主模型（例如主模型 Opus 就只能配 Opus 或 Fable）。需要 Anthropic API 或訂閱帳號，透過 Bedrock 等雲端平台使用時不一定支援。'
+              ],
+              bullets: [
+                '<strong>講師規定一定要呼叫的時機</strong>：① T3 任務跟你確認完理解、動手寫程式前 ② 同一個錯誤或測試失敗修了兩次還沒過，第三次之前 ③ 要換做法或擴大範圍之前 ④ 回報完成之前，而且呼叫前先把成果寫進檔案，避免呼叫途中對話中斷而遺失。',
+                '<strong>短任務不用</strong>：每次呼叫顧問都要重新讀完整段對話，而且這一段<strong>不吃提示快取</strong>，對話越長越貴。所以講師規定 T0 查詢、T1 單檔機械修改不必呼叫：成本大於效益。',
+                '<strong>建議不是命令</strong>：主模型會照建議做，但如果照做後實際失敗，或檔案內容和建議矛盾，應該把衝突提出來，而不是硬照做。你在旁邊看到兩者意見不同時，也要求它說明依據。',
+                '<strong>和 Spring AI 的 Advisor 完全無關</strong>：2-1～2-3 章的 <code>MessageChatMemoryAdvisor</code>、<code>QuestionAnswerAdvisor</code>、<code>SimpleLoggerAdvisor</code> 是 Spring AI 的程式元件，包在 <code>ChatClient</code> 每次請求的前後，負責塞入對話記憶、檢索知識庫內容、記錄日誌，會跟著你的應用程式上線。Claude Code 的 advisor 是你<strong>開發時</strong>的第二意見，只存在於你和 AI 的對話裡，跟應用程式無關。',
+                '<strong>提示詞裡要講清楚是哪一個</strong>：跟 AI 說「加一個 Advisor」很容易被誤會。要改程式時說「在 ChatClient 加 Spring AI 的 QuestionAnswerAdvisor」；要第二意見時說「先呼叫 advisor 工具」。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'advisor 的啟用與使用（對話框指令、設定檔與 PowerShell 7）',
+                content: '# 在 Claude Code 對話框輸入\n/advisor            # 開啟選單，選擇 advisor 模型\n/advisor opus       # 直接指定 advisor 模型\n/advisor off        # 關閉\n\n# 或寫進設定檔 ~/.claude/settings.json，之後每次都啟用\n#   { "advisorModel": "opus" }\n\n# 終端機 CLI 只對這一次啟用（PowerShell 7）\nclaude --advisor opus\n\n# 執行中想主動要第二意見，直接在提示詞寫：\n#   「先問 advisor，再決定要不要換做法。」\n# 對話中出現 Advising 行，結束後按 Ctrl+O 可以看 advisor 的建議內容'
+              }
+            },
+            {
+              title: '權限與 auto mode：被擋下時怎麼處理',
+              type: 'code',
+              paragraphs: [
+                'Claude Code 的權限模式可以在 VS Code 輸入框底下切換（終端機 CLI 按 <kbd>Shift+Tab</kbd>）：<strong>Manual</strong> 每次改檔、跑指令都問你；<strong>Edit automatically</strong>（acceptEdits）自動接受檔案修改；<strong>Plan</strong> 只研究、提計畫，你批准前不改檔；<strong>Auto</strong> 不再逐一詢問，改由背景的<strong>分類器</strong>檢查每個動作是否符合你的要求，判斷為破壞性或可疑的就擋下來。',
+                '權限規則寫在 <code>settings.json</code> 的 <code>permissions</code>：比對順序固定是 <strong>deny → ask → allow</strong>，先符合的決定結果，寫得比較細的 allow 也救不回被 deny 擋住的動作。<code>Edit(路徑)</code> 規則套用到所有會改檔的內建工具，<strong>包含用 Write 新增檔案</strong>。在 auto mode 中，符合 allow 規則的動作會直接放行，不再經過分類器（寫入受保護路徑等少數例外仍會檢查）。',
+                '<strong>真實案例</strong>：課前逐字驗證 1-9 章時，建立 Flyway <code>V3__cart_and_order_items.sql</code> 被分類器以「Destructive or Unwanted Actions」拒絕，推測是 SQL 內含 <code>DROP COLUMN</code> 與 <code>DROP CONSTRAINT</code>；管理員訂單那一步，改用逐檔修改後，仍有三處修改（包含新增、帶有 <code>@PreAuthorize</code> 的 AdminOrderController）被以「Undermining Oversight」拒絕，原因無法確認。兩次 subagent 都停下來回報、沒有繞過；由使用者確認內容後放行，或加上專案的 <code>Edit</code> 允許規則，才順利通過。'
+              ],
+              bullets: [
+                '<strong>⚠ 被擋下時不要叫 AI 繞過</strong>：AI 被擋住後，可能改用 Bash 的 heredoc、python 腳本把同樣的內容寫進檔案。這等於拆掉你自己裝的煞車。正確做法是先看它要做什麼、為什麼被擋，確認內容沒問題再由你放行。',
+                '<strong>在哪裡放行</strong>：被擋的動作會出現在 <code>/permissions</code> 的 Recently blocked 分頁，可以從那裡核准讓 AI 重試。連續被擋 3 次或累計 20 次，auto mode 會暫停，改回逐一詢問你。',
+                '<strong>規則寫在哪一層</strong>：專案的 <code>.claude/settings.json</code>（進版控、團隊共用）或 <code>.claude/settings.local.json</code>（只有你）。在專案設定裡，開頭單一斜線的 <code>/backend/src/**</code> 代表「從專案根目錄算起」，不是磁碟根目錄。',
+                '<strong>絕對路徑與 Windows</strong>：要寫在全域 <code>~/.claude/settings.json</code> 又指定某個專案，用兩個斜線的絕對路徑；Windows 路徑會先轉成 POSIX 形式再比對，例如 <code>D:\\projects\\my-shop</code> 要寫成 <code>Edit(//d/projects/my-shop/**)</code>。',
+                '<strong>範圍寫窄</strong>：只放行你確定會反覆需要的目錄與指令。<code>Bash(*)</code> 這類全開規則在進入 auto mode 時會被自動停用，也不該這樣寫。',
+                '<strong>真的不准發生的事用 deny</strong>：例如 <code>Read(/.env)</code>。CLAUDE.md 寫「不要讀 .env」只是交代，deny 規則才會真的擋下來。'
+              ],
+              code: {
+                language: 'json',
+                title: '.claude/settings.json — 專案權限規則範例',
+                content: '{\n  "permissions": {\n    "allow": [\n      "Edit(/backend/src/**)",\n      "Edit(/frontend/src/**)",\n      "Edit(/e2e/**)",\n      "Bash(mvn test)",\n      "Bash(mvn test *)"\n    ],\n    "deny": [\n      "Read(/.env)",\n      "Edit(/.env)"\n    ]\n  }\n}'
+              }
+            },
+            {
+              title: 'deep-memory 完整說明（一）：安裝與第一次啟動',
+              type: 'code',
+              paragraphs: [
+                '0-1 章介紹了 deep-memory 的冷熱兩層概念與安裝指令。這裡補上完整的設定步驟。記憶資料預設放在 <code>~/.deep-memory</code>（Windows 是 <code>C:\\Users\\你的帳號\\.deep-memory</code>），所有專案共用同一份，純本機、可離線。',
+                '它分兩種 Python 需求：<strong>寫冷庫</strong>只用標準函式庫，一般的 <code>python</code> 就能跑，所以裝好的第一個對話就開始記錄；<strong>檢索與精煉</strong>要用 ChromaDB 與向量模型，需要另外建立虛擬環境 <code>~/.deep-memory/.venv</code>。'
+              ],
+              bullets: [
+                '<strong>第一次觸發會改你的全域規則</strong>：deep-memory 第一次執行時，會檢查 <code>~/.claude/CLAUDE.md</code> 有沒有「任務啟動協議」，沒有就自動加上一段，並告訴你它加了。這是它讓自己每次都被啟用的方式；不想要可以手動刪除。',
+                '<strong>種子知識庫</strong>：<code>seed.py</code> 會放入一批整理好的記憶系統最佳實務當起點；已經存在的分類預設跳過，不會覆蓋。',
+                '<strong>已有其他記憶</strong>：用過 ChatGPT 記憶或 Claude Code 自己的本機記憶，可以用同一個技能包裡的 memory-import 先 <code>--dry-run</code> 預覽再匯入；它只在你指定路徑時才執行，不會自動掃描。',
+                '<strong>換存放位置</strong>：設定環境變數 <code>DEEP_MEMORY_WORKSPACE</code>，或在每支腳本加 <code>--workspace 路徑</code>。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell 7 — deep-memory 環境設定（第一次）',
+                content: '# 0. 先用 0-1 章「deep-memory：讓 AI 有長期記憶」段的 npx skills add 指令安裝技能，重開 Claude Code\n\n# 1. 技能與記憶資料的位置\n$SK = "$HOME\\.claude\\skills"                  # -g 安裝的技能目錄\n$PY = "$HOME\\.deep-memory\\.venv\\Scripts\\python" # 檢索用的虛擬環境\nTest-Path "$SK\\deep-memory\\SKILL.md"           # True 才代表裝在這裡\n# 找不到時搜尋實際位置\nGet-ChildItem "$HOME\\.claude", "$HOME\\.agents" -Recurse -Filter write_cold.py -ErrorAction SilentlyContinue |\n  Select-Object -First 3 FullName\n\n# 2. 建立虛擬環境並安裝檢索套件（只有檢索、精煉需要；寫冷庫只要一般的 python）\npython -m venv "$HOME\\.deep-memory\\.venv"\n& $PY -m pip install -r "$SK\\chroma-hybrid-search\\requirements.txt"\n\n# 3. 第一次使用：安裝種子知識庫，建立向量索引\n& $PY "$SK\\deep-memory\\scripts\\seed.py"\n& $PY "$SK\\chroma-hybrid-search\\scripts\\update_db.py"\n\n# 4. 確認記憶資料夾\nGet-ChildItem "$HOME\\.deep-memory"   # 應有 knowledge-base、experience、cold-notes 等'
+              }
+            },
+            {
+              title: 'deep-memory 完整說明（二）：每個回合做了什麼',
+              type: 'text',
+              paragraphs: [
+                '裝好之後平常不用下任何指令，AI 會依技能的規定自己做。知道它在做什麼，你才看得懂對話裡出現的「已載入知識庫」「已寫入冷庫」，也知道哪裡可以介入。'
+              ],
+              bullets: [
+                '<strong>開工：先查</strong>：新任務或換主題時，先抽出 3～8 個關鍵字，比對熱庫的分類索引 <code>knowledge-base/_index.json</code>，比到就整份讀進來，並在回覆中說「已載入知識庫：xxx.md」。',
+                '<strong>比不到：混合檢索</strong>：關鍵字比不到、分類太多、檔案太大或問題跨領域時，改用 chroma-hybrid-search：向量搜尋找語意相近、BM25 找關鍵字完全相符，再用重排模型排序，只取分數 0.35 以上的結果。這就是 Day 2 教的 RAG 混合檢索。',
+                '<strong>先查目前專案，再跨專案</strong>：每筆冷庫都記著來自哪個專案（取自當時的資料夾名稱）。檢索時先查目前專案，查不到才擴大到全部記憶，避免別的專案的紀錄擠掉相關的結果。',
+                '<strong>用到其他技能時：載入經驗</strong>：例如這一輪用了 ui-ux-pro-max，就會去讀 <code>experience/skill-ui-ux-pro-max.md</code> 的使用心得，檔案太大時只取最相關的幾條。',
+                '<strong>回合結束：寫冷庫，不問你</strong>：每個有實質內容的回合結束前，用 <code>write_cold.py</code> 寫一筆到 <code>cold-notes/raw.jsonl</code>。不挑、不判斷重要性，篩選留到精煉時再做，因為事後回頭看才知道什麼有用。',
+                '<strong>任務完成：問你要不要寫熱庫</strong>：AI 判斷任務完成、你也表示滿意時，會把解法濃縮成一句話，問你要不要寫進熱庫。你只確認真正值得重用的，這一步決定記憶的品質。',
+                '<strong>分類</strong>：每筆記錄標 <code>knowledge</code>（通用的規則、做法、專案決策）、<code>experience</code>（某個技能或工具的坑與參數）或 <code>both</code>（精煉時拆成兩筆）。'
+              ]
+            },
+            {
+              title: 'deep-memory 完整說明（三）：冷庫、熱庫與精煉',
+              type: 'code',
+              paragraphs: [
+                '<strong>冷庫</strong> <code>cold-notes/raw.jsonl</code> 是一行一筆的原始紀錄，只會增加；<strong>熱庫</strong>是整理過的 Markdown：<code>knowledge-base/分類.md</code> 放通用知識，<code>experience/skill-技能名.md</code> 放技能心得，每條以 <code>## 🔧</code> 標題開頭，檢索時以條目為單位切分。',
+                '<strong>精煉</strong>就是冷庫 → 熱庫的去蕪存菁：重複的合併、過時的淘汰、有用的整理成可以照做的條目。實際指令如下，但平常直接對 AI 說「幫我精煉冷庫」「幫我精煉經驗」即可。下方的 <code>&lt;run-id&gt;</code> 是 <code>refine_prepare.py</code> 執行後印出的工作目錄名稱。'
+              ],
+              bullets: [
+                '<strong>什麼時候精煉</strong>：待精煉條目累積到 30 筆（<code>write_cold.py</code> 會提示）、同一個標籤或技能出現 3 次以上，或你主動要求。',
+                '<strong>小量多次</strong>：一次 30～50 筆，每包小、整輪幾分鐘就完成。一次塞幾百筆給 AI 讀，既慢又容易漏判。',
+                '<strong>一定先預覽</strong>：<code>refine_apply.py --dry-run</code> 會列出要新增幾條、附加到哪些條目、要標記哪些行，你確認後才真的寫入；寫入前會先備份要改的檔案。',
+                '<strong>冷庫不刪除</strong>：精煉過或判斷不值得保留的冷庫條目只標成 <code>reviewed</code>，歷史都留著，只是不再出現在檢索結果。',
+                '<strong>精煉完要抽查</strong>：用新條目的關鍵字跑一次 <code>search.py</code>，查得到才算完成。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell 7 — 冷庫、檢索、精煉與儀表板',
+                content: '$SK = "$HOME\\.claude\\skills"\n$PY = "$HOME\\.deep-memory\\.venv\\Scripts\\python"\n\n# ── 寫冷庫：平常 AI 每回合自動寫，這是它實際執行的指令 ──\npython "$SK\\chroma-hybrid-search\\scripts\\write_cold.py" `\n  --topic "Flyway 只加 flyway-core 不會遷移" `\n  --content "Spring Boot 4 要用 spring-boot-starter-flyway；只放 flyway-core 啟動不報錯但完全不建表" `\n  --tags "flyway,spring-boot-4" --memory-type knowledge\n\n# ── 主動檢索：先查目前專案，查不到才跨專案 ──\n& $PY "$SK\\chroma-hybrid-search\\scripts\\search.py" --query "Flyway 沒有建表" --limit 3 --min-score 0.35\n\n# ── 精煉冷庫：平常直接說「幫我精煉冷庫」，AI 會依序執行 ──\n& $PY "$SK\\deep-memory\\scripts\\refine_prepare.py"     # 把待精煉的條目分組打包，附可能重複的熱庫條目\n# （AI 平行派出 subagent，每包寫一份草稿 pack-NN.drafts.md）\npython "$SK\\deep-memory\\scripts\\refine_apply.py" --work-dir "$HOME\\.deep-memory\\refine-work\\<run-id>" --dry-run   # 先預覽\npython "$SK\\deep-memory\\scripts\\refine_apply.py" --work-dir "$HOME\\.deep-memory\\refine-work\\<run-id>"             # 你確認後才寫入\n& $PY "$SK\\chroma-hybrid-search\\scripts\\update_db.py"  # 重建索引，再用 search.py 抽查新條目\n\n# ── 精煉技能經驗：預設就是預覽，加 --apply 才寫入 ──\npython "$SK\\deep-memory\\scripts\\refine_experience.py" --dry-run\npython "$SK\\deep-memory\\scripts\\refine_experience.py" --skill ui-ux-pro-max --apply\n\n# ── 記憶儀表板：輸出可離線開啟的 HTML ──\npython "$SK\\deep-memory\\scripts\\viz.py"'
+              }
+            },
+            {
+              title: 'deep-memory 完整說明（四）：備份、還原與隱私',
+              type: 'code',
+              paragraphs: [
+                '記憶只存在本機，換電腦或硬碟壞了就沒了。備份會把熱庫（<code>knowledge-base/</code>、<code>experience/</code>）與向量資料的可攜式匯出推到你自己的 GitHub 私有 repo；虛擬環境與向量索引不備份，還原後重建即可。'
+              ],
+              bullets: [
+                '<strong>⚠ 冷庫會照實記下對話重點</strong>：你貼給 AI 的錯誤訊息、檔案路徑、客戶名稱、內部網址，都可能寫進冷庫，之後再被精煉進熱庫、推上備份。金鑰、密碼、個資不要貼進對話；不小心貼了，請 AI 從 <code>raw.jsonl</code> 刪掉那一筆。',
+                '<strong>備份維持私有</strong>：<code>backup.py</code> 有 <code>--visibility public</code> 選項，除非你逐條檢查過內容，否則不要用。',
+                '<strong>公司與個人分開</strong>：記憶預設所有專案共用。公司專案的記憶不想和個人專案混在一起，可以替公司專案設定不同的 <code>DEEP_MEMORY_WORKSPACE</code>，並確認公司是否允許備份到 GitHub。',
+                '<strong>不會覆蓋別台電腦的備份</strong>：推送前會先檢查遠端；遠端有本機沒有的新紀錄（例如另一台電腦推的），就中止並提醒你先還原，不會強制覆蓋。',
+                '<strong>還原有兩種模式</strong>：預設只補本機沒有的檔案；<code>--overwrite</code> 會整個換成 GitHub 上的版本，只在新電腦或刻意回到某次備份時使用。',
+                '<strong>你可以拒絕</strong>：AI 問要不要寫熱庫時說「這段不要記」即可；冷庫仍會留一筆原始紀錄，之後精煉時會被判斷為略過。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell 7 — 備份與還原記憶',
+                content: '$SK = "$HOME\\.claude\\skills"\n$PY = "$HOME\\.deep-memory\\.venv\\Scripts\\python"\ngh auth status          # 備份用 gh 建立與推送 repo，先確認已登入（0-1 章）\n\n# 第一次備份：自動建立 GitHub「私有」repo，預設名稱 deep-memory-knowledge\n& $PY "$SK\\memory-backup\\scripts\\backup.py"\n\n# 之後定期備份\n& $PY "$SK\\memory-backup\\scripts\\backup.py" --message "新增 Spring Boot 4 踩坑紀錄"\n\n# 換電腦：先完成上面的環境設定，再還原（預設只補本機沒有的檔案，不覆蓋）\n& $PY "$SK\\memory-backup\\scripts\\restore.py"\n& $PY "$SK\\chroma-hybrid-search\\scripts\\update_db.py"   # 還原後重建向量索引'
+              }
+            },
+            {
+              title: 'ui-ux-pro-max 完整說明（一）：它是什麼、怎麼裝',
+              type: 'text',
+              paragraphs: [
+                '2-5 章末用 ui-ux-pro-max 把商城升級成品牌官網。它不是模板，而是一個<strong>可搜尋的設計規則資料庫</strong>：84 種風格、192 組配色、74 組字體搭配、192 種產品類型的推理規則、98 條 UX 準則、圖示、GSAP 動態與圖表類型，涵蓋 React、Vue、Flutter、Tailwind 等 22 種技術堆疊。AI 依你的產品類型查詢，取得有根據的設計系統再實作，視覺就不再是模型的預設口味。'
+              ],
+              bullets: [
+                '<strong>安裝</strong>：照 2-5 章在 Claude Code 對話框用 <code>/plugin marketplace add</code> 與 <code>/plugin install</code> 安裝，重開 VS Code。搜尋腳本只需要 Python 3（0-1 章已安裝），沒有其他依賴。',
+                '<strong>腳本位置</strong>：用插件安裝時，搜尋腳本在 <code>~/.claude/plugins/marketplaces/ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/scripts/search.py</code>。平常由 AI 自己呼叫，你想親手查詢時才需要這個路徑。',
+                '<strong>何時會用到</strong>：設計新頁面、改元件、選配色字體、檢查無障礙與手機版。純後端邏輯、API、資料庫設計用不到它。',
+                '<strong>檢查優先順序</strong>：技能把規則分十類並排好優先順序：無障礙（對比 4.5:1、鍵盤操作）與觸控（按鈕至少 44px）最高，接著是效能、風格一致、版面與手機版、字體與配色、動態、表單、導覽、圖表。2-5 升級提示詞第 6 點的可用性要求，就是從這裡來的。',
+                '<strong>查不到時不准編</strong>：技能規定搜尋結果為 0 筆時，要換關鍵字重查一次；仍然沒有就明說「這是內建預設值，不是資料庫的結果」，不能假裝有查到。'
+              ]
+            },
+            {
+              title: 'ui-ux-pro-max 完整說明（二）：常用指令',
+              type: 'code',
+              paragraphs: [
+                '以下指令講師都在本機實際跑過。平常把需求告訴 AI，它會自己挑查詢；親手跑一次，你才知道它拿到的是什麼素材，判斷它的取捨有沒有道理。'
+              ],
+              bullets: [
+                '<strong>--design-system</strong>：最常用的入口。新頁面、新專案一律先跑它，得到版面模式、風格、配色（含 CSS 變數名稱）、字體、效果與要避免的反模式。<code>-p</code> 是專案名稱。',
+                '<strong>--domain</strong>：只查單一面向。設計系統的某一項不滿意（例如配色），不必整個重查，用 <code>--domain color</code> 換一組關鍵字補查即可。不加 <code>--domain</code> 時會自動判斷，重疊的詞（例如 font）可能分錯領域，結果不對就明確指定。',
+                '<strong>--persist</strong>：把設計系統存成 <code>design-system/專案名/MASTER.md</code>，之後換對話、換人做其他頁面都照同一份。務必加 <code>--output-dir</code> 指到專案根目錄，否則會寫到當下所在的資料夾。',
+                '<strong>三個旋鈕</strong>：<code>--variance</code> 低是置中極簡、高是大膽不對稱；<code>--motion</code> 低是細微互動、高是複雜編排，並附上對應的 GSAP 範例；<code>--density</code> 低是寬鬆留白（行銷頁）、高是緊湊（管理後台）。不設定就維持原本輸出。',
+                '<strong>--stack</strong>：依技術堆疊給實作規則，本課前端用 <code>react</code>。',
+                '<strong>關鍵字要多面向</strong>：組合產品、產業、語氣、密度，例如 <code>ecommerce electronics minimal content-dense</code>，不要只寫 <code>app</code>。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell 7 — ui-ux-pro-max 常用查詢',
+                content: '# 用 /plugin 安裝的腳本位置\n$UX = "$HOME\\.claude\\plugins\\marketplaces\\ui-ux-pro-max-skill\\.claude\\skills\\ui-ux-pro-max\\scripts\\search.py"\n# 輸出含框線與表情符號；若出現 UnicodeEncodeError，先設定輸出編碼\n$env:PYTHONIOENCODING = \'utf-8\'\n\n# 1. 設計系統：一次查產品類型、風格、配色、字體、版面，並列出要避免的樣式\npython $UX "ecommerce electronics store minimal" --design-system -p "My Shop"\n\n# 2. 單一領域補查（--domain）：color、typography、ux、style、landing、chart、icons、gsap……\npython $UX "monochrome minimal blue accent" --domain color\npython $UX "modern clean sans" --domain typography\npython $UX "form error accessibility" --domain ux\n\n# 3. 保存設計系統（--persist）：寫到 .\\design-system\\my-shop\\MASTER.md，之後每一頁都照它做\npython $UX "ecommerce electronics store minimal" --design-system --persist -p "My Shop" --output-dir .\n#    頁面專屬覆寫：另外產生 pages\\checkout.md，規則優先於 MASTER.md\npython $UX "ecommerce electronics store minimal" --design-system --persist -p "My Shop" --output-dir . --page "checkout"\n#    MASTER.md 已存在時 --persist 會跳過不寫；確定要重產才加 --force\n\n# 4. 三個旋鈕（1～10）：variance 變化度、motion 動態、density 密度\npython $UX "admin order dashboard" --design-system --variance 3 --motion 2 --density 8\n\n# 5. 技術堆疊的實作規則（--stack）\npython $UX "form validation error" --stack react\n\n# 輸出成 Markdown 方便存檔：-f markdown；給程式讀：--json'
+              }
+            },
+            {
+              title: 'ui-ux-pro-max 完整說明（三）：技能給素材，方向由你決定',
+              type: 'text',
+              paragraphs: [
+                '講師實測用 2-5 章的關鍵字「premium consumer electronics brand store apple minimal」查設計系統，得到的是 <strong>App Store Style Landing</strong> 版面（下載按鈕、評分、QR code，適合 App 而不是商城）、<strong>Liquid Glass</strong> 風格（毛玻璃、流動、彩虹折射，技能自己也標註效能與對比有風險），以及<strong>黑金配色</strong>（強調色 <code>#A16207</code>）。這三樣都不是我們要的。',
+                '所以 2-5 的升級提示詞把查詢拆成兩步：設計系統只取字體、版面與 UX 檢查清單；配色另外用 <code>--domain color</code> 查 monochrome minimal blue accent，採用「Monochrome + blue accent」（主色 <code>#18181B</code>、強調色 <code>#2563EB</code>）。課前逐字驗證時，執行升級的 subagent 兩次查詢都有做，捨棄了 Liquid Glass 與黑金，結果和講義描述一致，程式裡也沒有漸層與 <code>backdrop-filter</code>。'
+              ],
+              bullets: [
+                '<strong>先訂限制，再查詢</strong>：把「白底、近黑文字、只用一個強調色、不用漸層與毛玻璃」這類限制寫進提示詞，並說明「建議和限制衝突時以限制為準」。沒有限制，AI 很容易照單全收。',
+                '<strong>要 AI 列出採用與捨棄的理由</strong>：每一項建議採用或不採用、為什麼，讓你檢查它的判斷，而不是只看到結果。',
+                '<strong>用 --persist 固定下來</strong>：方向確定後存成 MASTER.md，之後做「我的訂單」「訂單管理」等頁面都照同一份，畫面才會一致。2-5 升級提示詞要求購物車抽屜、確認框、訂單頁「套用同一套設計系統」，就是這個目的。',
+                '<strong>改版要保住測試依賴的 class</strong>：升級提示詞第 5 點列出 e2e 依賴的 class 與欄位名稱。逐字驗證時發現有幾個 class 原本只以 id 存在，是 subagent 升級時補上同名 class 才全部對齊，所以改版前後都要搜尋確認。',
+                '<strong>用截圖驗收</strong>：升級前先存首頁截圖，升級後用 Playwright 截桌機與手機版比較，視覺好不好由你判斷，不是由 AI 說「已優化」就算數。'
+              ]
+            },
+            {
+              title: 'macOS 對照（依官方文件整理，未在 Mac 實測）',
+              type: 'code',
+              paragraphs: [
+                'Mac 上的路徑與 Windows 對應：<code>$HOME\\.claude</code> 對應 <code>~/.claude</code>，虛擬環境的 Python 在 <code>bin/python</code>（Windows 是 <code>Scripts\\python</code>），Python 指令是 <code>python3</code>。<strong>以下指令依官方文件整理，講師未在 Mac 實測。</strong>裝好 PowerShell 7 的 Mac 也可以直接用前面的 PowerShell 指令，只要把路徑分隔改成 <code>/</code>、虛擬環境路徑改成 <code>bin/python</code>。'
+              ],
+              code: {
+                language: 'bash',
+                title: 'macOS 終端機（zsh）— 本章指令對照',
+                content: '# 依官方文件整理，講師未在 Mac 實測\n\n# ── CLAUDE.md 與自訂 subagent ──\nmkdir -p ~/.claude/agents          # 全域 agent 目錄\nmkdir -p .claude/agents            # 專案 agent 目錄（在專案根目錄執行）\ntouch ~/.claude/CLAUDE.md && code ~/.claude/CLAUDE.md\n\n# ── deep-memory ──\nSK=~/.claude/skills\nPY=~/.deep-memory/.venv/bin/python   # macOS 的虛擬環境在 bin/，不是 Scripts/\npython3 -m venv ~/.deep-memory/.venv\n$PY -m pip install -r $SK/chroma-hybrid-search/requirements.txt\n$PY $SK/deep-memory/scripts/seed.py\n$PY $SK/chroma-hybrid-search/scripts/update_db.py\n$PY $SK/chroma-hybrid-search/scripts/search.py --query "Flyway 沒有建表" --limit 3 --min-score 0.35\n$PY $SK/memory-backup/scripts/backup.py\n\n# ── ui-ux-pro-max ──\nUX=~/.claude/plugins/marketplaces/ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/scripts/search.py\npython3 $UX "ecommerce electronics store minimal" --design-system -p "My Shop"\npython3 $UX "monochrome minimal blue accent" --domain color'
+              }
+            },
+            {
+              title: '實作練習：五個課後任務',
+              type: 'text',
+              paragraphs: [
+                '每個任務都對應本章一個段落，做完勾選下方「本章學習進度」。驗收方式寫在每點最後，照著檢查才算完成。'
+              ],
+              bullets: [
+                '<strong>任務 1：寫自己的全域 CLAUDE.md</strong>：從完整版範本刪改出一份 <code>~/.claude/CLAUDE.md</code>，刪掉你用不到的段落。驗收：開一個新對話問「你現在要遵守哪些規則？任務分級怎麼分？」，答案和你寫的一致。',
+                '<strong>任務 2：建一個唯讀的 subagent</strong>：照範例在課程專案建立 <code>.claude/agents/spring-reviewer.md</code>，請它審查 1-9 章的 CartService。驗收：回報照四個等級分類，<code>git status</code> 顯示沒有任何檔案被修改。',
+                '<strong>任務 3：寫一份派工簡報</strong>：用「目標、已排除、範圍、驗收」四段格式，請 Explore 找出專案所有管理員 API 的授權方式。驗收：回報有 路徑:行號，而且你隨機挑兩個打開檔案確認正確。',
+                '<strong>任務 4：試用 advisor 與權限規則</strong>：設定 <code>/advisor</code>，做一個 T3 任務（例如替訂單加一個篩選條件），觀察 Advising 行並按 <kbd>Ctrl+O</kbd> 看建議；再在專案 <code>.claude/settings.json</code> 加一條 <code>Edit</code> 允許規則。驗收：能說出 advisor 在哪個時間點被呼叫、建議內容是什麼。',
+                '<strong>任務 5：deep-memory 或 ui-ux-pro-max 二選一</strong>：deep-memory 跑一次 <code>refine_experience.py --dry-run</code> 並看懂計畫；或 ui-ux-pro-max 用 <code>--design-system --persist</code> 產生自己專案的 MASTER.md，再用 <code>--domain color</code> 換一組配色。驗收：寫下三條「採用」與兩條「捨棄」的理由。'
+              ]
+            },
+            {
+              title: 'AI 開發建議',
+              type: 'text',
+              callout: {
+                type: 'info',
+                title: '用 Claude Code 做這一章時',
+                body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
+              },
+              bullets: [
+                '<strong>規則寫少而具體</strong>：AI 違反規則時，先檢查規則是不是寫得太模糊或互相矛盾，再補一句具體的。官方建議每份 CLAUDE.md 在 200 行內，規則越多越容易被忽略。',
+                '<strong>⚠ 派工簡報要隔離資訊</strong>：課前驗證時，subagent 讀到專案根目錄的驗證報告，就刻意改寫測試避開報告記錄的問題。簡報寫明不准讀哪些檔，參考答案與報告移出專案目錄。',
+                '<strong>⚠ subagent 說完成也要驗收</strong>：它出錯時的語氣和成功時一樣肯定。課前驗證時有 subagent 違反規定改用 heredoc 改檔，是主對話檢查時才發現。主對話要自己看一次測試輸出或截圖。',
+                '<strong>advisor 用在決策點</strong>：動手寫程式前、同一個錯誤修兩次還沒過、要換做法前、回報完成前。每次呼叫都會重讀整段對話且不吃快取，查詢與單檔小改不要叫它。',
+                '<strong>⚠ 技能給的是素材，不是答案</strong>：deep-memory 問要不要寫熱庫時，只確認真正值得重用的；ui-ux-pro-max 推薦 Liquid Glass、黑金配色這類和你的限制衝突的建議時，以限制為準，並請 AI 寫出取捨理由。'
               ]
             }
           ]

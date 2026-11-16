@@ -1,5 +1,5 @@
 // 教學網站「AI 開發建議」段落驗證（有斷言，失敗時非零 exit）
-// 用途：逐章（全部 20 章，章節清單取自 window.COURSE）確認每章最後一段是「AI 開發建議」，
+// 用途：逐章（全部 21 章，章節清單取自 window.COURSE）確認每章最後一段是「AI 開發建議」，
 //       段落內有提示框（callout info）與至少 4 點建議、每點都有粗體短標題、沒有未轉換的
 //       HTML 標籤或 Markdown 反引號；斷言限定在該章的 article 內，避免隔壁章的段落讓檢查誤過。
 //       最後確認頁面沒有 console 錯誤與 4xx/5xx，並截一張 1-9 的 AI 開發建議段落存證。
@@ -38,7 +38,7 @@ try {
   // 章節清單直接取自課程資料，避免腳本與內容不同步
   const units = await page.evaluate(() =>
     window.COURSE.days.flatMap((d) => d.units.map((u) => ({ id: u.id, chapter: u.chapter }))));
-  assert.strictEqual(units.length, 20, `章節數應為 20，實際 ${units.length}`);
+  assert.strictEqual(units.length, 21, `章節數應為 21，實際 ${units.length}`);
 
   for (const { id, chapter } of units) {
     // 從側邊導覽點進該章，等該章的 article 出現
@@ -80,7 +80,7 @@ try {
   // 網站本來就沒有 favicon.ico，瀏覽器自動請求的 404 不列入
   const realErrors = errors.filter((e) => !e.includes('favicon.ico'));
   assert.deepStrictEqual(realErrors, [], `頁面錯誤：${realErrors.join(' | ')}`);
-  console.log(`✅ 全部通過：20 章都有「${TITLE}」段落，頁面無 console 錯誤（截圖：${SHOT_PATH}）`);
+  console.log(`✅ 全部通過：21 章都有「${TITLE}」段落，頁面無 console 錯誤（截圖：${SHOT_PATH}）`);
 } finally {
   await browser.close();
 }

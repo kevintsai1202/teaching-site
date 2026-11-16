@@ -1,5 +1,5 @@
 // 教學網站編排驗證腳本（verify — 有斷言，失敗時非零 exit）
-// 用途：驗證課程編排修改後網站可正常渲染 — 20 章導覽、Day 2 新順序、task ID 無重複、console 無錯誤
+// 用途：驗證課程編排修改後網站可正常渲染 — 21 章導覽、Day 2 新順序、task ID 無重複、console 無錯誤
 // 前置：先啟動本機伺服器（npm run serve，預設 http://localhost:3000）
 // 執行：node scripts/verify-arrangement.mjs
 import { createRequire } from 'node:module';
@@ -30,27 +30,28 @@ page.on('response', (res) => { if (res.status() >= 400) badResponses.push(`${res
 try {
   await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
-  // 驗證 1：側邊導覽渲染出 18 個章節連結（COURSE 共 20 章，含 Day 0 兩章與 2-9 Cloudflare Tunnel 補充）
+  // 驗證 1：側邊導覽渲染出 21 個章節連結（含 Day 0 兩章、2-9 Cloudflare Tunnel 補充與 2-10 AI 開發工作流程補充）
   await page.waitForSelector('#sidebar-nav a', { timeout: 10000 });
   const navTexts = await page.locator('#sidebar-nav a').allTextContents();
   const chapterLinks = navTexts.map((t) => t.trim()).filter((t) => /^\d-\d/.test(t));
-  assert.strictEqual(chapterLinks.length, 20, `側邊導覽章節數應為 20，實際 ${chapterLinks.length}`);
+  assert.strictEqual(chapterLinks.length, 21, `側邊導覽章節數應為 21，實際 ${chapterLinks.length}`);
 
   // 驗證 2：新章節標題存在（2-4 改名 + 2-8 新增）
   assert.ok(navTexts.some((t) => t.includes('擴充AI能力：MCP 與 Skills')), '導覽缺少 2-4「擴充AI能力：MCP 與 Skills」');
   assert.ok(navTexts.some((t) => t.includes('課程總結與完整系統驗證')), '導覽缺少 2-8「課程總結與完整系統驗證」');
 
-  // 驗證 3：Day 2 教學順序 — React 章節在 MCP 之前，總結之後才是 Cloudflare Tunnel 補充章
+  // 驗證 3：Day 2 教學順序 — React 章節在 MCP 之前，總結之後是 Cloudflare Tunnel 補充章，最後是 AI 開發工作流程補充章（課後自學）
   const idx = (kw) => chapterLinks.findIndex((t) => t.includes(kw));
   assert.ok(idx('React 聊天室') < idx('MCP 與 Skills'), 'React 聊天室應排在 MCP 之前');
   assert.ok(idx('MCP 與 Skills') < idx('課程總結'), 'MCP 應排在課程總結之前');
-  assert.ok(chapterLinks[chapterLinks.length - 1].includes('Cloudflare Tunnel'), `最後一章應為 Cloudflare Tunnel 補充，實際「${chapterLinks[chapterLinks.length - 1]}」`);
+  assert.ok(chapterLinks[chapterLinks.length - 2].includes('Cloudflare Tunnel'), `倒數第二章應為 Cloudflare Tunnel 補充，實際「${chapterLinks[chapterLinks.length - 2]}」`);
+  assert.ok(chapterLinks[chapterLinks.length - 1].startsWith('2-10') && chapterLinks[chapterLinks.length - 1].includes('AI 開發工作流程'), `最後一章應為 2-10 AI 開發工作流程補充，實際「${chapterLinks[chapterLinks.length - 1]}」`);
   // 驗證 3a：Day 0 課前導覽必須排在最前面
   assert.ok(chapterLinks[0].startsWith('0-1'), `第一章應為 0-1，實際「${chapterLinks[0]}」`);
   assert.ok(navTexts.some((t) => t.includes('AI 應用作品展示')), '導覽缺少 0-2「AI 應用作品展示」');
   // 驗證 3b：模型章節內容（Groq / Muse Spark / Voyage）已出現在頁面資料中
   const courseJson = await page.evaluate(() => JSON.stringify(window.COURSE));
-  for (const kw of ['muse-spark-1.3-contributor', 'voyage-4', 'rerank-3', 'trycloudflare.com', 'deep-memory', 'gh pr create', 'AIBidding', 'Docrefinery', 'SubTutor']) {
+  for (const kw of ['muse-spark-1.3-contributor', 'voyage-4', 'rerank-3', 'trycloudflare.com', 'deep-memory', 'gh pr create', 'AIBidding', 'Docrefinery', 'SubTutor', 'spring-reviewer', 'QuestionAnswerAdvisor']) {
     assert.ok(courseJson.includes(kw), `課程資料缺少關鍵字 ${kw}`);
   }
 
@@ -73,7 +74,7 @@ try {
   const realErrors = consoleErrors.filter((e) => !e.includes('Failed to load resource'));
   assert.strictEqual(realErrors.length, 0, `Console 錯誤：\n${realErrors.join('\n')}`);
 
-  console.log(`✅ 驗證通過：20 章導覽、Day 2 順序、模型與 Tunnel 內容、task ID 唯一（${taskIds.length} 個）、首頁文案、console 乾淨`);
+  console.log(`✅ 驗證通過：21 章導覽、Day 2 順序、模型與 Tunnel 內容、task ID 唯一（${taskIds.length} 個）、首頁文案、console 乾淨`);
 } finally {
   await browser.close();
 }
