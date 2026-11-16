@@ -45,7 +45,7 @@
   <rect x="190" y="262" width="168" height="20" rx="4" fill="#dcfce7" stroke="#86efac"/>
   <text x="196" y="276" font-size="9" fill="#14532d">Assistant:「您的預算大概是多少？」</text>
   
-  <text x="50" y="306" font-size="9" fill="#047857">（從 ChatMemory 撈出 sessionId = "user_A" 的對話）</text>
+  <text x="50" y="306" font-size="9" fill="#047857">（從 ChatMemory 撈出對話 ID = "user_A" 的對話）</text>
 
   <!-- 3. Current User Message Block -->
   <rect x="40" y="334" width="328" height="76" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
