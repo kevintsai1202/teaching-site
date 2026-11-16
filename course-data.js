@@ -4432,7 +4432,7 @@ window.COURSE = {
                 body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
               },
               bullets: [
-                '<strong>⚠ Token 不進 Git</strong>：Named Tunnel 的 token 等於通道的鑰匙。AI 為了方便常直接寫進 <code>docker-compose.yml</code>，請它改用環境變數 <code>CLOUDFLARE_TUNNEL_TOKEN</code>，commit 前確認檔案裡沒有。',
+                '<strong>⚠ Token 不進 Git</strong>：Named Tunnel 的 Token 等於通道的鑰匙。AI 為了方便常直接寫進 <code>docker-compose.yml</code>，請它改用環境變數 <code>CLOUDFLARE_TUNNEL_TOKEN</code>，commit 前確認檔案裡沒有。',
                 '<strong>⚠ 公開前換掉示範帳號的密碼</strong>：admin／admin123 寫在課程講義裡，網址一公開，任何人都能用管理員登入、上架商品、出貨，也會用掉你的 AI 額度。分享前請 AI 改成只有你知道的密碼，<code>JWT_SECRET</code> 也換成新的隨機字串。',
                 '<strong>⚠ 聊天沒有逐字輸出，先懷疑 Quick Tunnel</strong>：Quick Tunnel 不支援 SSE。AI 遇到串流異常時可能去改前後端程式；先改用 Named Tunnel 或非串流端點確認，不要動已經驗證過的程式。',
                 '<strong>容器裡的 localhost 是自己</strong>：AI 常把轉發目標寫成 <code>localhost:8080</code>。cloudflared 在容器裡時要用服務名稱 <code>nginx</code>，後端跑在本機時用 <code>host.docker.internal</code>。',
