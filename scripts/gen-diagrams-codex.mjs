@@ -27,6 +27,7 @@ const extra = [{
 const HINTS = {
   'd1-u1': '流程（左到右再回圈）：VS Code（延伸模組：Extension Pack for Java、Spring Boot Extension Pack、Claude Code）→ Claude Code 對話面板（貼上 AI Agent 提示詞）→ 終端機 PowerShell 7（java -version、mvn -v、git status）→ 檢查結果（JDK 21、Maven 3.9+、Git、Docker Desktop 打勾）→ 回到 VS Code 持續迭代。不要出現 CodeGPT、JDK 17、Spring Boot CLI。',
   'd1-u4': 'Java Entity（@Entity @Table(name = "products") class Product：@Id Long id、String name、BigDecimal price、Integer stock、String imageUrl）以箭頭對應資料表 products（id BIGINT PK、name VARCHAR、price NUMERIC、stock INTEGER、image_url VARCHAR）；下方 ProductRepository extends JpaRepository<Product, Long>，提供 findAll()、findById()、save()、deleteById()，箭頭「查詢與持久化」指向資料表。',
+  'd2-u6': '流程（左到右，上方前端、下方後端）：React ChatRoom（使用者輸入問題）→ sseClient.js 以 fetch POST /api/ai/stream（標頭 Authorization: Bearer Token、JSON 本文 {message}）→ Spring Security JWT Filter（只認標頭，驗證通過）→ ChatController（@PostMapping, text/event-stream）→ ChatClient 串流回覆 → 回傳 SSE 事件 data: … 與 data: [DONE] → sseClient 讀 response.body、TextDecoder 依空行切事件、解析 data: 行 → ChatRoom 打字機效果顯示。旁註一個小框：「Token 與問題不在網址」；另一個小框：AbortController（關閉視窗或送新問題時中止）。不要出現 EventSource、?token=、GET。',
   'd2-u8': '上層 Day 2：React 前端 :5173（商城首頁、聊天室 fetch 串流 SSE、Vite Proxy /api → :8080）⇄ AI 能力（ChatClient、ChatMemory 對話記憶、@Tool 查商品／訂單／庫存、RAG、MCP Server）→ 外部 AI 服務（Muse Spark 1.3 對話模型、Voyage voyage-4 向量 1024 維、rerank）。下層 Day 1：Spring Boot 後端 :8080（Security + JWT、Service / Repository、REST、例外處理）→ PostgreSQL 18 + pgvector（商品表、訂單表、Flyway、vector_store）。底部一行：驗證順序：資料庫 → 後端啟動 → 工具呼叫 → RAG → 前端串流。不要出現 Groq、llama、voyage-3。'
 };
 
