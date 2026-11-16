@@ -114,7 +114,7 @@ try {
   assert.strictEqual(codeTitles.length, 10, `2-10 程式區塊應為 10 個，實際 ${codeTitles.length}`);
   const codes = await art.locator('.code-block pre code').allTextContents();
   assert.ok(codes.some((c) => c.includes('name: spring-reviewer') && c.includes('tools: Read, Grep, Glob')), '缺少自建 agent 範例');
-  assert.ok(codes.some((c) => c.includes('"Edit(/backend/src/**)"')), '缺少權限規則範例');
+  assert.ok(codes.some((c) => c.includes('"Edit(/src/**)"')), '缺少權限規則範例');
   assert.ok(codes.some((c) => c.includes('--design-system --persist') && c.includes('--domain color')), '缺少 ui-ux-pro-max 指令');
   assert.ok(codes.some((c) => c.includes('refine_apply.py') && c.includes('--dry-run')), '缺少 deep-memory 精煉指令');
   assert.ok(codes.some((c) => c.includes('未在 Mac 實測')), '缺少 macOS 對照（未實測註明）');

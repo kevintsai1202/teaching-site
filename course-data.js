@@ -363,7 +363,7 @@ window.COURSE = {
               code: {
                 language: 'markdown',
                 title: 'CLAUDE.md — 精簡版範本（放在專案根目錄）',
-                content: '# 專案開發規則（CLAUDE.md）\n\n## 語言與環境\n- 回覆、文件、commit 訊息、程式註解用繁體中文；技術名詞與識別字維持原文。\n- 給我手動執行的指令用 PowerShell 7 語法。\n- 本專案：後端 Spring Boot 4 + Spring AI 2.0（backend/），前端 React 19 + Vite（frontend/）。\n  各目錄的建置指令與慣例寫在該目錄自己的 CLAUDE.md。\n\n## 寫程式\n- 新寫或大幅改寫的函式加中文函式級註解，重要的變數與物件也要註解。\n- 只做這次任務需要的部分。順手發現的重構、額外功能列在回報裡，由我決定。\n- 不准為了讓測試通過去改測試的斷言；認為測試寫錯就先停下來說明原因。\n\n## 任務分級（開工前判定一次）\n- T0 查詢：不修改檔案。結論要有實際查證（讀檔、跑指令），不憑印象。\n- T1 單檔機械修改：只動 1 個檔，行為不變或內容由我指定。改完跑相關測試或 build。\n- T2 非程式產出：文件、報告。可省略 TDD；會重跑的腳本仍要寫成檔案並實際跑過。\n- T3 其他：新功能、修 bug、多檔改動。先說明你的理解等我確認；有邏輯變動先寫會失敗的測試；\n  修 bug 先重現、找出根因再改。\n- 做到一半發現超出原層級，立刻升到 T3；判定有疑義時取較高的層級。\n\n## 驗證\n- 「改好了」要附實跑證據：測試、build 或 Playwright 腳本的輸出。\n- 全套測試、建置這類長時間指令，輸出 tee 到 logs/ 底下的檔案。\n- 收尾只跑和這次改動有關的測試，回報時列出跑了哪些、沒跑哪些與原因。\n- 操作瀏覽器時，先把步驟寫成 e2e/ 或 scripts/ 底下的腳本再執行。\n\n## 安全\n- 金鑰只放環境變數或 .env，.env 不進 Git。\n- 權限被擋下時停下來告訴我原因，不要換個方式繞過。\n- git reset --hard、push --force、刪資料表這類不可逆操作，先說明影響，等我同意再做。'
+                content: '# 專案開發規則（CLAUDE.md）\n\n## 語言與環境\n- 回覆、文件、commit 訊息、程式註解用繁體中文；技術名詞與識別字維持原文。\n- 給我手動執行的指令用 PowerShell 7 語法。\n- 本專案：根目錄是 Spring Boot 4 + Spring AI 2.0 後端（pom.xml、src/），前端 React 19 + Vite 在 frontend/。\n  前端的指令與慣例另外寫在 frontend/CLAUDE.md。\n\n## 寫程式\n- 新寫或大幅改寫的函式加中文函式級註解，重要的變數與物件也要註解。\n- 只做這次任務需要的部分。順手發現的重構、額外功能列在回報裡，由我決定。\n- 不准為了讓測試通過去改測試的斷言；認為測試寫錯就先停下來說明原因。\n\n## 任務分級（開工前判定一次）\n- T0 查詢：不修改檔案。結論要有實際查證（讀檔、跑指令），不憑印象。\n- T1 單檔機械修改：只動 1 個檔，行為不變或內容由我指定。改完跑相關測試或 build。\n- T2 非程式產出：文件、報告。可省略 TDD；會重跑的腳本仍要寫成檔案並實際跑過。\n- T3 其他：新功能、修 bug、多檔改動。先說明你的理解等我確認；有邏輯變動先寫會失敗的測試；\n  修 bug 先重現、找出根因再改。\n- 做到一半發現超出原層級，立刻升到 T3；判定有疑義時取較高的層級。\n\n## 驗證\n- 「改好了」要附實跑證據：測試、build 或 Playwright 腳本的輸出。\n- 全套測試、建置這類長時間指令，輸出 tee 到 logs/ 底下的檔案。\n- 收尾只跑和這次改動有關的測試，回報時列出跑了哪些、沒跑哪些與原因。\n- 操作瀏覽器時，先把步驟寫成 e2e/ 或 scripts/ 底下的腳本再執行。\n\n## 安全\n- 金鑰只放環境變數或 .env，.env 不進 Git。\n- 權限被擋下時停下來告訴我原因，不要換個方式繞過。\n- git reset --hard、push --force、刪資料表這類不可逆操作，先說明影響，等我同意再做。'
               }
             },
             {
@@ -4428,8 +4428,8 @@ window.COURSE = {
               ],
               bullets: [
                 '<strong>全域</strong> <code>~/.claude/CLAUDE.md</code>：只有你自己、所有專案都套用。放語言、註解、驗證習慣這類個人偏好。講師的任務分級、advisor 呼叫時機都寫在這裡。',
-                '<strong>專案</strong> <code>./CLAUDE.md</code> 或 <code>./.claude/CLAUDE.md</code>：進版控和團隊共用。放建置指令、架構、專案慣例。本課專案的根目錄就有一份，列出 backend、frontend、mcp、teaching-site 各自的用途。',
-                '<strong>子目錄</strong> <code>backend/CLAUDE.md</code>、<code>frontend/CLAUDE.md</code>：不會一開始就載入，AI 讀寫該目錄的檔案時才讀進來。前後端的指令與陷阱分開寫，做前端時就不會被一大段 Maven 說明干擾。',
+                '<strong>專案</strong> <code>./CLAUDE.md</code> 或 <code>./.claude/CLAUDE.md</code>：進版控和團隊共用。放建置指令、架構、專案慣例。講師的課程範例 repo 根目錄就有一份，列出 backend、frontend、mcp、teaching-site 各自的用途。',
+                '<strong>子目錄</strong> 例如 <code>frontend/CLAUDE.md</code>：不會一開始就載入，AI 讀寫該目錄的檔案時才讀進來。講師的範例 repo 把 <code>backend/</code>、<code>frontend/</code> 各寫一份；你的課程專案根目錄就是後端，可以只在 <code>frontend/</code> 另放一份。前後端的指令與陷阱分開寫，做前端時就不會被一大段 Maven 說明干擾。',
                 '<strong>個人專案設定</strong> <code>./CLAUDE.local.md</code>：只對你、只對這個專案，記得加進 <code>.gitignore</code>，適合放本機的埠號、測試帳號。',
                 '<strong>誰優先要寫明</strong>：講師的全域規則寫了「技能裡的強制流程和這裡衝突時，以這裡為準」「我明確指定流程時，照我說的做，分級不適用」。這類句子比依賴載入順序可靠。',
                 '<strong>寫短、寫具體</strong>：官方建議每份 CLAUDE.md 控制在 200 行內，越長越容易被忽略；只跟部分檔案有關的規則可以拆到 <code>.claude/rules/</code>。第一次可以用 <code>/init</code> 讓 AI 掃專案產生起始版，再自己補上 AI 掃不出來的規則。',
@@ -4562,7 +4562,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: '派工簡報範例（請 Explore 搜尋，以及請 dev-worker 做機械性修改）',
-                content: '【目標】\n找出 backend/src/main 裡所有管理員 API，列出每個端點用的是 URL 授權規則、@PreAuthorize，\n還是兩者都沒有。\n\n【已知／已排除】\n- 授權規則集中在 config/SecurityConfig.java。\n- AuthController 的登入端點本來就公開，不用檢查。\n\n【範圍】\n- 只讀 backend/src/main，不修改任何檔案。\n- 不要讀 logs/、docs/ 與任何 *-REPORT.md（參考答案與報告會影響判斷）。\n\n【驗收】\n- 回報清單：路徑:行號、HTTP 方法與路徑、授權方式。\n- 找不到或不確定的寫「找不到」，不要猜。\n\n────────────────────────────────\n派給 dev-worker 的例子（機械性修改，指定 haiku）：\n\n請派 dev-worker（model: haiku）：\n把 OrderService.VALID_STATUSES 的 "CANCELED" 改成 "CANCELLED"，只改這一個常數。\n改完執行 mvn test -Dtest=OrderLifecycleTest，把結果貼回來；\n測試失敗就停下來回報，不要改測試。'
+                content: '【目標】\n找出 src/main 裡所有管理員 API，列出每個端點用的是 URL 授權規則、@PreAuthorize，\n還是兩者都沒有。\n\n【已知／已排除】\n- 授權規則集中在 config/SecurityConfig.java。\n- AuthController 的登入端點本來就公開，不用檢查。\n\n【範圍】\n- 只讀 src/main，不修改任何檔案。\n- 不要讀 logs/、docs/ 與任何 *-REPORT.md（參考答案與報告會影響判斷）。\n\n【驗收】\n- 回報清單：路徑:行號、HTTP 方法與路徑、授權方式。\n- 找不到或不確定的寫「找不到」，不要猜。\n\n────────────────────────────────\n派給 dev-worker 的例子（機械性修改，指定 haiku）：\n\n請派 dev-worker（model: haiku）：\n把 OrderService.VALID_STATUSES 的 "CANCELED" 改成 "CANCELLED"，只改這一個常數。\n改完執行 mvn test -Dtest=OrderLifecycleTest，把結果貼回來；\n測試失敗就停下來回報，不要改測試。'
               }
             },
             {
@@ -4570,10 +4570,10 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 '下面是一個簡化版的範例：只能讀、不能改的 Spring Boot 後端審查員。把它存成專案的 <code>.claude/agents/spring-reviewer.md</code>（只給這個專案用），或 <code>~/.claude/agents/spring-reviewer.md</code>（所有專案都能用）。',
-                '建立方式（在專案根目錄的 PowerShell 7 執行）：<code>New-Item -ItemType Directory -Force .claude\\agents</code>，再 <code>code .claude\\agents\\spring-reviewer.md</code> 貼上存檔。手動新增的檔案，開一個新對話才會載入；也可以在 Claude Code 輸入 <code>/agents</code> 用介面建立與管理。'
+                '建立方式（在專案根目錄的 PowerShell 7 執行）：<code>New-Item -ItemType Directory -Force .claude\\agents</code>，再 <code>code .claude\\agents\\spring-reviewer.md</code> 貼上存檔。Claude Code 會監看這兩個 agents 資料夾，存檔後幾秒內就生效；但如果 agents 資料夾是這次對話開始後才建立的，要重開對話才會載入。也可以直接請 AI 照下面的範例幫你寫這個檔案。'
               ],
               bullets: [
-                '<strong>name</strong>：唯一名稱，只用小寫英文與連字號；同名時專案層級優先。',
+                '<strong>name</strong>：唯一名稱，最多 256 字元、不能含冒號（冒號保留給插件）；慣例是小寫英文加連字號，例如 <code>code-reviewer</code>。同名時專案層級優先。',
                 '<strong>description</strong>：主對話靠它決定什麼時候派工，寫「什麼情況下用它」，不是寫它多厲害。',
                 '<strong>tools</strong>：只列需要的工具。審查員只給 Read、Grep、Glob，就算簡報寫錯要它修，它也改不了檔案。沒寫 <code>tools</code> 會繼承全部工具；也可以用 <code>disallowedTools</code> 從全部工具中扣掉幾個。',
                 '<strong>model</strong>：<code>haiku</code>、<code>sonnet</code>、<code>opus</code>、完整模型 ID，或 <code>inherit</code>（沿用主對話）。另有 <code>effort</code>、<code>permissionMode</code> 等選填欄位，第一次不用加。',
@@ -4583,7 +4583,7 @@ window.COURSE = {
               code: {
                 language: 'markdown',
                 title: '.claude/agents/spring-reviewer.md — 唯讀的後端審查員',
-                content: '---\nname: spring-reviewer\ndescription: 審查 Spring Boot 後端的修改。寫完或改完 backend/ 的程式後主動使用（use proactively after backend changes）。只讀不改。\ntools: Read, Grep, Glob\nmodel: sonnet\n---\n你是這個專案的 Spring Boot 程式審查員，只負責找問題，不修改任何檔案。\n\n審查前：\n- 先讀專案根目錄與 backend/ 的 CLAUDE.md，依專案慣例判斷，不用你個人的偏好。\n\n重點檢查：\n- 業務判斷寫在 Service；Controller 只處理參數與狀態碼。\n- @Transactional 放在 Service；扣庫存、建立訂單這類寫入在同一個交易內。\n- 授權：管理員 API 有 URL 規則或 @PreAuthorize；使用者只查得到自己的資料。\n- 例外：GlobalExceptionHandler 只處理自訂的業務例外，沒有攔截 Exception.class。\n- 金鑰、密碼沒有寫死在程式或設定檔。\n\n回報格式（繁體中文）：\n- 必須修正：路徑:行號 — 問題 → 建議修法\n- 建議修正：同上\n- 小地方：同上\n- 疑問：意圖不清楚的地方\n沒有問題就直接說沒有問題，不要為了湊數挑毛病。'
+                content: '---\nname: spring-reviewer\ndescription: 審查 Spring Boot 後端的修改。寫完或改完 src/main 的 Java 程式後主動使用（use proactively after backend changes）。只讀不改。\ntools: Read, Grep, Glob\nmodel: sonnet\n---\n你是這個專案的 Spring Boot 程式審查員，只負責找問題，不修改任何檔案。\n\n審查前：\n- 先讀專案根目錄的 CLAUDE.md，依專案慣例判斷，不用你個人的偏好。\n\n重點檢查：\n- 業務判斷寫在 Service；Controller 只處理參數與狀態碼。\n- @Transactional 放在 Service；扣庫存、建立訂單這類寫入在同一個交易內。\n- 授權：管理員 API 有 URL 規則或 @PreAuthorize；使用者只查得到自己的資料。\n- 例外：GlobalExceptionHandler 只處理自訂的業務例外，沒有攔截 Exception.class。\n- 金鑰、密碼沒有寫死在程式或設定檔。\n\n回報格式（繁體中文）：\n- 必須修正：路徑:行號 — 問題 → 建議修法\n- 建議修正：同上\n- 小地方：同上\n- 疑問：意圖不清楚的地方\n沒有問題就直接說沒有問題，不要為了湊數挑毛病。'
               }
             },
             {
@@ -4591,7 +4591,7 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 'Claude Code 的 <strong>advisor</strong> 是一個實驗功能：替主模型配一個通常更強的「顧問」模型。主模型在關鍵時刻呼叫它，顧問會看完<strong>整段對話</strong>（每個工具呼叫與結果），給出建議後主模型再繼續。呼叫不帶任何參數，什麼時候呼叫由主模型自己決定；你也可以在提示詞裡要求「先問 advisor」。',
-                '設定方式有三種：對話框的 <code>/advisor</code>、設定檔的 <code>advisorModel</code>、啟動時的 <code>--advisor</code> 參數。顧問模型的等級必須不低於主模型（例如主模型 Opus 就只能配 Opus 或 Fable）。需要 Anthropic API 或訂閱帳號，透過 Bedrock 等雲端平台使用時不一定支援。'
+                '設定方式有三種：對話框的 <code>/advisor</code>、設定檔的 <code>advisorModel</code>、啟動時的 <code>--advisor</code> 參數。顧問模型的等級必須不低於主模型，可以配對的組合見官方 advisor 文件的對照表；設定了不合格的組合時，Claude Code 會提示並且不啟用。需要 Anthropic API 或訂閱帳號，透過 Bedrock 等雲端平台使用時不一定支援。'
               ],
               bullets: [
                 '<strong>講師規定一定要呼叫的時機</strong>：① T3 任務跟你確認完理解、動手寫程式前 ② 同一個錯誤或測試失敗修了兩次還沒過，第三次之前 ③ 要換做法或擴大範圍之前 ④ 回報完成之前，而且呼叫前先把成果寫進檔案，避免呼叫途中對話中斷而遺失。',
@@ -4611,21 +4611,22 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 'Claude Code 的權限模式可以在 VS Code 輸入框底下切換（終端機 CLI 按 <kbd>Shift+Tab</kbd>）：<strong>Manual</strong> 每次改檔、跑指令都問你；<strong>Edit automatically</strong>（acceptEdits）自動接受檔案修改；<strong>Plan</strong> 只研究、提計畫，你批准前不改檔；<strong>Auto</strong> 不再逐一詢問，改由背景的<strong>分類器</strong>檢查每個動作是否符合你的要求，判斷為破壞性或可疑的就擋下來。',
-                '權限規則寫在 <code>settings.json</code> 的 <code>permissions</code>：比對順序固定是 <strong>deny → ask → allow</strong>，先符合的決定結果，寫得比較細的 allow 也救不回被 deny 擋住的動作。<code>Edit(路徑)</code> 規則套用到所有會改檔的內建工具，<strong>包含用 Write 新增檔案</strong>。在 auto mode 中，符合 allow 規則的動作會直接放行，不再經過分類器（寫入受保護路徑等少數例外仍會檢查）。',
-                '<strong>真實案例</strong>：課前逐字驗證 1-9 章時，建立 Flyway <code>V3__cart_and_order_items.sql</code> 被分類器以「Destructive or Unwanted Actions」拒絕，推測是 SQL 內含 <code>DROP COLUMN</code> 與 <code>DROP CONSTRAINT</code>；管理員訂單那一步，改用逐檔修改後，仍有三處修改（包含新增、帶有 <code>@PreAuthorize</code> 的 AdminOrderController）被以「Undermining Oversight」拒絕，原因無法確認。兩次 subagent 都停下來回報、沒有繞過；由使用者確認內容後放行，或加上專案的 <code>Edit</code> 允許規則，才順利通過。'
+                '權限規則寫在 <code>settings.json</code> 的 <code>permissions</code>：比對順序固定是 <strong>deny → ask → allow</strong>，先符合的決定結果，寫得比較細的 allow 也救不回被 deny 擋住的動作。<code>Edit(路徑)</code> 規則套用到所有會改檔的內建工具，<strong>包含用 Write 新增檔案</strong>。在 auto mode 中，符合 allow 規則的動作會直接放行，不再經過分類器（寫入受保護路徑等少數例外仍會檢查）；另外，<strong>工作目錄內</strong>的一般檔案修改本來就自動通過，會送去分類器的主要是 Bash 指令、網路請求，以及工作目錄以外的檔案修改。',
+                '<strong>真實案例</strong>：課前逐字驗證 1-9 章時，建立 Flyway <code>V3__cart_and_order_items.sql</code> 被分類器以「Destructive or Unwanted Actions」拒絕，推測是 SQL 內含 <code>DROP COLUMN</code> 與 <code>DROP CONSTRAINT</code>；管理員訂單那一步，改用逐檔修改後，仍有三處修改（包含新增、帶有 <code>@PreAuthorize</code> 的 AdminOrderController）被以「Undermining Oversight」拒絕，原因無法確認。那次的驗證副本放在主對話工作目錄以外的另一個資料夾，事後加上的允許規則也是指向那個資料夾的絕對路徑，所以檔案寫入很可能是因為「在工作目錄以外」才送去分類器。兩次 subagent 都停下來回報、沒有繞過；由使用者確認內容後放行，或加上指向該資料夾的 <code>Edit</code> 允許規則，才順利通過。同一次驗證中，單獨執行 <code>mvn test -Dtest=ConcurrentCheckoutTest</code> 也被擋過，這類 Bash 指令就適合用範圍窄的 allow 規則放行。'
               ],
               bullets: [
                 '<strong>⚠ 被擋下時不要叫 AI 繞過</strong>：AI 被擋住後，可能改用 Bash 的 heredoc、python 腳本把同樣的內容寫進檔案。這等於拆掉你自己裝的煞車。正確做法是先看它要做什麼、為什麼被擋，確認內容沒問題再由你放行。',
                 '<strong>在哪裡放行</strong>：被擋的動作會出現在 <code>/permissions</code> 的 Recently blocked 分頁，可以從那裡核准讓 AI 重試。連續被擋 3 次或累計 20 次，auto mode 會暫停，改回逐一詢問你。',
-                '<strong>規則寫在哪一層</strong>：專案的 <code>.claude/settings.json</code>（進版控、團隊共用）或 <code>.claude/settings.local.json</code>（只有你）。在專案設定裡，開頭單一斜線的 <code>/backend/src/**</code> 代表「從專案根目錄算起」，不是磁碟根目錄。',
+                '<strong>規則寫在哪一層</strong>：專案的 <code>.claude/settings.json</code>（進版控、團隊共用）或 <code>.claude/settings.local.json</code>（只有你）。在專案設定裡，開頭單一斜線的 <code>/src/**</code> 代表「從專案根目錄算起」，不是磁碟根目錄。',
                 '<strong>絕對路徑與 Windows</strong>：要寫在全域 <code>~/.claude/settings.json</code> 又指定某個專案，用兩個斜線的絕對路徑；Windows 路徑會先轉成 POSIX 形式再比對，例如 <code>D:\\projects\\my-shop</code> 要寫成 <code>Edit(//d/projects/my-shop/**)</code>。',
+                '<strong>範例規則的用途</strong>：<code>Edit</code> 規則在 Manual、Edit automatically 模式可以少問幾次；在 auto mode 中，工作目錄內的修改本來就會通過，<code>Edit</code> 規則主要用在工作目錄以外的路徑。<code>Bash(mvn test *)</code> 讓測試指令不必每次經過分類器。',
                 '<strong>範圍寫窄</strong>：只放行你確定會反覆需要的目錄與指令。<code>Bash(*)</code> 這類全開規則在進入 auto mode 時會被自動停用，也不該這樣寫。',
                 '<strong>真的不准發生的事用 deny</strong>：例如 <code>Read(/.env)</code>。CLAUDE.md 寫「不要讀 .env」只是交代，deny 規則才會真的擋下來。'
               ],
               code: {
                 language: 'json',
                 title: '.claude/settings.json — 專案權限規則範例',
-                content: '{\n  "permissions": {\n    "allow": [\n      "Edit(/backend/src/**)",\n      "Edit(/frontend/src/**)",\n      "Edit(/e2e/**)",\n      "Bash(mvn test)",\n      "Bash(mvn test *)"\n    ],\n    "deny": [\n      "Read(/.env)",\n      "Edit(/.env)"\n    ]\n  }\n}'
+                content: '{\n  "permissions": {\n    "allow": [\n      "Edit(/src/**)",\n      "Edit(/frontend/src/**)",\n      "Edit(/e2e/**)",\n      "Bash(mvn test)",\n      "Bash(mvn test *)"\n    ],\n    "deny": [\n      "Read(/.env)",\n      "Edit(/.env)"\n    ]\n  }\n}'
               }
             },
             {
@@ -4721,7 +4722,7 @@ window.COURSE = {
               title: 'ui-ux-pro-max 完整說明（二）：常用指令',
               type: 'code',
               paragraphs: [
-                '以下指令講師都在本機實際跑過。平常把需求告訴 AI，它會自己挑查詢；親手跑一次，你才知道它拿到的是什麼素材，判斷它的取捨有沒有道理。'
+                '以下指令講師都在本機用 PowerShell 7 實際跑過（<code>--persist</code> 與 <code>--page</code> 會在當下資料夾產生 <code>design-system\\</code>，試跑時先切到一個空資料夾）。平常把需求告訴 AI，它會自己挑查詢；親手跑一次，你才知道它拿到的是什麼素材，判斷它的取捨有沒有道理。'
               ],
               bullets: [
                 '<strong>--design-system</strong>：最常用的入口。新頁面、新專案一律先跑它，得到版面模式、風格、配色（含 CSS 變數名稱）、字體、效果與要避免的反模式。<code>-p</code> 是專案名稱。',
