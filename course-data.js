@@ -2095,7 +2095,7 @@ window.COURSE = {
           id: 'd1-u9',
           chapter: '1-9',
           title: 'Spring Security 基礎認證與授權',
-          summary: '引導學員透過 AI Agent 為後端 REST API 加上安全防護。引入 Spring Security 與 JWT（JSON Web Token）進行身分驗證與端點授權控管，並以角色區分「管理員」與「一般用戶」，保護敏感 API 資源與 Swagger 文件。',
+          summary: '引導學員透過 AI Agent 為後端 REST API 加上安全防護。引入 Spring Security 與 JWT（JSON Web Token）進行身分驗證與端點授權控管，並以角色區分「管理員」與「一般用戶」，保護敏感 API 資源，並讓 Swagger UI 能帶入 Bearer Token 測試受保護的 API。',
           source: 'docs/Day1-9-Security.md',
           heroImage: 'assets/teaching-site/09-ch09-spring-security.png',
           diagramImage: '',
@@ -2104,7 +2104,7 @@ window.COURSE = {
             '理解 Spring Security 的 Authentication（認證）與 Authorization（授權）核心概念',
             '學會以 AI 輔助建立 JWT 過濾器並在 Token 內寫入使用者角色（ADMIN/USER）',
             '實作角色基礎存取控制（RBAC），商品查詢 API 供用戶使用，商品寫入 API 僅限管理員',
-            '保護 Swagger API 文件，限定僅能透過認證身分存取',
+            '讓 Swagger UI 支援 Bearer Token：先登入取得 JWT，再用右上角 Authorize 貼上 Token，測試受保護的 API',
             '下半場：用 TDD（紅 → 綠 → 重構）讓 AI 開發購物車、結帳、取消與出貨 API，並以 Testcontainers 隔離測試資料庫',
             '分辨 URL 規則與 @PreAuthorize 方法層級授權，能用 401／403／200 驗證管理員 API',
             '看懂「同帳號並行結帳」的併發陷阱：能重現、說出原因與兩種修法'
@@ -2158,24 +2158,37 @@ window.COURSE = {
               bullets: [
                 '在 JWT 內寫入使用者角色（簡單區分管理員 ADMIN 與用戶 USER）',
                 '限制商品新增、修改、刪除 API 僅限管理員角色存取，商品查詢 API 需登入身分即可',
-                '保護 Swagger UI 與 OpenAPI 網頁與端點，需登入才能瀏覽'
+                '（已加 Swagger 才需要）放行 Swagger UI 與 OpenAPI 文件頁面；OpenApiConfig 宣告 Bearer 驗證，讓 Swagger UI 出現 Authorize 按鈕'
               ],
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有的智慧商城專案中，使用 Spring Security 與 JWT 實作登入驗證與角色權限：\n1. 引入 Spring Security 與 jjwt 0.12.x（jjwt-api、jjwt-impl、jjwt-jackson 都要明確寫版本，jjwt 不在 Spring Boot 版本管理內）。JWT 金鑰從環境變數 JWT_SECRET 讀取，需至少 32 字元；執行 mvn 前先在同一個 PowerShell 設定 $env:JWT_SECRET = \'至少32字元的隨機字串\'。\n2. 建立兩個示範帳號（InMemoryUserDetailsManager + BCrypt 密碼）：admin / admin123（角色 ADMIN）、user / user123（角色 USER）。帳號名稱 user 要與 1-4 示範訂單的 username 相同。\n3. 實作登入 API POST /api/auth/login，傳入帳號密碼，回應 { token, username, role }，role 的值為 ADMIN 或 USER（不含 ROLE_ 前綴，Filter 載入權限時再補 ROLE_）。\n4. 權限規則：\n   - 公開（免登入）：POST /api/auth/login、GET /api/products、GET /api/products/{id}（商城首頁要讓訪客看到商品）\n   - 僅 ADMIN：POST /api/products（商品上架；PUT / DELETE 先預留同樣的規則）\n   - 放行 ASYNC 與 ERROR 派送：dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()（否則 SSE 串流結束會丟 AccessDeniedException、找不到商品的 404 會變成 401）\n   - 需登入：其餘所有 API（含之後的 /api/ai/**、/api/orders/**）\n5. 新增 GET /api/orders/me：回傳「目前登入者」的訂單（帳號從 Spring Security 取得，不接受前端傳 username）。\n6. 建立 JwtAuthenticationFilter，用 parseJwt(request) 方法解析 Authorization: Bearer 標頭（2-5 章會擴充這個方法）；未登入回 401、權限不足回 403。\n完成後請用 PowerShell 示範：user 登入 → 查 /api/orders/me 看到 3 筆訂單；user 嘗試新增商品得到 403；admin 登入後成功上架一個新商品。'
+                content: '請在現有的智慧商城專案中，使用 Spring Security 與 JWT 實作登入驗證與角色權限：\n1. 引入 Spring Security 與 jjwt 0.12.x（jjwt-api、jjwt-impl、jjwt-jackson 都要明確寫版本，jjwt 不在 Spring Boot 版本管理內）。JWT 金鑰從環境變數 JWT_SECRET 讀取，需至少 32 字元；執行 mvn 前先在同一個 PowerShell 設定 $env:JWT_SECRET = \'至少32字元的隨機字串\'。\n2. 建立兩個示範帳號（InMemoryUserDetailsManager + BCrypt 密碼）：admin / admin123（角色 ADMIN）、user / user123（角色 USER）。帳號名稱 user 要與 1-4 示範訂單的 username 相同。\n3. 實作登入 API POST /api/auth/login，傳入帳號密碼，回應 { token, username, role }，role 的值為 ADMIN 或 USER（不含 ROLE_ 前綴，Filter 載入權限時再補 ROLE_）。\n4. 權限規則：\n   - 公開（免登入）：POST /api/auth/login、GET /api/products、GET /api/products/{id}（商城首頁要讓訪客看到商品）\n   - 僅 ADMIN：POST /api/products（商品上架；PUT / DELETE 先預留同樣的規則）\n   - 放行 ASYNC 與 ERROR 派送：dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()（否則 SSE 串流結束會丟 AccessDeniedException、找不到商品的 404 會變成 401）\n   - 需登入：其餘所有 API（含之後的 /api/ai/**、/api/orders/**）\n5. 新增 GET /api/orders/me：回傳「目前登入者」的訂單（帳號從 Spring Security 取得，不接受前端傳 username）。\n6. 建立 JwtAuthenticationFilter，用 parseJwt(request) 方法解析 Authorization: Bearer 標頭（2-5 章會擴充這個方法）；未登入回 401、權限不足回 403。\n7. Swagger UI 支援 Bearer Token（前提：已依 1-5 章加入 springdoc-openapi；沒有 Swagger 就略過本點）。本專案是無狀態 JWT，不會跳出 HTTP Basic 登入框，也不要為 Swagger 另外加 httpBasic 或第二條 SecurityFilterChain。(a) SecurityConfig 放行 /swagger-ui/**、/swagger-ui.html、/v3/api-docs/**（頁面與 API 描述本身不含資料；受保護的 API 仍然要 Token）。(b) 在 1-5 章的 OpenApiConfig 加上 SecurityScheme：名稱 BearerAuth、type 為 HTTP、scheme 為 bearer、bearerFormat 為 JWT，並用 addSecurityItem 套用到全部端點，讓 Swagger UI 右上角出現 Authorize 按鈕。\n完成後請用 PowerShell 示範：user 登入 → 查 /api/orders/me 看到 3 筆訂單；user 嘗試新增商品得到 403；admin 登入後成功上架一個新商品。'
               }
             },
             {
               title: '後端安全設定範例 (SecurityConfig.java)',
               type: 'code',
               paragraphs: [
-                'Spring Security 核心設定。我們配置雙重 `SecurityFilterChain`：第一個專門保護 Swagger 文件，限制使用 Basic Auth 登入；第一個保護一般系統 API，採用 JWT 驗證與無狀態 Session 策略，並限制商品寫入為 ADMIN。'
+                'Spring Security 核心設定。我們配置單一 `SecurityFilterChain`：採用 JWT 驗證與無狀態 Session 策略，登入 API 公開、商品寫入限制為 ADMIN，其餘需登入。若專案已加 Swagger，另外放行 `/swagger-ui/**` 與 `/v3/api-docs/**` 頁面（受保護的 API 仍要 Token，不需要也不要加 HTTP Basic）。'
               ],
               code: {
                 language: 'java',
                 title: 'SecurityConfig.java 範例',
-                content: '@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n    private final JwtAuthenticationFilter jwtAuthenticationFilter;\n\n    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {\n        this.jwtAuthenticationFilter = jwtAuthenticationFilter;\n    }\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n\n    @Bean\n    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {\n        return config.getAuthenticationManager();\n    }\n\n    /** 1. Swagger UI \u8207 API \u6587\u4ef6\u5b89\u5168\u9632\u8b77\u93c8 (\u4ee5 HTTP Basic \u8a8d\u8b49\u4fdd\u8b77) */\n    @Bean\n    @Order(1)\n    public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {\n        http\n                .securityMatcher(\"/swagger-ui/**\", \"/v3/api-docs/**\", \"/swagger-ui.html\")\n                .csrf(csrf -> csrf.disable())\n                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())\n                .httpBasic(Customizer.withDefaults());\n        return http.build();\n    }\n\n    /** 2. REST APIs \u5b89\u5168\u9632\u8b77\u93c8 (\u4ee5 JWT \u8a8d\u8b49\u8207\u89d2\u8272\u6b0a\u9650\u63a7\u5236\u4fdd\u8b77) */\n    @Bean\n    @Order(2)\n    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {\n        http\n                .csrf(csrf -> csrf.disable())\n                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n                .authorizeHttpRequests(authorize -> authorize\n                        .requestMatchers(\"/api/auth/login\").permitAll() // \u767b\u5165 API \u516c\u958b\n                        .requestMatchers(org.springframework.http.HttpMethod.POST, \"/api/products/**\").hasRole(\"ADMIN\") // \u65b0\u589e\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .requestMatchers(org.springframework.http.HttpMethod.PUT, \"/api/products/**\").hasRole(\"ADMIN\")  // \u4fee\u6539\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, \"/api/products/**\").hasRole(\"ADMIN\") // \u522a\u9664\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .anyRequest().authenticated() // \u5176\u9918\u5747\u9700\u9a57\u8b49\n                )\n                .exceptionHandling(exception -> exception\n                        .authenticationEntryPoint((request, response, authException) -> {\n                            response.setContentType(\"application/json;charset=UTF-8\");\n                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);\n                            response.getWriter().write(\"{\\\"error\\\": \\\"\u672a\u6388\u6b0a\uff1a\u8acb\u5148\u767b\u5165\u4e26\u651c\u5e36\u6709\u6548\u7684 JWT Token\\\"}\");\n                        })\n                )\n                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);\n        return http.build();\n    }\n}'
+                content: '@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n    private final JwtAuthenticationFilter jwtAuthenticationFilter;\n\n    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {\n        this.jwtAuthenticationFilter = jwtAuthenticationFilter;\n    }\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n\n    @Bean\n    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {\n        return config.getAuthenticationManager();\n    }\n\n    /** REST APIs \u5b89\u5168\u9632\u8b77\u93c8 (\u4ee5 JWT \u8a8d\u8b49\u8207\u89d2\u8272\u6b0a\u9650\u63a7\u5236\u4fdd\u8b77) */\n    @Bean\n    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {\n        http\n                .csrf(csrf -> csrf.disable())\n                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n                .authorizeHttpRequests(authorize -> authorize\n                        .requestMatchers(\"/api/auth/login\").permitAll() // \u767b\u5165 API \u516c\u958b\n                        .requestMatchers(\"/swagger-ui/**\", \"/swagger-ui.html\", \"/v3/api-docs/**\").permitAll() // Swagger UI 與 API 描述放行（受保護的 API 仍要 Token）\n                        .requestMatchers(org.springframework.http.HttpMethod.POST, \"/api/products/**\").hasRole(\"ADMIN\") // \u65b0\u589e\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .requestMatchers(org.springframework.http.HttpMethod.PUT, \"/api/products/**\").hasRole(\"ADMIN\")  // \u4fee\u6539\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, \"/api/products/**\").hasRole(\"ADMIN\") // \u522a\u9664\u5546\u54c1\u9650\u7ba1\u7406\u54e1\n                        .anyRequest().authenticated() // \u5176\u9918\u5747\u9700\u9a57\u8b49\n                )\n                .exceptionHandling(exception -> exception\n                        .authenticationEntryPoint((request, response, authException) -> {\n                            response.setContentType(\"application/json;charset=UTF-8\");\n                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);\n                            response.getWriter().write(\"{\\\"error\\\": \\\"\u672a\u6388\u6b0a\uff1a\u8acb\u5148\u767b\u5165\u4e26\u651c\u5e36\u6709\u6548\u7684 JWT Token\\\"}\");\n                        })\n                )\n                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);\n        return http.build();\n    }\n}'
+              }
+            },
+            {
+              title: 'Swagger 支援 Bearer Token（OpenApiConfig 加上驗證方案）',
+              type: 'code',
+              paragraphs: [
+                '本章是無狀態 JWT，Swagger UI 不會跳出瀏覽器登入框。要讓 Swagger 能測試受保護的 API，需要兩件事：<strong>放行 Swagger 頁面</strong>（上面 SecurityConfig 的 permitAll 那一行），以及在 1-5 章的 OpenApiConfig <strong>宣告 Bearer 驗證方案</strong>，Swagger UI 右上角才會出現 Authorize 按鈕。沒有宣告時，即使登入拿到 token，Swagger UI 也不知道要把 token 放進哪個標頭。',
+                '以下範例延伸 1-5 章的 OpenApiConfig（只列新增的驗證方案，原有的 info 設定照舊）。若專案沒有加 Swagger，這一節可以略過。'
+              ],
+              code: {
+                language: 'java',
+                title: 'OpenApiConfig.java — 加上 Bearer 驗證',
+                content: '@Configuration\npublic class OpenApiConfig {\n\n    /** Swagger UI 的 Bearer 驗證方案名稱（Authorize 對話框會顯示這個名字） */\n    private static final String BEARER = "BearerAuth";\n\n    @Bean\n    public OpenAPI openAPI() {\n        return new OpenAPI()\n            .info(new Info().title("智慧商城客服系統 API").version("1.0.0"))\n            // 宣告 HTTP Bearer（JWT）驗證方案：Swagger UI 右上角會出現 Authorize 按鈕\n            .components(new Components().addSecuritySchemes(BEARER,\n                new SecurityScheme()\n                    .type(SecurityScheme.Type.HTTP)\n                    .scheme("bearer")\n                    .bearerFormat("JWT")))\n            // 套用到全部端點：Authorize 之後，每個請求都會自動帶 Authorization: Bearer <token>\n            .addSecurityItem(new SecurityRequirement().addList(BEARER));\n    }\n}\n// 匯入：io.swagger.v3.oas.models.Components / OpenAPI / info.Info / security.SecurityScheme / security.SecurityRequirement'
               }
             },
             {
@@ -2221,17 +2234,16 @@ window.COURSE = {
                 '後端啟動後，我們可以透過 Swagger UI 網頁進行 API 測試，視覺化地驗證登入、JWT 簽發與角色基礎授權控制（RBAC）是否正常運作。',
                 '<div style="margin-top: 16px;">' +
                   '<ul style="list-style-type: decimal; margin-left: 20px; margin-bottom: 16px; line-height: 1.8;">' +
-                    '<li style="margin-bottom: 6px;"><strong>開啟 Swagger 網頁</strong>：在瀏覽器中輸入 <a href="http://localhost:8080/swagger-ui/index.html" target="_blank" class="accent-link">http://localhost:8080/swagger-ui/index.html</a>。</li>' +
-                    '<li style="margin-bottom: 6px;"><strong>安全登入 (HTTP Basic)</strong>：由於設定了安全防護，瀏覽器會彈出登入對話框。請輸入管理員帳密（帳號：<code>admin</code>，密碼：<code>admin123</code>）完成登入。</li>' +
-                    '<li style="margin-bottom: 6px;"><strong>取得 JWT Token</strong>：展開 <code>POST /api/auth/login</code>，點選 <strong>Try it out</strong>，傳入使用者資料（如：<code>{"username": "user", "password": "user123"}</code>）執行並複製回傳的 token。</li>' +
-                    '<li style="margin-bottom: 6px;"><strong>點擊 Authorize 帶入 Token</strong>：回到頁面最上方點選 <strong>Authorize</strong> 按鈕，在 <code>BearerAuth</code> 欄位填入剛剛複製的 JWT Token，點擊 Authorize 啟用。</li>' +
+                    '<li style="margin-bottom: 6px;"><strong>開啟 Swagger 網頁</strong>：在瀏覽器中輸入 <a href="http://localhost:8080/swagger-ui/index.html" target="_blank" class="accent-link">http://localhost:8080/swagger-ui/index.html</a>。頁面本身不需要登入（SecurityConfig 已放行）；若看到 401 或空白頁，代表 <code>/swagger-ui/**</code>、<code>/v3/api-docs/**</code> 沒有放行。</li>' +
+                    '<li style="margin-bottom: 6px;"><strong>取得 JWT Token</strong>：展開 <code>POST /api/auth/login</code>（登入 API 是公開的，不用先授權），點選 <strong>Try it out</strong>，傳入使用者資料（如：<code>{"username": "user", "password": "user123"}</code>）執行，複製回應裡 <code>token</code> 欄位的值（不含引號）。</li>' +
+                    '<li style="margin-bottom: 6px;"><strong>點擊 Authorize 帶入 Token</strong>：回到頁面右上方點選 <strong>Authorize</strong> 按鈕，在 <code>BearerAuth</code> 欄位貼上剛剛複製的 token（<strong>只貼 token 本身，不要自己加 <code>Bearer </code></strong>，Swagger UI 會自動補上），按 Authorize 再關閉對話框。找不到 Authorize 按鈕，代表 OpenApiConfig 還沒宣告 Bearer 驗證方案。</li>' +
                     '<li style="margin-bottom: 6px;"><strong>驗證角色存取控制 (RBAC)</strong>：在授權為 <code>user</code> 狀態下呼叫新增商品 API，預期應收到 <strong>403 Forbidden</strong>；以同樣方式更換為 <code>admin</code> 的 Token 後呼叫則應成功回傳 <strong>201 Created</strong>。</li>' +
                   '</ul>' +
                 '</div>'
               ],
               image: 'assets/teaching-site/09-swagger-ui-dashboard.png',
               imageAlt: 'Swagger UI 儀表板',
-              imageCaption: '登入成功後的 Swagger UI 儀表板，可在此進行 Token 授權與 API 存取控制測試。'
+              imageCaption: 'Swagger UI 儀表板：右上角的 Authorize 按鈕（OpenApiConfig 宣告 Bearer 驗證後才會出現），貼上 JWT 後即可測試受保護的 API 與角色權限。'
             },
             {
               title: 'PowerShell 驗證命令（可選）',
@@ -2446,7 +2458,7 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 '腳本 <a href="assets/demo/demo-1-9-security.ps1" download>demo-1-9-security.ps1</a> <strong>只讀不寫</strong>，可以在課堂上重複執行。每一步印出預期與實際狀態碼，最後彙總，全部符合時結束碼為 0。',
-                '<strong>示範前置</strong>：後端（8080）已啟動，已完成上面的管理員訂單 API；使用 user／user123、admin／admin123。也可以改用 Swagger UI（<a href="http://localhost:8080/swagger-ui/index.html" target="_blank">http://localhost:8080/swagger-ui/index.html</a>）：先用 <code>POST /api/auth/login</code> 取得 token，按 <strong>Authorize</strong> 貼上，再呼叫 <code>GET /api/admin/orders</code>，分別用 user 與 admin 的 token 比較 403 與 200。從網站下載的 .ps1 可能被 Windows 封鎖而無法執行：先執行 <code>Unblock-File .\\腳本名稱.ps1</code>，或用 <code>pwsh -ExecutionPolicy Bypass -File .\\腳本名稱.ps1</code> 執行。'
+                '<strong>示範前置</strong>：後端（8080）已啟動，已完成上面的管理員訂單 API；使用 user／user123、admin／admin123。也可以改用 Swagger UI（<a href="http://localhost:8080/swagger-ui/index.html" target="_blank">http://localhost:8080/swagger-ui/index.html</a>）：先用 <code>POST /api/auth/login</code> 取得 token，按 <strong>Authorize</strong> 貼上 token（不必加 <code>Bearer </code>），再呼叫 <code>GET /api/admin/orders</code>，分別用 user 與 admin 的 token 比較 403 與 200。從網站下載的 .ps1 可能被 Windows 封鎖而無法執行：先執行 <code>Unblock-File .\\腳本名稱.ps1</code>，或用 <code>pwsh -ExecutionPolicy Bypass -File .\\腳本名稱.ps1</code> 執行。'
               ],
               bullets: [
                 '<strong>未登入</strong>：<code>GET /api/cart</code>、<code>GET /api/admin/orders</code> 都是 401。',
