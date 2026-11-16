@@ -3768,6 +3768,21 @@ window.COURSE = {
               }
             },
             {
+              title: '完成畫面樣本：購物袋、確認框、我的訂單與訂單管理',
+              type: 'text',
+              paragraphs: [
+                '做完這一段，畫面應該長這樣。截圖來自用本課程提示詞實作的參考專案，是<strong>章末升級（ui-ux-pro-max）之後</strong>的樣式；升級前的基本版外觀比較簡單，但元件、流程與 class 都相同，對照時看「有沒有這些元件、操作後狀態對不對」，不必追求外觀一樣。截圖中的訂單是示範時建立的，擷取後已刪除並還原庫存。'
+              ],
+              bullets: [
+                '購物車抽屜：點 Header 購物袋從右側滑出，每個品項有數量加減、移除與小計，底部是件數、總金額與「結帳」鈕<br><a href="assets/samples/06-cart-drawer.jpg" target="_blank"><img src="assets/samples/06-cart-drawer.jpg" alt="購物車抽屜：點 Header 購物袋從右側滑出，每個品項有數量加減、移除與小計，底部是件數、總金額與「結帳」鈕" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                '按「結帳」後先出現畫面內確認框（不是瀏覽器的 window.confirm），列出件數與金額；按「取消」什麼都不會發生<br><a href="assets/samples/07-checkout-confirm.jpg" target="_blank"><img src="assets/samples/07-checkout-confirm.jpg" alt="按「結帳」後先出現畫面內確認框（不是瀏覽器的 window.confirm），列出件數與金額；按「取消」什麼都不會發生" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                '確認結帳後點「查看我的訂單」：新訂單在最上面、狀態待出貨、有明細與合計，PENDING 訂單有「取消訂單」，這一頁沒有出貨鈕<br><a href="assets/samples/08-my-orders.jpg" target="_blank"><img src="assets/samples/08-my-orders.jpg" alt="確認結帳後點「查看我的訂單」：新訂單在最上面、狀態待出貨、有明細與合計，PENDING 訂單有「取消訂單」，這一頁沒有出貨鈕" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                'admin 的「訂單管理」頁：篩選「待出貨」，每筆顯示下單帳號 user，PENDING 訂單有「出貨」鈕（按下後同樣先跳確認框）<br><a href="assets/samples/09-admin-orders.jpg" target="_blank"><img src="assets/samples/09-admin-orders.jpg" alt="admin 的「訂單管理」頁：篩選「待出貨」，每筆顯示下單帳號 user，PENDING 訂單有「出貨」鈕（按下後同樣先跳確認框）" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                'AI 客服「幫我結帳」→「確定」：AI 先列出品項與總金額並詢問，使用者在下一則訊息回「確定」後，由 2-2 的程式層確認直接結帳，回固定格式的訂單編號；回覆結束時購物袋徽章自動消失<br><a href="assets/samples/10-chat-checkout.jpg" target="_blank"><img src="assets/samples/10-chat-checkout.jpg" alt="AI 客服「幫我結帳」→「確定」：AI 先列出品項與總金額並詢問，使用者在下一則訊息回「確定」後，由 2-2 的程式層確認直接結帳，回固定格式的訂單編號；回覆結束時購物袋徽章自動消失" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
+                '手機寬（390px）的購物車抽屜：佔滿整個畫面，按鈕與數量加減仍然好點<br><a href="assets/samples/11-mobile-cart-drawer.jpg" target="_blank"><img src="assets/samples/11-mobile-cart-drawer.jpg" alt="手機寬（390px）的購物車抽屜：佔滿整個畫面，按鈕與數量加減仍然好點" style="width:100%;max-width:320px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>'
+              ]
+            },
+            {
               title: '講師示範：前端購物流程與 admin 出貨',
               type: 'code',
               paragraphs: [

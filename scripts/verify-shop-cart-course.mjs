@@ -2,6 +2,7 @@
 // 用途：確認 0-1（PowerShell 7、macOS 對照）、1-9、2-2、2-5、2-8 新增段落都有渲染（2-2 含程式層確認、2-6 長期記憶銜接的關鍵句），
 //       講師示範腳本（assets/demo/*.ps1）可下載、頁面上有下載連結，總時數為 14 小時，
 //       task ID 不重複，且頁面沒有 404 與 console 錯誤；並截 1-9 併發陷阱段落存證。
+//       2-5「完成畫面樣本」引用 06～11 號範例圖，圖片可下載（200、jpg、< 300KB），並截該段落存證。
 // 前置：先啟動本機伺服器（npm run serve，預設 http://localhost:3000）
 // 執行：node scripts/verify-shop-cart-course.mjs
 import { createRequire } from 'node:module';
@@ -54,6 +55,8 @@ const EXPECTED = {
     '講師示範：前端購物流程與 admin 出貨',
     // verify-cart 在購物前端完成後就寫（章末升級才有回歸檢查可用）
     'e2e：購物流程 verify-cart 的寫法與注意事項',
+    // 購物前端完成畫面樣本（scripts/capture-shop-samples.mjs 從參考實作擷取）
+    '完成畫面樣本：購物袋、確認框、我的訂單與訂單管理',
     'AI Agent 提示詞 — 購物流程 e2e',
   ],
   '2-8': [
@@ -134,6 +137,18 @@ const DEMOS = [
   'demo-2-2-ai-confirm.ps1',
   'demo-snapshot.ps1',
 ];
+
+// 2-5 完成畫面樣本（必須被 2-5 引用、可下載、是 jpg 且小於 300KB）
+const SHOP_SAMPLES = [
+  '06-cart-drawer.jpg',
+  '07-checkout-confirm.jpg',
+  '08-my-orders.jpg',
+  '09-admin-orders.jpg',
+  '10-chat-checkout.jpg',
+  '11-mobile-cart-drawer.jpg',
+];
+const SAMPLES_TITLE = '完成畫面樣本：購物袋、確認框、我的訂單與訂單管理';
+const SHOT_SAMPLES = 'data/screenshots/verify-shop-cart-course-2-5-samples.png';  // 2-5 範例圖段落截圖
 
 const browser = await chromium.launch({ channel: 'msedge' });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
@@ -234,10 +249,35 @@ try {
   }
   console.log(`PASS ${DEMOS.length} 支講師示範腳本都有連結且可下載`);
 
+  // 2-5 完成畫面樣本：資料有引用、圖片可下載（200、image/jpeg、< 300KB），展開段落後圖片實際載入並截圖
+  for (const name of SHOP_SAMPLES) {
+    assert.ok(unitJson['2-5'].includes(`assets/samples/${name}`), `2-5 沒有引用 ${name}`);
+    const res = await page.request.get(new URL(`assets/samples/${name}`, BASE_URL).href);
+    assert.strictEqual(res.status(), 200, `${name} 回應 ${res.status()}`);
+    assert.ok((res.headers()['content-type'] || '').includes('image/jpeg'), `${name} 不是 jpg：${res.headers()['content-type']}`);
+    const kb = (await res.body()).length / 1024;
+    assert.ok(kb < 300, `${name} 大小 ${Math.round(kb)} KB，超過 300 KB`);
+  }
+  await openChapter('2-5', SAMPLES_TITLE);
+  const sh = page.getByText(SAMPLES_TITLE).first();
+  // 文字型段落預設展開（details open），點標題反而會收合，所以直接確保 open
+  await page.locator('details.accordion-item').filter({ has: sh }).first().evaluate((el) => { el.open = true; });
+  await sh.scrollIntoViewIfNeeded();
+  const firstImg = page.locator('img[src="assets/samples/06-cart-drawer.jpg"]').first();
+  await firstImg.waitFor({ state: 'visible', timeout: 10000 });
+  // 段落內 6 張圖都要真的載入（naturalWidth > 0）
+  await page.waitForFunction((names) => names.every((n) => {
+    const img = document.querySelector(`img[src="assets/samples/${n}"]`);
+    return img && img.complete && img.naturalWidth > 0;
+  }), SHOP_SAMPLES);
+  await sh.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: SHOT_SAMPLES });
+  console.log(`PASS 2-5：完成畫面樣本引用 ${SHOP_SAMPLES.length} 張範例圖，皆可下載（200、jpg、< 300KB）且已在頁面載入`);
+
   // 網站本來就沒有 favicon.ico，瀏覽器自動請求的 404 不列入
   const realErrors = errors.filter((e) => !e.includes('favicon.ico'));
   assert.deepStrictEqual(realErrors, [], `頁面錯誤：${realErrors.join(' | ')}`);
-  console.log('✅ 全部通過（截圖：data/screenshots/verify-shop-cart-course-1-9.png）');
+  console.log(`✅ 全部通過（截圖：data/screenshots/verify-shop-cart-course-1-9.png、${SHOT_SAMPLES}）`);
 } finally {
   await browser.close();
 }
