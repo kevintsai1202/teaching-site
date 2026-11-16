@@ -352,7 +352,7 @@ window.COURSE = {
               bullets: [
                 '<strong>要實跑證據，不要「應該可以」</strong>：AI 說「改好了」不算數。提示詞結尾一律要求「執行 mvn test 或 Playwright 腳本，把輸出貼給我」，沒有輸出就當作還沒驗證。',
                 '<strong>⚠ 測試不讓 AI 自己改</strong>：上面 TDD 提示詞的「不准修改測試的斷言」管的是實作階段：測試失敗就改實作，AI 認為測試寫錯要先停下來說明，由你決定。需求或規格真的變了才改測試，順序固定為「先改規格文件 → 再改測試並看到紅燈 → 最後改實作」，測試的每一處修改都要由你確認。',
-                '<strong>⚠ 被權限擋下時不要叫 AI 繞過</strong>：auto mode 的權限分類器會擋下它判斷為破壞性的動作。課前驗證時，含 <code>DROP COLUMN</code> 的 Flyway 腳本被擋過；把五個檔案的修改和 <code>mvn test</code> 塞進同一個指令，也被整批擋下。先看清楚它要做什麼，確認無誤再由你放行，並請它把大動作拆成幾步。',
+                '<strong>⚠ 被權限擋下時不要叫 AI 繞過</strong>：auto mode 的權限分類器會擋下它判斷為破壞性的動作。課前驗證時，含 <code>DROP COLUMN</code> 的 Flyway 腳本被擋過；管理員訂單那一步，整批修改的指令被擋，改成逐檔修改後仍有三個檔案被擋。先看清楚它要做什麼、為什麼被擋，確認無誤再由你放行，不要叫 AI 換個方式繞過。',
                 '<strong>一章一個 commit</strong>：課前演練每章完成就 commit，哪一章出問題都能用 <code>git log</code>、<code>git diff</code> 逐章比對，也能退回上一章重做。不要等兩天課做完才第一次 commit。',
                 '<strong>金鑰只放環境變數，交付前再搜一次</strong>：除了上面 Git 段落說的「commit 前先看清單」，演練交付前還會請 AI 搜尋整個專案目錄（含 <code>logs/</code> 與 <code>.git</code>）有沒有金鑰字串，確認沒有被寫進設定檔或日誌。',
                 '<strong>⚠ AI 會讀專案裡的所有檔案</strong>：課前驗證時，AI 讀到專案根目錄的驗證報告，就刻意改變測試的寫法，避開報告記錄的問題。參考答案、筆記、別人的報告不要放在專案目錄裡，否則會左右 AI 的做法。'
@@ -1017,7 +1017,7 @@ window.COURSE = {
                 body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
               },
               bullets: [
-                '<strong>⚠ 先讀 pom.xml 再加依賴</strong>：Spring Boot 4 的 Web starter 叫 <code>spring-boot-starter-webmvc</code>，AI 憑印象常寫成 <code>spring-boot-starter-web</code>（第一輪演練就遇到）。請它先讀現有的 pom.xml，依實際內容修改。',
+                '<strong>⚠ 先讀 pom.xml 再加依賴</strong>：Spring Boot 4 的 Initializr 產生的 Web starter 是 <code>spring-boot-starter-webmvc</code>，AI 照舊資料以為專案用的是 <code>spring-boot-starter-web</code>，可能另外再加一個或把它換掉。請它先讀現有的 pom.xml，依實際內容修改，不要動已經存在的 starter。',
                 '<strong>⚠ 驗證要親眼看到 400</strong>：Bean Validation 要靠 <code>spring-boot-starter-validation</code> 提供實作，AI 有時只補註解或只加 API 套件，驗證就不會執行，送出空名稱照樣得到 201。請它用空名稱、負價格實際送一次，確認拿到 400 與欄位錯誤訊息。',
                 '<strong>狀態碼要逐一驗</strong>：除了 200，也要驗不存在的 id 回 404、新增回 201（演練就是這樣驗的）。請 AI 用 PowerShell 7 的 <code>Invoke-RestMethod -SkipHttpErrorCheck -StatusCodeVariable code</code> 印出狀態碼，404 才不會被當成例外吞掉。',
                 '<strong>⚠ 範圍不要被擴大</strong>：本章刻意不用資料庫，AI 常順手加上 JPA、H2 或 Swagger。看 diff 時若 pom.xml 多了提示詞沒要求的依賴，請它移除，留到後面的章節再加。',
@@ -2953,7 +2953,7 @@ window.COURSE = {
               },
               bullets: [
                 '<strong>⚠ 中文提問要先編碼</strong>：繁中 Windows 的 <code>curl.exe</code> 會用 CP950 送出中文，後端回 400，錯誤訊息看不出和編碼有關，兩輪演練都踩到。提示詞裡的 <code>[uri]::EscapeDataString</code> 就是為此而寫；AI 想簡化成直接帶中文參數時，不要接受。',
-                '<strong>⚠ 你設的環境變數，AI 的終端機看不到</strong>：<code>$env:MODEL_API_KEY</code>、<code>$env:JWT_SECRET</code> 只在你設定的那個 PowerShell 視窗有效；AI 在自己的終端機跑 <code>mvn test</code> 會讀不到（課前驗證時，沒有 JWT_SECRET 的 <code>mvn test</code> 就直接失敗）。請它先檢查變數是否存在、只回報有或沒有、不要印出值，或改由你在自己的視窗執行。',
+                '<strong>⚠ 你設的環境變數，AI 的終端機不一定看得到</strong>：<code>$env:MODEL_API_KEY</code> 只在你設定的那個 PowerShell 視窗有效，AI 的終端機是另一個程序。請它執行 <code>mvn spring-boot:run</code> 前先檢查變數是否存在，只回報有或沒有、不要印出值；或改由你在自己的視窗啟動後端。yml 寫成 <code>${MODEL_API_KEY:}</code> 只保證沒有金鑰也能啟動，真的提問時仍會失敗。',
                 '<strong>⚠ 不要讓 AI 自己寫記憶類別</strong>：Spring AI 2.0 已自動設定 ChatMemory；第一輪演練用里程碑版時還得自寫包裝類別，AI 看過舊資料就可能照做。照提示詞直接注入即可，驗證時同一帳號連問 8 次，確認沒有 400 或 500（第二輪演練 8 次都是 200）。',
                 '<strong>⚠ AI 對 Spring AI 2.0 的知識可能過時</strong>：它常給 1.x 或里程碑版的類別名稱與設定鍵（2.0.2 已把 <code>chat.options.model</code> 標為 deprecated）。請它以 pom.xml 的實際版本為準，用 context7 查最新文件，不要憑印象。',
                 '<strong>串流要看原始輸出</strong>：用 <code>curl.exe -N</code> 看原始的 <code>data:</code> 行，才看得出是否逐段輸出、有沒有 <code>[DONE]</code>、開頭空白有沒有被吃掉。第二輪演練的「有3 筆訂單」黏字就是從原始串流查出來的，提示詞第 4 點的不換行空白就是它的修法。',
@@ -4231,12 +4231,12 @@ window.COURSE = {
                 body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
               },
               bullets: [
-                '<strong>⚠ 等條件，不等秒數</strong>：e2e 不穩時，AI 最常見的修法是加 <code>waitForTimeout</code> 或把逾時調長。要求它全程不用固定秒數；失敗時先看截圖、console 與後端日誌找原因。',
+                '<strong>⚠ AI 會想用加長等待解決不穩</strong>：上方 verify-cart 的寫法是等條件、不等秒數，但 e2e 不穩時，AI 最常見的修法卻是加 <code>waitForTimeout</code> 或把逾時調長。遇到這種修改就退回，請它先看截圖、console 與後端日誌找出原因。',
                 '<strong>連跑兩次都過才算</strong>：測試會建立訂單、扣庫存，第二次失敗通常代表清理沒做完。第二輪演練的 e2e 連跑兩次都是 21/21，購物流程 e2e 也要比對前後的庫存與訂單數一致。',
-                '<strong>⚠ 失敗先分類再修</strong>：第一輪演練跑到第 5 次才全過，失敗原因有三種：腳本自己寫錯（psql 輸出 <code>t</code> 卻拿去和 <code>true</code> 比對）、外部服務暫時逾時、真正的程式缺陷（記憶視窗截斷造成 400）。請 AI 先判斷是哪一種，只有第三種才改程式。',
+                '<strong>⚠ 失敗先分類再修</strong>：第一輪演練跑到第 5 次才全過，失敗原因有三種：腳本自己寫錯（psql 輸出 <code>true</code>，腳本卻拿 <code>t</code> 比對）、外部服務暫時逾時、真正的程式缺陷（記憶視窗截斷造成 400）。請 AI 先判斷是哪一種，只有第三種才改程式。',
                 '<strong>⚠ 斷言不能為了通過而放寬</strong>：AI 想把「庫存與資料庫一致」改成「有出現數字」，或刪掉失敗的檢查時，要它停下來說明。驗證清單（也就是規格）真的要改，先改清單文件，再改 e2e 並看到失敗，最後改實作；斷言的修改由你確認。',
                 '<strong>要測「不該發生」的事</strong>：只驗 user 看得到自己的訂單不夠，還要驗不會出現 admin 的訂單編號、偽造 ADMIN 角色會得到 403、全程沒有原生對話框（第一輪演練就因為沒有反例，「只列出自己的訂單」驗不出錯）。',
-                '<strong>AI 的部分用攔截，模型另外驗</strong>：每次都要跑的 e2e 用 <code>page.route</code> 回固定的 SSE，驗前端接線；真的呼叫模型的檢查，逾時至少 120 秒，斷言數字與資料庫一致和日誌的工具呼叫，不比對整句話。'
+                '<strong>真的呼叫模型的檢查另外放</strong>：攔截 SSE 的寫法見上方。完整系統驗證提示詞的 4 句 AI 提問會真的呼叫模型，逾時至少 120 秒，斷言數字與資料庫一致、日誌有工具呼叫，不比對整句話；它和購物流程 e2e 分成兩支腳本，購物流程才不會被模型的隨機性拖累。'
               ]
             }
           ]
