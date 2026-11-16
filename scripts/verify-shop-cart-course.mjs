@@ -91,8 +91,12 @@ const MUST = {
     '最後用 psql 把這些訂單（含已取消的）的明細與訂單全部刪除', // #17 第 3 點
     '先用 API 在後端替 user 的購物車加 1 件',                   // #17 第 6 點
     '先以 user 用 API 再下一筆訂單',                            // #17 第 5 點
+    '選擇器只用提示詞指定的 class、data 屬性、input name 與按鈕文字', // 升級後 verify-cart 仍可沿用
+    '只更新 verify-cart 的操作步驟；斷言與檢查項目一律不可改',
+    '實作時 class 以提示詞為準',                                // ChatRoom 範例與提示詞的 class
+    '只有 SSE 聊天端點 /api/ai/stream 接受網址 Query Token',     // 任務措辭
   ],
-  '2-8': ['原封不動重跑', '提示詞只能減少、無法保證'],
+  '2-8': ['原封不動重跑', '提示詞只能減少、無法保證', '操作步驟過時', '斷言與檢查項目一律不可改'],
 };
 const MUST_NOT = {
   '1-9': ['商品查詢 API 需登入身分即可', 'SECRET_STRING', 'CustomUserDetailsService', '新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\\n# [OK  ] user 結帳（庫存只剩不夠了）\\n#        POST /api/orders/checkout -> 預期 409，實際 409\\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件）\\n'],
