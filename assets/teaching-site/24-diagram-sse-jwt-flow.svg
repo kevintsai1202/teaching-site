@@ -64,7 +64,7 @@
   <rect x="24" y="332" width="368" height="100" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
   <text x="208" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">SSE（本課程採用）</text>
   <text x="208" y="376" text-anchor="middle" font-size="10" fill="#475569">單向推送、基於標準 HTTP 的 text/event-stream</text>
-  <text x="208" y="394" text-anchor="middle" font-size="10" fill="#475569">前端用 fetch 讀串流，約 40 行，不用第三方套件</text>
+  <text x="208" y="394" text-anchor="middle" font-size="10" fill="#475569">前端用 fetch 讀串流（sseClient.js），不用第三方套件</text>
   <text x="208" y="414" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="700">✓ 最適合 AI 逐字生成的單向場景</text>
 
   <rect x="408" y="332" width="368" height="100" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1.5"/>
