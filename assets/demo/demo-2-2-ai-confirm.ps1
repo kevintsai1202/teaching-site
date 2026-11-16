@@ -4,11 +4,15 @@
   2-2 講師示範：AI 客服「先詢問、下一則訊息確認才執行」——「幫我結帳 -> 確定」與「幫我結帳 -> 不要」兩條路徑。
 
 .DESCRIPTION
-  會真的呼叫模型（每則訊息約 5～30 秒，回覆文字每次不同），所以判斷成功與否一律看「資料」：
+  「幫我結帳」這一輪會真的呼叫模型（約 5～30 秒，回覆文字每次不同）；
+  使用者回「確定」「不要」這類詞表內的同意／拒絕詞時，由後端的程式層確認（DirectConfirmationHandler）
+  直接執行或作廢，不呼叫模型，回覆是固定格式。判斷成功與否一律看「資料」：
     路徑一（確定）：幫我結帳 -> 檢查庫存、購物車、訂單都沒變 -> 確定 -> 檢查多了一筆訂單、庫存扣 1、購物車清空
     路徑二（不要）：幫我結帳 -> 不要，我再想想 -> 檢查沒有新訂單、購物車還在
-  有提供 -BackendLog（後端日誌檔）時，每則訊息後印出這段期間的 [工具呼叫]、[待確認] 日誌，
-  讓學員看到「幫我結帳」只呼叫 prepareCheckout，「確定」才呼叫 confirmPendingAction。
+  有提供 -BackendLog（後端日誌檔）時，每則訊息後印出這段期間的 [工具呼叫]、[待確認]、[程式層確認] 日誌，
+  並多檢查兩項：「確定」那一輪出現 [程式層確認] 同意、沒有呼叫 confirmPendingAction；
+  「不要」那一輪出現 [程式層確認] 拒絕。學員可以看到「幫我結帳」只呼叫 prepareCheckout，
+  「確定」是後端直接執行，不經過模型。
   結束時一定清理（含中途失敗）：取消本腳本建立的訂單（退回庫存）、清空購物車；
   有資料庫容器時刪掉這些已取消的訂單；最後比對庫存與開始前一致。
 
@@ -17,7 +21,7 @@
 .EXAMPLE
   pwsh -File .\demo-2-2-ai-confirm.ps1 -Path Decline -PgContainer rehearsal2-postgres
 .EXAMPLE
-  pwsh -File .\demo-2-2-ai-confirm.ps1 -Path Confirm -ConfirmText 確定   # 示範單獨回「確定」時模型可能重列摘要
+  pwsh -File .\demo-2-2-ai-confirm.ps1 -Path Confirm -ConfirmText 好   # 詞表內的其他同意詞一樣由後端直接執行
 #>
 param(
     [string]$BaseUrl = 'http://localhost:8080',
@@ -28,9 +32,9 @@ param(
     # 要示範哪條路徑：Both（兩條都跑）、Confirm（確定）、Decline（不要）
     [ValidateSet('Both', 'Confirm', 'Decline')]
     [string]$Path = 'Both',
-    # 路徑一回覆的確認句。課前實測單獨回「確定」時，模型有時會再呼叫一次 prepareCheckout 重列摘要
-    # （對話記憶累積越多越常見）；「確定，請結帳」較穩定。想示範這個現象就改成 -ConfirmText 確定
-    [string]$ConfirmText = '確定，請結帳',
+    # 路徑一回覆的確認句。詞表內的同意詞（確定、好、可以、確定請結帳…）由後端直接執行；
+    # 詞表以外的說法（例如「不確定」「好的，順便幫我查庫存」）會交給模型，不保證執行
+    [string]$ConfirmText = '確定',
     # 後端日誌檔（例如用 mvn spring-boot:run 2>&1 | Tee-Object logs/backend.log 啟動時的檔案）；留空就不印日誌
     [string]$BackendLog = '',
     # PostgreSQL 容器與資料庫（只用來刪除本腳本建立、已取消的訂單；找不到就略過）
@@ -67,18 +71,35 @@ function Check {
 <# 目前日誌行數（之後只印這之後的新行） #>
 function Get-LogMark { if ($BackendLog -and (Test-Path -LiteralPath $BackendLog)) { (Get-Content -LiteralPath $BackendLog -Encoding utf8).Count } else { 0 } }
 
-<# 印出 mark 之後的工具呼叫與待確認日誌 #>
+<#
+  印出 mark 之後的工具呼叫、待確認與程式層確認日誌，並把這些行存進 $script:lastLog，
+  讓呼叫端檢查這一輪是誰執行的（程式層確認，還是模型呼叫了 confirmPendingAction）。
+#>
 function Show-ToolLog {
     param([int]$Mark)
+    $script:lastLog = @()
     if (-not ($BackendLog -and (Test-Path -LiteralPath $BackendLog))) { return }
-    Get-Content -LiteralPath $BackendLog -Encoding utf8 | Select-Object -Skip $Mark |
-        Select-String -Pattern '\[工具呼叫\]|\[待確認\]|\[工具結果\]' |
+    $script:lastLog = @(Get-Content -LiteralPath $BackendLog -Encoding utf8 | Select-Object -Skip $Mark |
+        Select-String -Pattern '\[工具呼叫\]|\[待確認\]|\[工具結果\]|\[程式層確認\]' |
         ForEach-Object {
-            # 只印從第一個 [ 開始的部分（略過時間與執行緒），太長就截斷
-            $l = $_.Line; $i = $l.IndexOf('[工具'); if ($i -lt 0) { $i = $l.IndexOf('[待確認') }
-            $s = '    日誌：' + ($i -ge 0 ? $l.Substring($i) : $l)
-            Write-Host ($s.Length -gt 170 ? $s.Substring(0, 170) + '…' : $s) -ForegroundColor DarkGray
-        }
+            # 只取從標記開始的部分（略過時間與執行緒）
+            $l = $_.Line
+            $i = @('[工具', '[待確認', '[程式層確認' | ForEach-Object { $l.IndexOf($_) } | Where-Object { $_ -ge 0 } | Sort-Object)[0]
+            $null -ne $i ? $l.Substring($i) : $l
+        })
+    foreach ($l in $script:lastLog) {
+        # 太長就截斷，避免一行塞滿畫面
+        $s = '    日誌：' + $l
+        Write-Host ($s.Length -gt 170 ? $s.Substring(0, 170) + '…' : $s) -ForegroundColor DarkGray
+    }
+}
+
+<# 有提供後端日誌時，檢查上一則訊息的日誌是否（不）含指定文字；沒有日誌就略過 #>
+function Check-Log {
+    param([string]$Name, [string]$Pattern, [bool]$ShouldExist = $true)
+    if (-not ($BackendLog -and (Test-Path -LiteralPath $BackendLog))) { return }
+    $found = @($script:lastLog | Where-Object { $_ -match $Pattern }).Count -gt 0
+    Check $Name ($found -eq $ShouldExist)
 }
 
 <#
@@ -134,15 +155,11 @@ try {
         Check '詢問階段：庫存沒變' ((Get-Stock $ProductId) -eq $stock0) "（$(Get-Stock $ProductId)）"
         Check '詢問階段：購物車還在' ((Get-CartCount) -eq 1)
         Check '詢問階段：沒有新訂單' (@(Get-MyOrderNos | Where-Object { $_ -notin $orders0 }).Count -eq 0)
+        # 同意詞由後端直接執行（不呼叫模型），不需要重試：沒執行就是有問題，看日誌與回覆的原因
         Ask $ConfirmText
+        Check-Log '確定那一輪：程式層確認直接執行' '\[程式層確認\] 同意.*已執行=true'
+        Check-Log '確定那一輪：沒有呼叫 confirmPendingAction（模型沒參與）' 'confirmPendingAction' $false
         $new = @(Get-MyOrderNos | Where-Object { $_ -notin $orders0 -and $_ -notin $created })
-        if ($new.Count -eq 0) {
-            # 模型有時在確認這一輪又呼叫 prepareCheckout 重列摘要，而不是 confirmPendingAction。
-            # 後端只會建立新的待確認動作，不會誤結帳；這時再回一次確認即可（這一段本身就是很好的教材）。
-            Write-Host '  （模型這一輪重新列了摘要、沒有結帳——回覆有隨機性，再回一次確認）' -ForegroundColor Yellow
-            Ask $ConfirmText
-            $new = @(Get-MyOrderNos | Where-Object { $_ -notin $orders0 -and $_ -notin $created })
-        }
         $new | ForEach-Object { $created.Add($_) }
         Check '確定之後：多了 1 筆訂單' ($new.Count -eq 1) ($new -join ', ')
         Check '確定之後：庫存扣 1' ((Get-Stock $ProductId) -eq $stock0 - 1) "（$(Get-Stock $ProductId)）"
@@ -155,6 +172,7 @@ try {
         $before = @(Get-MyOrderNos).Count
         Ask '幫我結帳'
         Ask '不要，我再想想'
+        Check-Log '不要那一輪：程式層確認直接作廢' '\[程式層確認\] 拒絕'
         $after = @(Get-MyOrderNos)
         $after | Where-Object { $_ -notin $orders0 -and $_ -notin $created } | ForEach-Object { $created.Add($_) }
         Check '拒絕之後：沒有新訂單' ($after.Count -eq $before) "（$before -> $($after.Count)）"
@@ -179,7 +197,7 @@ try {
     $client.Dispose()
 }
 if (@($checks | Where-Object 結果 -ne 'OK').Count -gt 0) {
-    Write-Host '有檢查與預期不同：模型回覆有隨機性，先看上面的工具日誌是否在「確定」那一輪才呼叫 confirmPendingAction。' -ForegroundColor Yellow
+    Write-Host '有檢查與預期不同：「確定」「不要」應由後端的程式層確認直接處理。先看上面的日誌有沒有 [程式層確認]；沒有的話，檢查 ChatController 是否在呼叫模型前先呼叫 DirectConfirmationHandler.tryHandle，以及確認句是否在詞表內。' -ForegroundColor Yellow
     $exitCode = 1
 }
 exit $exitCode

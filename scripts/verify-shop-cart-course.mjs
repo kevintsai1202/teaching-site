@@ -1,5 +1,5 @@
 // 教學網站「購物車／結帳／訂單／AI 先詢問再執行／管理員訂單／併發陷阱」課程段落驗證（有斷言，失敗時非零 exit）
-// 用途：確認 0-1（PowerShell 7、macOS 對照）、1-9、2-2、2-5、2-8 新增段落都有渲染，
+// 用途：確認 0-1（PowerShell 7、macOS 對照）、1-9、2-2、2-5、2-8 新增段落都有渲染（2-2 含程式層確認、2-6 長期記憶銜接的關鍵句），
 //       講師示範腳本（assets/demo/*.ps1）可下載、頁面上有下載連結，總時數為 14 小時，
 //       task ID 不重複，且頁面沒有 404 與 console 錯誤；並截 1-9 併發陷阱段落存證。
 // 前置：先啟動本機伺服器（npm run serve，預設 http://localhost:3000）
@@ -42,6 +42,7 @@ const EXPECTED = {
   '2-2': [
     '購物車與訂單工具：工具的風險分級',
     '先詢問、下一則訊息確認才執行：為什麼不能只靠提示詞',
+    '程式層確認：明確的同意與拒絕由後端直接處理',
     '系統提示詞規則與 toolContext（原文）',
     'AI Agent 提示詞 — 購物車工具與先詢問再執行',
     '講師示範：幫我結帳 → 確定／不要',
@@ -78,7 +79,19 @@ const MUST = {
     '跑測試可能被權限擋下',                                    // 任務 3
   ],
   '2-1': ['moderation、embedding 都設為 none', '$token = (Invoke-RestMethod', 'Successfully validated 3 migrations', 'Started ShopApplication'],
-  '2-2': ['不要另外加假金鑰'],
+  '2-2': [
+    '不要另外加假金鑰',
+    // 程式層確認（同意／拒絕詞由後端直接處理，不交給模型）
+    'DirectConfirmationHandler', 'ConfirmationPhrases', '完全相等',
+    '8 次只有 4 次真的結帳',                                   // 演進的實測數字：工具層 4/8
+    '「確定」5/5、「不要」5/5',                                 // 程式層 5/5
+    'verifyNoInteractions(chatModel)',                         // 測試驗證同意時不呼叫模型
+    '[程式層確認] 同意',                                        // 示範看日誌
+    '由系統直接處理，不會交給你',                               // 系統提示詞原文（rehearsal2 現行版）
+    '單獨的「取消」也算拒絕',
+    '同意、拒絕、被拒絕的執行都要寫',                           // 寫入短期記憶
+  ],
+  '2-6': ['DirectConfirmationHandler）直接回覆時不經過模型串流'], // 程式層確認也寫入長期記憶
   '2-3': ['提到到貨後 7 天內的鑑賞期', 'GET /api/rag/query?question=', 'filename（上傳的檔名）'],
   '2-4': ['class 為 sold-out-tag', 'class 為 login-btn', 'class 為 chat-toggle', 'image_url 是空的商品'],
   '2-5': [
@@ -101,7 +114,12 @@ const MUST = {
 const MUST_NOT = {
   '1-9': ['商品查詢 API 需登入身分即可', 'SECRET_STRING', 'CustomUserDetailsService', '新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\\n# [OK  ] user 結帳（庫存只剩不夠了）\\n#        POST /api/orders/checkout -> 預期 409，實際 409\\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件）\\n'],
   '2-1': ['LearnSpringApplication', 'validated 2 migrations'],
-  '2-2': ['加入假的金鑰'],
+  '2-2': [
+    '加入假的金鑰',
+    // 舊的「確定，請結帳」繞路說明與自動重試（程式層確認後已不需要）
+    '確定，請結帳', '較穩定', '4 輪中有 3 輪', '重試不保證成功',
+    '只有使用者在下一則訊息明確表示同意（例如：確定、好、可以、沒問題）時，才呼叫 confirmPendingAction', // 舊系統提示詞
+  ],
   '2-3': ['faq.txt', '14 天內'],
   '2-5': ['2-8 章的 e2e/verify-cart.mjs，若已建立', '401/403 的 body 是空的', '保留既有的 class 與欄位名稱不變'],
   '2-8': ['照最新版做就不會出現，可以當作', 'AI Agent 提示詞 — 購物流程 e2e'],
@@ -205,6 +223,14 @@ try {
     assert.strictEqual(res.status(), 200, `${name} 回應 ${res.status()}`);
     const text = await res.text();
     assert.ok(text.startsWith('#Requires -Version 7'), `${name} 內容不是預期的 PowerShell 7 腳本`);
+    if (name === 'demo-2-2-ai-confirm.ps1') {
+      // 2-2 示範腳本已改為程式層確認：預設回「確定」、印出 [程式層確認] 日誌，舊的繞路說明與重試不可殘留
+      assert.ok(text.includes("$ConfirmText = '確定'"), '2-2 示範腳本的預設確認句應為「確定」');
+      assert.ok(text.includes(String.raw`\[程式層確認\]`), '2-2 示範腳本的日誌篩選缺少 [程式層確認]');
+      for (const bad of ['確定，請結帳', '較穩定', '再回一次確認']) {
+        assert.ok(!text.includes(bad), `2-2 示範腳本仍有舊說明：${bad}`);
+      }
+    }
   }
   console.log(`PASS ${DEMOS.length} 支講師示範腳本都有連結且可下載`);
 
