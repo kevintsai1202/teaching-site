@@ -38,7 +38,7 @@ const EXPECTED_TITLES = [
   'dev-worker 依難度選模型',
   '派工簡報怎麼寫：目標、已排除的事、範圍、驗收',
   '自己建一個 subagent：.md 範例',
-  'Advisor：卡關與收尾前，找更強的模型看一眼',
+  'advisor：卡關與收尾前，找更強的模型看一眼',   // Claude Code 的 advisor 標題也用小寫（用語統一表）
   '權限與 auto mode：被擋下時怎麼處理',
   'deep-memory 完整說明（一）：安裝與第一次啟動',
   'deep-memory 完整說明（二）：每個回合做了什麼',
