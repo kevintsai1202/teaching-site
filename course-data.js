@@ -85,7 +85,8 @@ window.COURSE = {
             { id: 'd0-u1-t1', text: '用 `/plugin` 安裝一個官方插件（例如 context7），並確認 `/plugin` 清單中已啟用' },
             { id: 'd0-u1-t2', text: '安裝 deep-memory 技能，完成一次任務後確認 `~/.deep-memory/cold-notes/raw.jsonl` 有新紀錄' },
             { id: 'd0-u1-t3', text: '執行 `gh auth login` 登入，並用 `gh repo create` 把課程專案推上 GitHub' },
-            { id: 'd0-u1-t4', text: '安裝 Playwright，請 AI 寫一支開網頁並截圖的腳本放進 `e2e/` 並實際執行' }
+            { id: 'd0-u1-t4', text: '安裝 Playwright，請 AI 寫一支開網頁並截圖的腳本放進 `e2e/` 並實際執行' },
+            { id: 'd0-u1-t5', text: '請 AI 開分支、列出變更、commit，並用 gh 開一個 Pull Request' }
           ],
           sections: [
             {
@@ -228,6 +229,25 @@ window.COURSE = {
               }
             },
             {
+              title: '用 AI 操作 Git 與 gh：說人話就好',
+              type: 'code',
+              paragraphs: [
+                '上面的指令要知道在做什麼，但日常不必自己敲：直接告訴 Claude Code 你要的結果，它會幫你下 git、gh 指令。你要做的是<strong>看它列出的變更、確認後再讓它提交</strong>。',
+                '本課程的節奏：<strong>每章開始請 AI 開分支 → 做完、測試通過 → 請 AI commit → 一個段落完成後請 AI 用 gh 開 PR</strong>。AI 改壞了，就請它回到上一個 commit。'
+              ],
+              bullets: [
+                '<strong>commit 前先看清單</strong>：要求 AI「先列出要提交的檔案和差異摘要，等我確認」，避免把不相關或機密的檔案一起送出。',
+                '<strong>訊息要說為什麼</strong>：請 AI 用繁體中文寫 commit 訊息，第一行說做了什麼，內文說原因，之後回頭查才看得懂。',
+                '<strong>改壞了不要慌</strong>：說「放棄這次的修改，回到上一個 commit」或「這個 commit 有問題，幫我 revert」，AI 會用安全的方式處理；<code>git reset --hard</code>、<code>push --force</code> 這類會丟資料的指令，要它先說明影響再執行。',
+                '<strong>.env 與金鑰</strong>：第一次 commit 前請 AI 檢查 <code>.gitignore</code>，確認 <code>.env</code>、金鑰、<code>target/</code>、<code>node_modules/</code> 都排除了。'
+              ],
+              code: {
+                language: 'text',
+                title: '對 Claude Code 說的 Git／gh 提示詞範例',
+                content: '【開始一章】\n我要開始做 1-9 章的購物車功能，請幫我從 main 開一個新分支，名稱用 feature/cart。\n\n【看改了什麼】\n列出目前修改過的檔案，每個檔案用一句話說明改了什麼。\n\n【提交】\n測試都通過了，請幫我 commit。先列出要提交的檔案給我確認，不要包含 .env 和 logs/。\ncommit 訊息用繁體中文，第一行說明做了什麼，內文說明原因。\n\n【推上 GitHub 並開 PR】\n把這個分支推上 GitHub，並用 gh 開一個 Pull Request 到 main，\n標題寫「1-9 購物車與結帳 API」，內容列出新增的 API 與測試結果。\n\n【改壞了】\n剛剛的修改讓測試失敗了，請放棄這些修改，回到上一個 commit 的狀態，先告訴我會影響哪些檔案。\n\n【看歷史】\n用 git log 列出最近 5 個 commit，並說明每個 commit 做了什麼。'
+              }
+            },
+            {
               title: 'Playwright：讓 AI 幫你操作瀏覽器、驗證畫面',
               type: 'text',
               paragraphs: [
@@ -248,6 +268,36 @@ window.COURSE = {
                 language: 'powershell',
                 title: 'PowerShell 安裝 ＋ e2e/verify-home.mjs 範例',
                 content: '# ── 安裝（在前端專案目錄執行）──\nnpm install -D playwright\n# 若不用系統 Edge，才需要下載 Playwright 自帶的瀏覽器\n# npx playwright install chromium\n\n# ── e2e/verify-home.mjs：驗證商城首頁看得到商品 ──\n// 用途：開啟首頁，確認商品卡片出現並截圖存證\n// 執行：node e2e/verify-home.mjs（先啟動前端 npm run dev）\nimport { chromium } from \'playwright\';\nimport assert from \'node:assert\';\n\nconst browser = await chromium.launch({ channel: \'msedge\' });\nconst page = await browser.newPage();\ntry {\n  await page.goto(\'http://localhost:5173/\', { waitUntil: \'networkidle\' });\n  // 等商品卡片出現，最多 10 秒\n  await page.waitForSelector(\'.product-card\', { timeout: 10000 });\n  const count = await page.locator(\'.product-card\').count();\n  assert.ok(count > 0, \'首頁應至少有一張商品卡片\');\n  await page.screenshot({ path: \'e2e/home.png\', fullPage: true });\n  console.log(`✅ 首頁商品卡片 ${count} 張，截圖已存 e2e/home.png`);\n} finally {\n  await browser.close();\n}\n\n# ── 對 AI 下指令的範例 ──\n# 「請寫一支 Playwright 腳本放在 e2e/，用 user 登入後在聊天視窗問\n#   『無線耳機 Pro 還有多少庫存？』，確認回覆有出現數字並截圖，執行給我看結果。」'
+              }
+            },
+            {
+              title: 'e2e 測試要注意的事',
+              type: 'text',
+              paragraphs: [
+                'e2e（端對端）測試是用 Playwright 從瀏覽器操作整個系統：開首頁、登入、加入購物車、結帳、問 AI 客服，確認每一步畫面與資料都正確。它最接近真實使用者，但也最容易「時好時壞」。請 AI 寫 e2e 時，把下面幾點直接寫進提示詞。'
+              ],
+              bullets: [
+                '<strong>等條件，不要等秒數</strong>：用 <code>waitForSelector</code>、<code>waitForFunction</code> 等「某個元素出現」「按鈕恢復可按」，不要用 <code>waitForTimeout(3000)</code> 硬等——電腦慢就失敗、電腦快就浪費時間。',
+                '<strong>選擇器要穩定</strong>：用固定的 class（如 <code>.product-card</code>）、表單的 <code>name</code> 或按鈕的角色與名稱，不要依賴版面位置或樣式；改版時保留這些 class，測試才不會全壞（2-5 章末升級就是這樣做的）。',
+                '<strong>測試資料要自己收拾</strong>：測試會上架商品、建立訂單、扣庫存，結束時要刪掉或取消，否則下一次執行的結果會不一樣。',
+                '<strong>AI 回覆有隨機性</strong>：不要比對整句話，改檢查「有出現數字」「數字和資料庫一致」「後端日誌有呼叫對應工具」。',
+                '<strong>和資料庫交叉比對</strong>：畫面上的庫存、訂單筆數，要和 API 或資料庫查到的一致才算通過。',
+                '<strong>一次只跑一支吃資源的測試</strong>：多支 e2e 或建置同時跑會互相拖慢，造成假的逾時失敗。',
+                '<strong>失敗先看證據</strong>：請 AI 在失敗時截圖、印出 console 錯誤與後端日誌，看完原因再改，不要直接把等待時間調長。'
+              ]
+            },
+            {
+              title: '用 AI 做 TDD：先寫會失敗的測試',
+              type: 'code',
+              paragraphs: [
+                'TDD（測試驅動開發）的順序是 <strong>紅 → 綠 → 重構</strong>：先寫一個會失敗的測試（紅），再寫剛好讓它通過的程式（綠），最後在測試保護下整理程式（重構）。',
+                '和 AI 協作時 TDD 特別有用：測試先寫好，AI 改錯時會立刻被抓到；你也能用測試描述「我要的行為」，比用文字描述更精確。1-9 章的購物車與結帳 API 會完整走一次這個流程。',
+                '最常見的陷阱：AI 為了讓測試通過去改測試。所以提示詞要明講<strong>「不准修改測試的斷言」</strong>；並且在紅燈階段確認失敗原因是「功能還沒做」，而不是編譯錯誤或測試本身寫錯。'
+              ],
+              code: {
+                language: 'text',
+                title: 'TDD 三段提示詞範例',
+                content: '【紅：只寫測試】\n我要做「加入購物車」功能：同一商品再次加入時數量累加，超過庫存要回 409。\n請先只寫測試（CartServiceTest），不要寫實作。寫完執行 mvn test，把失敗訊息給我看，\n並說明每個測試失敗的原因是不是「功能還沒實作」。\n\n【綠：實作到通過】\n失敗原因正確。現在請實作 CartService，讓這些測試通過。不准修改測試的斷言；\n如果你認為測試寫錯了，先停下來告訴我原因。完成後執行 mvn test 給我看結果。\n\n【重構：測試保護下整理】\n測試都通過了。請檢查 CartService 有沒有重複的程式碼或命名不清楚的地方，\n整理後再跑一次 mvn test，確認仍然全部通過。'
               }
             }
           ]

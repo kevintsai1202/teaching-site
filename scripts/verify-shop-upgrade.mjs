@@ -30,6 +30,11 @@ try {
 
   await openChapter('0-1', '先裝好 Node.js 與 Python');
   console.log('PASS 0-1 安裝 Node.js 與 Python 段落');
+  // 0-1 開發概念三段（標題存在即代表已渲染）
+  for (const t of ['用 AI 操作 Git 與 gh：說人話就好', 'e2e 測試要注意的事', '用 AI 做 TDD：先寫會失敗的測試']) {
+    await page.getByText(t, { exact: false }).first().waitFor({ timeout: 10000 });
+    console.log(`PASS 0-1「${t}」段落`);
+  }
 
   await openChapter('2-4', '先求功能正確，視覺之後再升級');
   console.log('PASS 2-4 基本版說明段落');
