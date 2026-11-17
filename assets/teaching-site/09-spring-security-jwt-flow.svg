@@ -41,21 +41,21 @@
   <rect x="200" y="80" width="410" height="346" rx="8" fill="white" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4"/>
   <text x="405" y="102" text-anchor="middle" font-size="12" font-weight="700" fill="#475569">Spring Security Filter Chain (過濾器鏈)</text>
 
-  <!-- 1. JwtAuthenticationFilter -->
+  <!-- 1. Resource Server 驗證 JWT（BearerTokenAuthenticationFilter） -->
   <rect x="220" y="126" width="166" height="190" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
   <rect x="220" y="126" width="166" height="24" rx="4" fill="#3b82f6"/>
-  <text x="303" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="white">1. JwtAuthenticationFilter</text>
+  <text x="303" y="142" text-anchor="middle" font-size="10" font-weight="700" fill="white">1. OAuth2 Resource Server</text>
   
   <text x="230" y="170" font-size="9" fill="#1e3a8a" font-weight="700">認證流程 (Authentication):</text>
-  <text x="230" y="188" font-size="9" fill="#1d4ed8">• 擷取並解析 JWT</text>
-  <text x="230" y="204" font-size="9" fill="#1d4ed8">• 驗證簽章與有效期限</text>
+  <text x="230" y="188" font-size="9" fill="#1d4ed8">• 從 Bearer 標頭取出 JWT</text>
+  <text x="230" y="204" font-size="9" fill="#1d4ed8">• JwtDecoder 驗證簽章與期限</text>
   
-  <!-- 呼叫 UserDetailsService -->
+  <!-- 角色轉換 JwtAuthenticationConverter -->
   <path d="M 303,214 L 303,238" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arr-blu)"/>
   
   <rect x="230" y="244" width="146" height="32" rx="4" fill="#f8fafc" stroke="#bfdbfe"/>
-  <text x="303" y="256" text-anchor="middle" font-size="8" font-weight="700" fill="#1e3a8a">CustomUserDetailsService</text>
-  <text x="303" y="268" text-anchor="middle" font-size="8" fill="#2563eb">載入 UserDetails (你是誰)</text>
+  <text x="303" y="256" text-anchor="middle" font-size="8" font-weight="700" fill="#1e3a8a">JwtAuthenticationConverter</text>
+  <text x="303" y="268" text-anchor="middle" font-size="8" fill="#2563eb">role Claim → ROLE_ 權限</text>
 
   <!-- 2. SecurityContext -->
   <rect x="230" y="286" width="146" height="20" rx="4" fill="#dbeafe" stroke="#93c5fd"/>

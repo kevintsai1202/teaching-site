@@ -76,6 +76,9 @@ const MUST = {
     '跑測試可能被權限擋下',                                    // 任務 3
     '不能讓前端自己指定',                                      // 安全性盤點：帳號改從 Token 取得
     '有不清楚的地方先問我',                                    // 口語提示詞：AI 有疑問先反問
+    'spring-boot-starter-security-oauth2-resource-server',    // 2026-11-18 改用官方 Resource Server（不用 jjwt）
+    'NimbusJwtEncoder.withSecretKey',                          // 簽發用官方 JwtEncoder
+    'jwtAuthenticationConverter',                              // role Claim 轉 ROLE_ 權限
   ],
   '2-1': ['moderation: none', '$token = (Invoke-RestMethod', 'Successfully validated 3 migrations', 'Started ShopApplication',
     // AI 串流改 POST：端點、@RequestBody 範例、PowerShell 7 以管線把 UTF-8 JSON 交給 curl.exe
@@ -120,7 +123,7 @@ const STREAM_LEGACY = [
   '只有 SSE 聊天端點', 'Query Token',
 ];
 const MUST_NOT = {
-  '1-9': ['/api/orders/me', '商品查詢 API 需登入身分即可', 'SECRET_STRING', 'CustomUserDetailsService', '新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\\n# [OK  ] user 結帳（庫存只剩不夠了）\\n#        POST /api/orders/checkout -> 預期 409，實際 409\\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件）\\n'],
+  '1-9': ['/api/orders/me', '商品查詢 API 需登入身分即可', 'SECRET_STRING', 'CustomUserDetailsService', 'io.jsonwebtoken', 'JwtAuthenticationFilter', 'JwtUtils', '新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\\n# [OK  ] user 結帳（庫存只剩不夠了）\\n#        POST /api/orders/checkout -> 預期 409，實際 409\\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件）\\n'],
   '2-1': ['LearnSpringApplication', 'validated 2 migrations'],
   '2-2': [
     '加入假的金鑰',
