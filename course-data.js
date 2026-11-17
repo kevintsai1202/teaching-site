@@ -74,7 +74,7 @@ window.COURSE = {
           diagramCaption: '插件擴充 AI 的能力，記憶讓 AI 記得做過的事，Git 讓每一步都能回頭。',
           goals: [
             '認識 Claude Code 的幾種使用方式，安裝並登入 VS Code 的 Claude Code 延伸模組',
-            '會用 /plugin 加入 marketplace、安裝、停用與更新插件',
+            '會用插件管理畫面（VS Code 的 Claude Code 插件或 Claude 桌面版）加入 marketplace、安裝、停用與更新插件',
             '理解 deep-memory 的冷庫 → 精煉 → 熱庫流程，以及為什麼能讓任務越做越好',
             '會用 git 建立版本、分支與推送，並用 gh 建立 repo 與 Pull Request',
             '會用 Playwright 腳本驗證畫面，讓 AI 的「改好了」有實跑證據'
@@ -83,7 +83,7 @@ window.COURSE = {
             { id: 'd0-u1-t0', text: '在 VS Code 安裝 Claude Code 延伸模組並登入，選取一段程式碼用 Alt+K 引用後提問' },
             { id: 'd0-u1-t0a', text: '用 `$PSVersionTable.PSVersion` 確認 PowerShell 為 7 以上（不足就用 `winget install --id Microsoft.PowerShell -e` 安裝或 `winget upgrade` 升級），並把 VS Code 與 Windows Terminal 的預設終端機改成 PowerShell 7（Mac 用 `brew install powershell`，見 macOS 對照段）' },
             { id: 'd0-u1-t0b', text: '請 AI Agent 用 winget 安裝 Node.js LTS 與 Python 3，確認 node、npm、python 版本都印得出來' },
-            { id: 'd0-u1-t1', text: '用 `/plugin` 安裝一個官方插件（例如 context7），並確認 `/plugin` 清單中已啟用' },
+            { id: 'd0-u1-t1', text: '用插件管理畫面（VS Code 插件版或桌面版）安裝一個官方插件（例如 context7），並確認已啟用' },
             { id: 'd0-u1-t2', text: '安裝 deep-memory 技能，完成一次任務後確認 `~/.deep-memory/cold-notes/raw.jsonl` 有新紀錄' },
             { id: 'd0-u1-t3', text: '執行 `gh auth login` 登入，並用 `gh repo create` 把課程專案推上 GitHub' },
             { id: 'd0-u1-t4', text: '安裝 Playwright，請 AI 寫一支開網頁並截圖的腳本放進 `e2e/` 並實際執行' },
@@ -103,7 +103,7 @@ window.COURSE = {
                 '<strong>VS Code 延伸模組（本課使用）</strong>：圖形化對話面板，支援 diff 審核、@ 引用檔案與選取行、Plan 模式、對話歷史。Cursor 等 VS Code 分支也能裝。',
                 '<strong>終端機 CLI</strong>：在任何終端機輸入 <code>claude</code>，適合 SSH 遠端主機與自動化腳本；需另外安裝 CLI（延伸模組不會把 <code>claude</code> 加進 PATH）。',
                 '<strong>JetBrains 外掛</strong>：IntelliJ IDEA 等 IDE 的整合，習慣 IntelliJ 寫 Java 的人可用。',
-                '<strong>桌面 App 與網頁版</strong>：claude.ai/code 在雲端執行，不必開電腦；雲端對話也能在 VS Code 接續。'
+                '<strong>桌面 App 與網頁版</strong>：<a href="https://claude.ai/code" target="_blank">claude.ai/code</a> 在雲端執行，不必開電腦；雲端對話也能在 VS Code 接續。'
               ]
             },
             {
@@ -121,7 +121,7 @@ window.COURSE = {
                 '登入：按 Sign in，在瀏覽器完成授權。',
                 '提問時按 <kbd>Alt+K</kbd> 插入目前選取範圍的 @ 引用（例如 <code>@ChatController.java#20-35</code>），也能用 <code>@terminal</code> 引用終端機輸出。',
                 '權限模式可在輸入框切換：Manual（每次改檔都問，初學建議）、Edit automatically、Plan（先出計畫給你批註再動手）、Auto。',
-                '課程中所有「AI Agent 提示詞」都貼到這個面板執行；<code>/plugin</code>、<code>/model</code> 等斜線指令也在這裡輸入。'
+                '課程中所有「AI Agent 提示詞」都貼到這個面板執行；<code>/model</code> 等斜線指令也在這裡輸入。'
               ]
             },
             {
@@ -162,7 +162,7 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 '課程畫面與指令以 Windows 為主。用 Mac 的學員，用 <a href="https://brew.sh/" target="_blank">Homebrew</a> 安裝同一套工具：先裝 Homebrew，再用 <code>brew</code> 一次裝好 Node.js、Python、Git、gh、PowerShell 7、Docker Desktop、JDK 21 與 Maven。裝好 PowerShell 7 後，課程裡的 PowerShell 指令在 Mac 上一樣用 <code>pwsh</code> 執行。',
-                '<strong>注意：macOS 指令依官方文件整理（brew.sh、formulae.brew.sh、Microsoft Learn、Docker 官方文件，2026-11 查證），講師未在 Mac 實測。</strong>遇到問題請以 <code>brew info 套件名稱</code> 顯示的說明為準。'
+                '<strong>注意：macOS 指令依官方文件整理（<a href="https://brew.sh" target="_blank">brew.sh</a>、<a href="https://formulae.brew.sh" target="_blank">formulae.brew.sh</a>、Microsoft Learn、Docker 官方文件，2026-11 查證），講師未在 Mac 實測。</strong>遇到問題請以 <code>brew info 套件名稱</code> 顯示的說明為準。'
               ],
               bullets: [
                 '<strong>Windows ↔ macOS 對照</strong>：<code>winget install --id OpenJS.NodeJS.LTS</code> ↔ <code>brew install node</code>；<code>Python.Python.3.12</code> ↔ <code>brew install python@3.12</code>（指令是 <code>python3</code>，不是 <code>python</code>）；<code>GitHub.cli</code> ↔ <code>brew install gh</code>；<code>Microsoft.PowerShell</code> ↔ <code>brew install powershell</code>；Docker Desktop ↔ <code>brew install --cask docker-desktop</code>（舊名 <code>docker</code> 已改名）。',
@@ -190,7 +190,7 @@ window.COURSE = {
               title: '插件的常用操作',
               type: 'code',
               paragraphs: [
-                '以下指令都在 Claude Code 的對話框輸入（不是 PowerShell）。直接輸入 <code>/plugin</code> 會開啟互動式管理畫面，可以瀏覽、安裝、啟用或停用。'
+                '插件用 Claude Code 的<strong>插件管理畫面</strong>安裝，不必輸入指令。VS Code 的 Claude Code 插件與 Claude 桌面版都有這個畫面，兩邊共用同一份設定，在哪一邊裝都可以；瀏覽、安裝、啟用、停用、移除與更新也都在這個畫面。'
               ],
               bullets: [
                 '插件裝在使用者層級，所有專案共用；技能也可以手動放在 <code>~/.claude/skills/&lt;技能名&gt;/SKILL.md</code>。',
@@ -199,8 +199,8 @@ window.COURSE = {
               ],
               code: {
                 language: 'text',
-                title: 'Claude Code 對話框 — 插件管理',
-                content: '# 加入 Marketplace（GitHub repo 格式：擁有者/倉庫）\n/plugin marketplace add anthropics/claude-plugins-official\n\n# 安裝插件：插件名稱@marketplace 名稱\n/plugin install context7@claude-plugins-official\n\n# 開啟互動管理畫面：瀏覽、啟用、停用、移除\n/plugin\n\n# 更新 marketplace 的插件清單\n/plugin marketplace update claude-plugins-official\n\n# 也可以用 Skills CLI 從 GitHub 直接安裝技能包（PowerShell 執行）\n# npx skills add kevintsai1202/law-powers -g --all'
+                title: '插件管理畫面 — 安裝步驟（VS Code 插件版、桌面版相同）',
+                content: '1. 開啟插件管理畫面（VS Code：在 Claude Code 面板；桌面版：在 Claude 的設定）\n2. 新增 marketplace：輸入 GitHub repo（擁有者/倉庫），例如 anthropics/claude-plugins-official\n3. 在 marketplace 的清單找到要裝的插件，例如 context7，按安裝\n4. 裝完重新開啟 VS Code 或桌面版，回到管理畫面確認插件已啟用\n5. 之後要停用、移除或更新插件清單，也在同一個畫面操作\n\n# 技能包也可以用 Skills CLI 從 GitHub 安裝（在 PowerShell 執行）\n# npx skills add kevintsai1202/law-powers -g --all'
               }
             },
             {
@@ -216,7 +216,7 @@ window.COURSE = {
                 '<strong>熱庫</strong> <code>knowledge-base/*.md</code>、<code>experience/skill-*.md</code>：精煉後的結論，經你確認才寫入。',
                 '<strong>檢索</strong>：先用關鍵字比對熱庫分類，比不到再用 ChromaDB 向量＋關鍵字混合搜尋（就是 Day 2 教的 RAG）。',
                 '<strong>備份</strong>：記憶可以推到自己的 GitHub 私有 repo，換電腦也帶得走。',
-                '介紹與文件：[deep-memory 官方網站](https://kevintsai1202.github.io/deep-memory/) · [GitHub](https://github.com/kevintsai1202/deep-memory)'
+                '介紹與文件：<a href="https://kevintsai1202.github.io/deep-memory/" target="_blank">deep-memory 官方網站</a> · <a href="https://github.com/kevintsai1202/deep-memory" target="_blank">GitHub</a>'
               ],
               code: {
                 language: 'powershell',
@@ -363,7 +363,7 @@ window.COURSE = {
               code: {
                 language: 'markdown',
                 title: 'CLAUDE.md — 精簡版範本（放在專案根目錄）',
-                content: '# 專案開發規則（CLAUDE.md）\n\n## 語言與環境\n- 回覆、文件、commit 訊息、程式註解用繁體中文；技術名詞與識別字維持原文。\n- 給我手動執行的指令用 PowerShell 7 語法。\n- 本專案：根目錄是 Spring Boot 4 + Spring AI 2.0 後端（pom.xml、src/），前端 React 19 + Vite 在 frontend/。\n  前端的指令與慣例另外寫在 frontend/CLAUDE.md。\n\n## 寫程式\n- 新寫或大幅改寫的函式加中文函式級註解，重要的變數與物件也要註解。\n- 只做這次任務需要的部分。順手發現的重構、額外功能列在回報裡，由我決定。\n- 不准為了讓測試通過去改測試的斷言；認為測試寫錯就先停下來說明原因。\n\n## 任務分級（開工前判定一次）\n- T0 查詢：不修改檔案。結論要有實際查證（讀檔、跑指令），不憑印象。\n- T1 單檔機械修改：只動 1 個檔，行為不變或內容由我指定。改完跑相關測試或 build。\n- T2 非程式產出：文件、報告。可省略 TDD；會重跑的腳本仍要寫成檔案並實際跑過。\n- T3 其他：新功能、修 bug、多檔改動。先說明你的理解等我確認；有邏輯變動先寫會失敗的測試；\n  修 bug 先重現、找出根因再改。\n- 做到一半發現超出原層級，立刻升到 T3；判定有疑義時取較高的層級。\n\n## 驗證\n- 「改好了」要附實跑證據：測試、build 或 Playwright 腳本的輸出。\n- 全套測試、建置這類長時間指令，輸出 tee 到 logs/ 底下的檔案。\n- 收尾只跑和這次改動有關的測試，回報時列出跑了哪些、沒跑哪些與原因。\n- 操作瀏覽器時，先把步驟寫成 e2e/ 或 scripts/ 底下的腳本再執行。\n\n## 安全\n- 金鑰只放環境變數或 .env，.env 不進 Git。\n- 權限被擋下時停下來告訴我原因，不要換個方式繞過。\n- git reset --hard、push --force、刪資料表這類不可逆操作，先說明影響，等我同意再做。'
+                content: '# 專案開發規則（CLAUDE.md）\n\n## 語言與環境\n- 回覆、文件、commit 訊息、程式註解用繁體中文；技術名詞與識別字維持原文。\n- 給我手動執行的指令用 PowerShell 7 語法。\n- 本專案：根目錄是 Spring Boot 4 + Spring AI 2.0 後端（pom.xml、src/），前端 React 19 + Vite 在 frontend/。\n  前端的指令與慣例另外寫在 frontend/CLAUDE.md。\n\n## 寫程式\n- 新寫或大幅改寫的函式加中文函式級註解，重要的變數與物件也要註解。\n- 只做這次任務需要的部分。順手發現的重構、額外功能列在回報裡，由我決定。\n- 不准為了讓測試通過去改測試的斷言；認為測試寫錯就先停下來說明原因。\n\n## 任務分級（開工前判定一次）\n- T0 查詢：不修改檔案。結論要有實際查證（讀檔、跑指令），不憑印象。\n- T1 單檔機械修改：只動 1 個檔，行為不變或內容由我指定。改完跑相關測試或 build。\n- T2 非程式產出：文件、報告。可省略 TDD；會重跑的腳本仍要寫成檔案並實際跑過。\n- T3 其他：新功能、修 bug、多檔改動。先說明你的理解等我確認；有邏輯變動先寫會失敗的測試；\n  修 bug 先重現、找出根因再改。\n- 做到一半發現超出原層級，立刻升到 T3；判定有疑義時取較高的層級。\n\n## 驗證\n- 「改好了」要附實跑證據：測試、build 或 Playwright 腳本的輸出。\n- 全套測試、建置這類長時間指令，輸出 tee 到 logs/ 底下的檔案。\n- 收尾只跑和這次改動有關的測試，回報時列出跑了哪些、沒跑哪些與原因。\n- 操作瀏覽器時，先把步驟寫成 e2e/ 或 scripts/ 底下的腳本再執行。\n\n## 安全\n- 金鑰只放 .env，.env 不進 Git。\n- 權限被擋下時停下來告訴我原因，不要換個方式繞過。\n- git reset --hard、push --force、刪資料表這類不可逆操作，先說明影響，等我同意再做。'
               }
             },
             {
@@ -379,7 +379,7 @@ window.COURSE = {
                 '<strong>⚠ 測試不讓 AI 自己改</strong>：上面 TDD 提示詞的「不准修改測試的斷言」管的是實作階段：測試失敗就改實作，AI 認為測試寫錯要先停下來說明，由你決定。需求或規格真的變了才改測試，順序固定為「先改規格文件 → 再改測試並看到紅燈 → 最後改實作」，測試的每一處修改都要由你確認。',
                 '<strong>⚠ 被權限擋下時不要叫 AI 繞過</strong>：auto mode 的權限分類器會擋下它判斷為破壞性的動作。課前驗證時，含 <code>DROP COLUMN</code> 的 Flyway 腳本被擋過；管理員訂單那一步，整批修改的指令被擋，改成逐檔修改後仍有三個檔案被擋。先看清楚它要做什麼、為什麼被擋，確認無誤再由你放行，不要叫 AI 換個方式繞過。',
                 '<strong>一章一個 commit</strong>：課前演練每章完成就 commit，哪一章出問題都能用 <code>git log</code>、<code>git diff</code> 逐章比對，也能退回上一章重做。不要等兩天課做完才第一次 commit。',
-                '<strong>金鑰只放環境變數，交付前再搜一次</strong>：除了上面 Git 段落說的「commit 前先看清單」，演練交付前還會請 AI 搜尋整個專案目錄（含 <code>logs/</code> 與 <code>.git</code>）有沒有金鑰字串，確認沒有被寫進設定檔或日誌。',
+                '<strong>金鑰只放 .env，交付前再搜一次</strong>：除了上面 Git 段落說的「commit 前先看清單」，演練交付前還會請 AI 搜尋整個專案目錄（含 <code>logs/</code> 與 <code>.git</code>）有沒有金鑰字串，確認沒有被寫進設定檔或日誌。',
                 '<strong>⚠ AI 會讀專案裡的所有檔案</strong>：課前驗證時，AI 讀到專案根目錄的驗證報告，就刻意改變測試的寫法，避開報告記錄的問題。參考答案、筆記、別人的報告不要放在專案目錄裡，否則會左右 AI 的做法。'
               ]
             }
@@ -437,7 +437,7 @@ window.COURSE = {
                 '技術：純提示詞技能包（Prompt-Only）＋ MCP（台灣法規資料庫、裁判書語意檢索），可裝在 Claude Code、Codex、Gemini 等工具',
                 '對應課程：0-1 插件與技能、2-7 MCP 與 Skills、2-3 RAG（語意判例檢索）',
                 '安裝：<code>npx skills add kevintsai1202/law-powers -g --all</code>',
-                '[法律網（線上使用）](https://law-graph-webmcp.zeabur.app/) · [宣傳網站](https://kevintsai1202.github.io/law-powers/) · [GitHub](https://github.com/kevintsai1202/law-powers)'
+                '<a href="https://law-graph-webmcp.zeabur.app/" target="_blank">法律網（線上使用）</a> · <a href="https://kevintsai1202.github.io/law-powers/" target="_blank">宣傳網站</a> · <a href="https://github.com/kevintsai1202/law-powers" target="_blank">GitHub</a>'
               ]
             },
             {
@@ -450,7 +450,7 @@ window.COURSE = {
                 '技術：Spring AI、Docling 版面解析、PostgreSQL + pgvector + trigram 索引、Muse Spark（LLM）、Voyage（向量化）、Jev（分類與重排）、S3 物件儲存',
                 '對應課程：2-1 模型選擇（Muse Spark / Voyage 就是本課用的組合）、2-3 RAG 與 rerank 兩階段檢索、2-7 MCP',
                 '進階技巧：表格切塊只留說明文字、多層檢索、所有 AI 呼叫可稽核、送出前遮罩敏感資料',
-                '[GitHub](https://github.com/kevintsai1202/docrefinery)'
+                '<a href="https://github.com/kevintsai1202/docrefinery" target="_blank">GitHub</a>'
               ]
             },
             {
@@ -463,7 +463,7 @@ window.COURSE = {
                 '技術：Windows 桌面應用（Tauri）、本機 Python 引擎、ffmpeg、ONNX 人聲分離、雲端 AI 服務（ASR、校稿、TTS 聲音替換）',
                 '功能：逐字時間戳轉錄、AI 校稿逐項審核、降噪與響度修復、用自己的聲音重生成單字、輸出 MP4 / SRT / DaVinci Resolve 時間軸',
                 '對應課程：2-1 模型 API 串接、2-5 串流回應的使用者體驗、把 AI 當成「建議者」而非「決定者」的設計',
-                '[官方網站與下載](https://subtutor.zeabur.app/)'
+                '<a href="https://subtutor.zeabur.app/" target="_blank">官方網站與下載</a>'
               ]
             },
             {
@@ -526,6 +526,24 @@ window.COURSE = {
             { id: 'd1-u1-t5', text: '透過 Spring Initializr 建立課程專案並確認啟動成功' }
           ],
           sections: [
+            {
+              title: '今日準備清單：Day 1 要安裝的程式、網站與金鑰（照順序）',
+              type: 'text',
+              paragraphs: [
+                '照上課順序列出 Day 1 會用到的程式、網站、下載與金鑰，能先做的請課前完成（Docker Desktop 裝完要重開機，最好前一天裝好）。PowerShell 7、VS Code、Claude Code、Node.js、Python 3 在 0-1 章已安裝。'
+              ],
+              bullets: [
+                '<strong>1.【1-1 程式】JDK 21（Eclipse Temurin）</strong>：用 winget 安裝（本章提示詞會請 AI 代勞），裝完 <code>java -version</code> 要顯示 21。',
+                '<strong>2.【1-1 程式】Maven 3.9 以上</strong>：用 winget 安裝，<code>mvn -version</code> 的 Java version 要是 21。',
+                '<strong>3.【1-1 程式】Git</strong>：用 winget 安裝，並設定 <code>user.name</code>、<code>user.email</code>。',
+                '<strong>4.【1-1 VS Code 外掛】Extension Pack for Java、Spring Boot Extension Pack</strong>：在 VS Code 的延伸模組搜尋安裝。',
+                '<strong>5.【1-1 網站】Spring Initializr</strong>：<a href="https://start.spring.io/" target="_blank">start.spring.io</a>，建立 Spring Boot 專案（也可以請 AI 用指令產生）。',
+                '<strong>6.【1-3 程式】Docker Desktop</strong>：<a href="https://www.docker.com/products/docker-desktop" target="_blank">docker.com/products/docker-desktop</a>，需要 WSL2，裝完重開機，用 <code>docker run hello-world</code> 確認。',
+                '<strong>7.【1-3 下載】PostgreSQL 映像 <code>pgvector/pgvector:pg18</code></strong>：第一次 <code>docker compose up -d</code> 會自動下載；網路慢可以課前先執行 <code>docker pull pgvector/pgvector:pg18</code>。',
+                '<strong>8.【1-5 網站】Swagger UI</strong>：後端啟動後開 <a href="http://localhost:8080/swagger-ui/index.html" target="_blank"><code>http://localhost:8080/swagger-ui/index.html</code></a>，測試 API 用。',
+                '<strong>9.【1-9 金鑰】JWT_SECRET</strong>：不用申請，自己訂一串至少 32 字元的隨機字串；寫進後端專案根目錄的 <code>.env</code>（一行 <code>JWT_SECRET=…</code>），<code>.env</code> 不要推上 Git。'
+              ]
+            },
             {
               title: '環境準備重點',
               type: 'text',
@@ -671,7 +689,7 @@ window.COURSE = {
               ],
               bullets: [
                 '開啟 VS Code 命令面板（Ctrl+Shift+P），輸入 `Spring Initializr: Create a Maven Project`',
-                '或直接前往 start.spring.io 在瀏覽器中設定後下載',
+                '或直接前往 <a href="https://start.spring.io" target="_blank">start.spring.io</a> 在瀏覽器中設定後下載',
                 'Spring Boot 版本：選擇 4.0.0（課程範例基於此版本）',
                 'Group：`com.example`，Artifact：`tutorial`，Packaging：Jar，Java：21',
                 '依賴選擇：Spring Web、Spring Data JPA、PostgreSQL Driver、Flyway Migration'
@@ -726,7 +744,7 @@ window.COURSE = {
               bullets: [
                 '<strong>⚠ AI 的終端機和你的不是同一個</strong>：Claude Code 在 Windows 上的 Bash 工具其實是 Git Bash，它設定的 <code>JAVA_HOME</code> 只在自己的程序裡有效。請它用 PowerShell 7 以永久生效的方式設定（<code>[Environment]::SetEnvironmentVariable</code>），再由你開一個新的終端機執行 <code>java -version</code>、<code>mvn -version</code> 確認。',
                 '<strong>⚠ 安裝指令不能停在互動提問</strong>：AI 的終端機無法回答「是否同意條款」這類問題，<code>winget</code> 第一次使用可能停在同意畫面；請它加上 <code>--accept-source-agreements --accept-package-agreements</code>。第一輪演練時，<code>create-vite</code> 也因為互動提問卡住過（見 2-4 章）。',
-                '<strong>⚠ Initializr 的預設值不一定是課程版本</strong>：課前演練時，start.spring.io 預設已經是 Boot 4.1.x。請照本章的設定摘要手動選 4.0 系列，不要直接接受預設；下載的 zip 外層還多一個資料夾，要先決定專案根目錄在哪一層（之後的 <code>docker-compose.yml</code>、<code>frontend/</code> 都放在這一層）。',
+                '<strong>⚠ Initializr 的預設值不一定是課程版本</strong>：課前演練時，<a href="https://start.spring.io" target="_blank">start.spring.io</a> 預設已經是 Boot 4.1.x。請照本章的設定摘要手動選 4.0 系列，不要直接接受預設；下載的 zip 外層還多一個資料夾，要先決定專案根目錄在哪一層（之後的 <code>docker-compose.yml</code>、<code>frontend/</code> 都放在這一層）。',
                 '<strong>⚠ 鏡像站網址要先驗證</strong>：用「加速依賴下載」的提示詞時，AI 可能給出已失效的鏡像網址。請它先備份 <code>settings.xml</code>，改完在專案裡跑一次 <code>mvn clean compile</code> 確認依賴下載得到，失敗就還原備份。',
                 '<strong>多版本 JDK 先盤點再動</strong>：用提示詞 3 處理舊版 JDK 時，請 AI 先列出電腦上所有 JDK、目前的 <code>JAVA_HOME</code> 與 <code>Path</code> 順序給你看，不要讓它直接解除安裝舊版，其他專案可能還在用。'
               ]
@@ -1088,7 +1106,7 @@ window.COURSE = {
               type: 'text',
               paragraphs: [
                 'Docker Desktop 是在 Windows 上執行 Docker 容器的必要工具，安裝後只需一行 `docker compose up -d` 就能啟動整個 PostgreSQL 資料庫環境，不需要手動安裝資料庫。',
-                '請前往官方網站下載並安裝：https://www.docker.com/products/docker-desktop'
+                '請前往官方網站下載並安裝：<a href="https://www.docker.com/products/docker-desktop" target="_blank">https://www.docker.com/products/docker-desktop</a>'
               ],
               bullets: [
                 'Docker Desktop 同時安裝 Docker Engine 與 docker-compose',
@@ -1216,22 +1234,6 @@ window.COURSE = {
               ]
             },
             {
-              title: '示範商品圖片（先下載放進專案）',
-              type: 'text',
-              paragraphs: [
-                '課程準備了 6 張示範商品圖片（AI 生成，600×600 JPG），讓商城首頁一開始就有像樣的畫面。請先下載，2-4 章建立前端後放到 <code>frontend/public/images/products/</code>；資料庫的 <code>image_url</code> 存相對路徑 <code>/images/products/檔名</code>，前端直接當 <code>&lt;img src&gt;</code> 使用。',
-                '📦 <strong>一次下載全部：</strong><a href="assets/downloads/product-images.zip" download>product-images.zip</a>（6 張商品圖放進 <code>frontend/public/images/products/</code>；<code>brand/</code> 資料夾是 2-5 章末升級品牌官網用的 Hero、分類圖與客服頭像）；商品圖也可以從下方逐張下載。'
-              ],
-              bullets: [
-                '無線耳機 Pro：<a href="assets/products/earphone-pro.jpg" download>earphone-pro.jpg</a><br><img src="assets/products/earphone-pro.jpg" alt="無線耳機 Pro" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
-                'Bass+ 重低音耳機：<a href="assets/products/bass-headphones.jpg" download>bass-headphones.jpg</a><br><img src="assets/products/bass-headphones.jpg" alt="Bass+ 重低音耳機" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
-                '機械鍵盤：<a href="assets/products/keyboard.jpg" download>keyboard.jpg</a><br><img src="assets/products/keyboard.jpg" alt="機械鍵盤" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
-                '行動電源：<a href="assets/products/power-bank.jpg" download>power-bank.jpg</a><br><img src="assets/products/power-bank.jpg" alt="行動電源" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
-                '香氛加濕器：<a href="assets/products/humidifier.jpg" download>humidifier.jpg</a><br><img src="assets/products/humidifier.jpg" alt="香氛加濕器" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
-                '智慧檯燈（缺貨示範）：<a href="assets/products/desk-lamp.jpg" download>desk-lamp.jpg</a><br><img src="assets/products/desk-lamp.jpg" alt="智慧檯燈（缺貨示範）" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">'
-              ]
-            },
-            {
               title: '用 AI Agent 設定 application.yml 資料庫連線',
               type: 'code',
               paragraphs: [
@@ -1240,7 +1242,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 設定 application.yml',
-                content: '【提示詞 1 — 加入依賴與資料庫連線】\n請修改我的 Spring Boot 專案（1-2 章的商品 API）：\n1. pom.xml 加入 postgresql、spring-boot-starter-flyway、flyway-database-postgresql 依賴（版本交給 Spring Boot 管理；Spring Boot 4 必須用 starter，單加 flyway-core 啟動不會報錯但完全不會遷移）\n2. Initializr 產生的是 application.properties，請改成 src/main/resources/application.yml（刪除 properties，保留 spring.application.name），並加入：\n   - datasource：連線到 localhost:5432/learn_spring，帳號 postgres，密碼 password\n   - flyway：enabled: true，baseline-on-migrate: true，腳本位置 classpath:db/migration\n每個設定項目請加上中文註解說明用途。\n\n【提示詞 2 — 建立商品資料表與示範商品】\n請在 src/main/resources/db/migration/ 建立 V1__create_products.sql：\n1. 建立 products 資料表，欄位對應 1-2 的 Product：id（BIGSERIAL 主鍵）、name、description、price（NUMERIC(10,2)）、stock（INT）、image_url、category，再加上 created_at、updated_at（TIMESTAMP，預設現在時間）\n2. 插入 6 筆示範商品：無線耳機 Pro（售價 2990、庫存 12）、Bass+ 重低音耳機（售價 3000 以內）、機械鍵盤、行動電源、香氛加濕器、智慧檯燈（庫存 0，缺貨示範）；說明欄位寫出規格重點；image_url 依序填 /images/products/earphone-pro.jpg、bass-headphones.jpg、keyboard.jpg、power-bank.jpg、humidifier.jpg、desk-lamp.jpg（圖片在本章「示範商品圖片」下載，2-4 章放進前端）\n3. 檔名注意 V1 後面是「兩個底線」\n\n【提示詞 3 — 驗證連線與 Flyway 遷移】\n設定完成後請幫我執行 mvn spring-boot:run，\n確認 log 中出現 Successfully applied 1 migration 的訊息，並用 docker exec 進入容器查詢 products 有 6 筆資料。\n若 log 完全沒有 Flyway 字樣，代表缺 spring-boot-starter-flyway；若出現連線錯誤或 Flyway 失敗，請幫我找出原因並修正。'
+                content: '【提示詞 1 — 加入依賴與資料庫連線】\n請修改我的 Spring Boot 專案（1-2 章的商品 API）：\n1. pom.xml 加入 postgresql、spring-boot-starter-flyway、flyway-database-postgresql 依賴（版本交給 Spring Boot 管理；Spring Boot 4 必須用 starter，單加 flyway-core 啟動不會報錯但完全不會遷移）\n2. Initializr 產生的是 application.properties，請改成 src/main/resources/application.yml（刪除 properties，保留 spring.application.name），並加入：\n   - datasource：連線到 localhost:5432/learn_spring，帳號 postgres，密碼 password\n   - flyway：enabled: true，baseline-on-migrate: true，腳本位置 classpath:db/migration\n每個設定項目請加上中文註解說明用途。\n\n【提示詞 2 — 建立商品資料表與示範商品】\n請在 src/main/resources/db/migration/ 建立 V1__create_products.sql：\n1. 建立 products 資料表，欄位對應 1-2 的 Product：id（BIGSERIAL 主鍵）、name、description、price（NUMERIC(10,2)）、stock（INT）、image_url、category，再加上 created_at、updated_at（TIMESTAMP，預設現在時間）\n2. 插入 6 筆示範商品：無線耳機 Pro（售價 2990、庫存 12）、Bass+ 重低音耳機（售價 3000 以內）、機械鍵盤、行動電源、香氛加濕器、智慧檯燈（庫存 0，缺貨示範）；說明欄位寫出規格重點；image_url 依序填 /images/products/earphone-pro.jpg、bass-headphones.jpg、keyboard.jpg、power-bank.jpg、humidifier.jpg、desk-lamp.jpg（圖片在 2-4 章做前端時下載放進去）\n3. 檔名注意 V1 後面是「兩個底線」\n\n【提示詞 3 — 驗證連線與 Flyway 遷移】\n設定完成後請幫我執行 mvn spring-boot:run，\n確認 log 中出現 Successfully applied 1 migration 的訊息，並用 docker exec 進入容器查詢 products 有 6 筆資料。\n若 log 完全沒有 Flyway 字樣，代表缺 spring-boot-starter-flyway；若出現連線錯誤或 Flyway 失敗，請幫我找出原因並修正。'
               }
             },
             {
@@ -1804,8 +1806,8 @@ window.COURSE = {
               title: '啟動後的預設存取路徑',
               type: 'text',
               bullets: [
-                '`http://localhost:8080/swagger-ui.html` → 互動式 Swagger UI（可直接測試）',
-                '`http://localhost:8080/v3/api-docs` → OpenAPI JSON 規格（機器讀取）',
+                '<a href="http://localhost:8080/swagger-ui.html" target="_blank"><code>http://localhost:8080/swagger-ui.html</code></a> → 互動式 Swagger UI（可直接測試）',
+                '<a href="http://localhost:8080/v3/api-docs" target="_blank"><code>http://localhost:8080/v3/api-docs</code></a> → OpenAPI JSON 規格（機器讀取）',
                 '`http://localhost:8080/v3/api-docs.yaml` → YAML 格式規格'
               ],
               callout: {
@@ -2290,7 +2292,7 @@ window.COURSE = {
             '學會以 AI 輔助建立 JWT 過濾器並在 Token 內寫入使用者角色（ADMIN/USER）',
             '實作角色基礎存取控制（RBAC），商品查詢 API 公開（訪客可瀏覽），商品寫入 API 僅限管理員',
             '讓 Swagger UI 支援 Bearer Token：先登入取得 JWT，再用右上角 Authorize 貼上 Token，測試受保護的 API',
-            '下半場：用 TDD（紅 → 綠 → 重構）讓 AI 開發購物車、結帳、取消與出貨 API，並以 Testcontainers 隔離測試資料庫',
+            '下半場：請 AI 盤點並用 TDD 補完購物 API，以 Testcontainers 隔離測試資料庫，再做一次安全性盤點',
             '分辨 URL 規則與 @PreAuthorize 方法層級授權，能用 401／403／200 驗證管理員 API',
             '看懂「同帳號並行結帳」的併發陷阱：能重現、說出原因與兩種修法'
           ],
@@ -2298,11 +2300,11 @@ window.COURSE = {
             { id: 'd1-u9-t1', text: '透過 AI 提示詞引入 Security 與 JWT 相關依賴' },
             { id: 'd1-u9-t2', text: '實作 JwtUtils 產生包含角色資訊的 Token，並完成認證過濾器與 SecurityConfig 配置' },
             { id: 'd1-u9-t3', text: '實作 /api/auth/login 登入 API，並為商品 API 設定角色權限控制（ADMIN 限制新增/修改/刪除）' },
-            { id: 'd1-u9-t4', text: '商品查詢開放訪客瀏覽，並新增 GET /api/orders/me 只回傳登入者自己的訂單' },
-            { id: 'd1-u9-t5', text: '建立 Testcontainers 測試基礎，先寫 MigrationV3Test 看到紅燈，再新增 Flyway V3（訂單＋明細、購物車、訂單編號 sequence）讓它轉綠' },
-            { id: 'd1-u9-t6', text: '用紅 → 綠 → 重構三段提示詞完成購物車 API，紅燈階段確認失敗原因是「功能還沒做」（404）而不是編譯錯誤' },
-            { id: 'd1-u9-t7', text: '用 TDD 完成結帳（條件式扣庫存、整筆回滾）、取消（退回庫存）與管理員出貨，mvn test 全綠' },
-            { id: 'd1-u9-t8', text: '新增 GET /api/admin/orders，URL 規則＋@PreAuthorize 雙重防護，用 PowerShell 驗證 401、403、200' },
+            { id: 'd1-u9-t4', text: '商品查詢開放訪客瀏覽，其餘 API 需要登入' },
+            { id: 'd1-u9-t5', text: '建立 Testcontainers 測試基礎，mvn test 不再碰開發用的資料庫' },
+            { id: 'd1-u9-t6', text: '請 AI 對照購物流程列出缺少的 API，確認後用 TDD 補完，紅燈階段確認失敗原因是「功能還沒做」' },
+            { id: 'd1-u9-t7', text: '安全性盤點：帳號改從登入的 Token 取得，不能存取別人的購物車與訂單' },
+            { id: 'd1-u9-t8', text: '管理員 API 用 URL 規則＋@PreAuthorize 雙重防護，驗證 401、403、200' },
             { id: 'd1-u9-t9', text: '（進階）重現同帳號並行結帳的併發陷阱，請 AI 先寫會失敗的併發測試，再選一種修法修到通過' }
           ],
           sections: [
@@ -2338,17 +2340,18 @@ window.COURSE = {
               title: 'AI Agent 提示詞 — 身分驗證與角色授權實作',
               type: 'code',
               paragraphs: [
-                '將以下提示詞複製給 AI Agent，讓它幫你生成完整的安全驗證配置。此提示詞特別強調了角色定義。'
+                '將以下提示詞複製給 AI Agent，用平常講話的方式交代需求就好，細節（ROLE_ 前綴、過濾器寫法等）可以對照下面的範例程式檢查。特別確認兩點：SSE 串流結束和 404 不能變成 401（範例 SecurityConfig 的 dispatcherTypeMatchers 那行）；有 Swagger 的話要能用 Authorize 貼 Token。JWT 金鑰寫在後端專案根目錄的 <code>.env</code>：一行 <code>JWT_SECRET=至少32字元的隨機字串</code>。Spring Boot 不會自動讀 .env，AI 做完請確認 application.yml 有 <code>spring.config.import: optional:file:.env[.properties]</code>，而且 .gitignore 有 .env。'
               ],
               bullets: [
                 '在 JWT 內寫入使用者角色（簡單區分管理員 ADMIN 與用戶 USER）',
                 '限制商品新增、修改、刪除 API 僅限管理員角色存取，商品查詢 API 公開（訪客不必登入就能瀏覽商城首頁）',
-                '（已加 Swagger 才需要）放行 Swagger UI 與 OpenAPI 文件頁面；OpenApiConfig 宣告 Bearer 驗證，讓 Swagger UI 出現 Authorize 按鈕'
+                '（已加 Swagger 才需要）放行 Swagger UI 與 OpenAPI 文件頁面；OpenApiConfig 宣告 Bearer 驗證，讓 Swagger UI 出現 Authorize 按鈕',
+                '⚠ 加上 Security 之後，原本不用登入的 API 會回 401：前面寫的測試、Swagger 或前端如果靠標頭（例如 <code>X-Username</code>）指定帳號，會整批 401。請 AI 把測試改成先登入、帶 Token；API 裡的帳號從哪裡來，下半場步驟 2 會一起整理。'
               ],
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有的智慧商城專案中，使用 Spring Security 與 JWT 實作登入驗證與角色權限：\n1. 引入 Spring Security 與 jjwt 0.12.x（jjwt-api、jjwt-impl、jjwt-jackson 都要明確寫版本，jjwt 不在 Spring Boot 版本管理內）。JWT 金鑰從環境變數 JWT_SECRET 讀取，需至少 32 字元；執行 mvn 前先在同一個 PowerShell 設定 $env:JWT_SECRET = \'至少32字元的隨機字串\'，mvn spring-boot:run 與 mvn test 都要（下半場步驟 0 會改由 src/test/resources 提供測試專用金鑰，之後 mvn test 就不必設定）。\n2. 建立兩個示範帳號（InMemoryUserDetailsManager + BCrypt 密碼）：admin / admin123（角色 ADMIN）、user / user123（角色 USER）。帳號名稱 user 要與 1-4 示範訂單的 username 相同。\n3. 實作登入 API POST /api/auth/login，傳入帳號密碼，回應 { token, username, role }，role 的值為 ADMIN 或 USER（不含 ROLE_ 前綴，Filter 載入權限時再補 ROLE_）。\n4. 權限規則：\n   - 公開（免登入）：POST /api/auth/login、GET /api/products、GET /api/products/{id}（商城首頁要讓訪客看到商品）\n   - 僅 ADMIN：POST /api/products（商品上架；PUT / DELETE 先預留同樣的規則）\n   - 放行 ASYNC 與 ERROR 派送：dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()（否則 SSE 串流結束會丟 AccessDeniedException、找不到商品的 404 會變成 401）\n   - 需登入：其餘所有 API（含之後的 /api/ai/**、/api/orders/**）\n5. 新增 GET /api/orders/me：回傳「目前登入者」的訂單（帳號從 Spring Security 取得，不接受前端傳 username）。\n6. 建立 JwtAuthenticationFilter，用 parseJwt(request) 方法解析 Authorization: Bearer 標頭（2-5 章會擴充這個方法）；未登入回 401、權限不足回 403。\n7. Swagger UI 支援 Bearer Token（前提：已依 1-5 章加入 springdoc-openapi；沒有 Swagger 就略過本點）。本專案是無狀態 JWT，不會跳出 HTTP Basic 登入框，也不要為 Swagger 另外加 httpBasic 或第二條 SecurityFilterChain。(a) SecurityConfig 放行 /swagger-ui/**、/swagger-ui.html、/v3/api-docs/**（頁面與 API 描述本身不含資料；受保護的 API 仍然要 Token）。(b) 在 1-5 章的 OpenApiConfig 加上 SecurityScheme：名稱 BearerAuth、type 為 HTTP、scheme 為 bearer、bearerFormat 為 JWT，並用 addSecurityItem 套用到全部端點，讓 Swagger UI 右上角出現 Authorize 按鈕。\n完成後請用 PowerShell 示範：user 登入 → 查 /api/orders/me 看到 3 筆訂單；user 嘗試新增商品得到 403；admin 登入後成功上架一個新商品。'
+                content: '幫智慧商城加上登入和權限，用 Spring Security 和 JWT。\n- 兩個測試帳號：admin / admin123（管理員）、user / user123（一般會員）\n- 登入 API 用 /api/auth/login\n- 商品大家都能看，只有管理員能新增、修改、刪除；其他 API 要登入\n- JWT 金鑰放在專案根目錄的 .env（JWT_SECRET=…），讓 Spring Boot 讀得到，.env 不要進 Git\n有不清楚的地方先問我，做完測給我看。'
               }
             },
             {
@@ -2380,12 +2383,12 @@ window.COURSE = {
               title: 'JWT 工具類別範例 (JwtUtils.java)',
               type: 'code',
               paragraphs: [
-                'JWT 產生、解析與驗證工具。金鑰從環境變數 JWT_SECRET 讀取，少於 32 字元就讓應用程式啟動失敗（不要寫死在程式裡）；產生 Token 時把角色（ADMIN 或 USER，不含 ROLE_ 前綴，由登入時的權限決定）寫入 role Claim，解析時取出。'
+                'JWT 產生、解析與驗證工具。金鑰從 .env 的 JWT_SECRET 讀取（經 spring.config.import 載入），少於 32 字元就讓應用程式啟動失敗（不要寫死在程式裡）；產生 Token 時把角色（ADMIN 或 USER，不含 ROLE_ 前綴，由登入時的權限決定）寫入 role Claim，解析時取出。'
               ],
               code: {
                 language: 'java',
                 title: 'JwtUtils.java 範例',
-                content: '@Component\npublic class JwtUtils {\n\n    /** Token 內存放角色的 Claim 名稱（值為 ADMIN / USER，不含 ROLE_ 前綴） */\n    private static final String ROLE_CLAIM = "role";\n\n    /** HS256 簽章金鑰 */\n    private final SecretKey key;\n\n    /** Token 有效期限：24 小時 */\n    private final long expirationMs = 24 * 60 * 60 * 1000L;\n\n    /** 建構時讀取環境變數 JWT_SECRET 建立金鑰；沒設定或少於 32 字元就讓應用程式啟動失敗 */\n    public JwtUtils(@Value("${JWT_SECRET:}") String secret) {\n        if (secret == null || secret.length() < 32) {\n            throw new IllegalStateException("環境變數 JWT_SECRET 未設定或長度不足 32 字元");\n        }\n        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));\n    }\n\n    /** 簽發 Token：subject 為帳號，角色（不含 ROLE_ 前綴）寫入 role Claim */\n    public String generateToken(String username, String role) {\n        return Jwts.builder()\n                .subject(username)\n                .claim(ROLE_CLAIM, role)\n                .issuedAt(new Date())\n                .expiration(new Date(System.currentTimeMillis() + expirationMs))\n                .signWith(key)\n                .compact();\n    }\n\n    /** 解析並驗證 Token（簽章、有效期限），失敗會丟出 JwtException */\n    public Claims parseClaims(String token) {\n        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();\n    }\n\n    public String getUsernameFromToken(String token) {\n        return parseClaims(token).getSubject();\n    }\n\n    /** 取出角色（ADMIN / USER，不含 ROLE_ 前綴） */\n    public String getRoleFromToken(String token) {\n        return parseClaims(token).get(ROLE_CLAIM, String.class);\n    }\n\n    public boolean validateToken(String token) {\n        try {\n            parseClaims(token);\n            return true;\n        } catch (Exception e) {\n            return false;\n        }\n    }\n}'
+                content: '@Component\npublic class JwtUtils {\n\n    /** Token 內存放角色的 Claim 名稱（值為 ADMIN / USER，不含 ROLE_ 前綴） */\n    private static final String ROLE_CLAIM = "role";\n\n    /** HS256 簽章金鑰 */\n    private final SecretKey key;\n\n    /** Token 有效期限：24 小時 */\n    private final long expirationMs = 24 * 60 * 60 * 1000L;\n\n    /** 建構時讀取 .env 的 JWT_SECRET 建立金鑰；沒設定或少於 32 字元就讓應用程式啟動失敗 */\n    public JwtUtils(@Value("${JWT_SECRET:}") String secret) {\n        if (secret == null || secret.length() < 32) {\n            throw new IllegalStateException(".env 的 JWT_SECRET 未設定或長度不足 32 字元");\n        }\n        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));\n    }\n\n    /** 簽發 Token：subject 為帳號，角色（不含 ROLE_ 前綴）寫入 role Claim */\n    public String generateToken(String username, String role) {\n        return Jwts.builder()\n                .subject(username)\n                .claim(ROLE_CLAIM, role)\n                .issuedAt(new Date())\n                .expiration(new Date(System.currentTimeMillis() + expirationMs))\n                .signWith(key)\n                .compact();\n    }\n\n    /** 解析並驗證 Token（簽章、有效期限），失敗會丟出 JwtException */\n    public Claims parseClaims(String token) {\n        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();\n    }\n\n    public String getUsernameFromToken(String token) {\n        return parseClaims(token).getSubject();\n    }\n\n    /** 取出角色（ADMIN / USER，不含 ROLE_ 前綴） */\n    public String getRoleFromToken(String token) {\n        return parseClaims(token).get(ROLE_CLAIM, String.class);\n    }\n\n    public boolean validateToken(String token) {\n        try {\n            parseClaims(token);\n            return true;\n        } catch (Exception e) {\n            return false;\n        }\n    }\n}'
               }
             },
             {
@@ -2449,22 +2452,19 @@ window.COURSE = {
               }
             },
             {
-              title: '下半場：登入後的購物車、結帳與訂單',
+              title: '下半場：補完購物 API，再做一次安全性盤點',
               type: 'text',
               paragraphs: [
-                '上半場讓系統「認得你是誰」，下半場用這個身分做真正的購物：加入購物車、結帳扣庫存、查詢與取消訂單，管理員可以出貨。所有 API 都需要登入，<strong>帳號一律從 Spring Security 取得，不接受前端傳 username</strong>——否則任何人都能改別人的購物車。',
-                '這一段全程用 <strong>TDD</strong> 讓 AI 開發（0-1 章介紹過）：每個功能先請 AI 只寫測試、看紅燈、確認失敗原因正確，再實作到綠燈，最後重構。下面每一步都附提示詞，以及課前演練時真實出現的紅燈訊息。'
+                '前面章節請 AI 做商城時，多半已經順手做出購物車、結帳、訂單等 API；每個人的專案不一樣，路徑和欄位名稱也不一定相同。所以下半場不再一支一支規定 API，而是請 AI <strong>先看專案現況、列出缺什麼，你確認後再補</strong>。',
+                '補完之後最重要的是安全性：上半場加了登入，但既有的 API 可能還用別的方式決定「你是誰」，例如讀前端傳來的帳號標頭、沒帶就當成 user，等於任何人都能冒充別人。下半場的重點是把這些洞找出來、用測試證明、再修掉。',
+                '這一段用 <strong>TDD</strong> 讓 AI 開發（0-1 章介紹過）：先寫測試看紅燈、確認失敗原因是「還沒做」，再實作到綠燈。購物流程應該具備：'
               ],
               bullets: [
-                '<code>GET /api/cart</code>：我的購物車（品項、單價、小計、總金額、是否超過庫存）',
-                '<code>POST /api/cart/items</code> <code>{productId, quantity}</code>：加入，已存在就累加；404 商品不存在、409 超過庫存',
-                '<code>PATCH /api/cart/items/{productId}</code> 改數量（409 超過庫存）、<code>DELETE /api/cart/items/{productId}</code> 移除',
-                '<code>POST /api/orders/checkout</code>：結帳，成功回 <strong>201</strong> 與新訂單；400 購物車是空的、409 庫存不足（details 列出哪幾項）',
-                '<code>GET /api/orders/me</code>、<code>GET /api/orders/{orderNo}</code>：我的訂單（含明細）；別人的訂單一律回 404，不洩漏訂單是否存在',
-                '<code>POST /api/orders/{orderNo}/cancel</code>：取消 PENDING 訂單並退回庫存；409 已出貨不能取消',
-                '<code>PATCH /api/orders/{orderNo}/ship</code>：<strong>ADMIN</strong> 把 PENDING 改為 SHIPPED；403 非管理員、409 狀態不是 PENDING',
-                '<code>GET /api/admin/orders?status=</code>：<strong>ADMIN</strong> 查全部帳號的訂單（含下單帳號），可依狀態篩選；400 狀態不合法',
-                '訂單編號 <code>ORD-yyyyMMdd-流水號</code>，流水號來自資料庫 sequence，從 <strong>1000</strong> 起跳（避開種子訂單的 001～003、901）'
+                '購物車：查看、加入（已有就累加）、改數量、移除；超過庫存回 409，商品不存在回 404',
+                '結帳：購物車變成訂單、扣庫存、清空購物車；有一項庫存不足就整筆不成立（409），購物車是空的回 400',
+                '我的訂單：列表與單筆（含明細）；別人的訂單一律回 404，不洩漏訂單是否存在',
+                '取消訂單：還沒出貨才能取消，庫存要退回',
+                '管理員：查全部帳號的訂單、出貨'
               ]
             },
             {
@@ -2472,7 +2472,7 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 'TDD 要能一直重跑，測試就不能用 1-3 章那個示範資料庫：測試會建立訂單、扣庫存，跑幾次資料就亂了；反過來，你在畫面上點的資料也會讓測試時好時壞。<strong>Testcontainers</strong> 在每次 <code>mvn test</code> 時自動起一個全新的 PostgreSQL 容器、跑同樣的 Flyway 遷移，測完就丟掉。你只需要有 Docker（1-3 章已安裝）。',
-                '同一個測試類別裡的測試仍共用這個容器，所以每個測試前後要自己還原資料（清購物車、刪測試訂單、還原種子商品的庫存與價格、種子訂單的狀態）。課前演練就踩過兩次：結帳測試改了商品價格沒還原，下一個測試的總金額變成 5000；AI 工具測試取消了種子訂單沒還原，<code>/api/orders/me</code> 的測試看到 CANCELLED。'
+                '同一個測試類別裡的測試仍共用這個容器，所以每個測試前後要自己還原資料（清購物車、刪測試訂單、還原種子商品的庫存與價格、種子訂單的狀態）。課前演練就踩過兩次：結帳測試改了商品價格沒還原，下一個測試的總金額變成 5000；AI 工具測試取消了種子訂單沒還原，查我的訂單的測試看到 CANCELLED。'
               ],
               bullets: [
                 '不能用 <code>@Transactional</code> 讓測試自動回滾：併發測試需要每個執行緒真的提交交易，回滾測試也要驗證「真的沒寫進去」。',
@@ -2482,219 +2482,81 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 建立 Testcontainers 測試基礎',
-                content: '目前專案只有預設的啟動測試，沒有測試資料庫。請改用 Testcontainers，讓每次測試都有乾淨的 PostgreSQL：\n1. pom.xml 加入 spring-boot-testcontainers、org.testcontainers 的 testcontainers-junit-jupiter 與 testcontainers-postgresql（scope 都是 test，版本交給 Spring Boot 管理）。\n2. 建立 TestcontainersConfig（@TestConfiguration）：容器使用 pgvector/pgvector:pg18（與 docker-compose 相同，要加 asCompatibleSubstituteFor("postgres")），並加上 @ServiceConnection，讓資料來源與 Flyway 自動指向這個容器。\n3. 建立 AbstractIntegrationTest（@SpringBootTest + @AutoConfigureMockMvc + @Import(TestcontainersConfig.class)）：提供 MockMvc、JdbcTemplate，以及 bearer("user") 以示範帳號登入、回傳 Authorization 標頭的小工具（同一帳號只登入一次）。另外寫一個 resetData()，在每個測試前後還原資料：清空 cart_items（V3 之後才有，先預留）、刪除種子以外的訂單與明細、還原 6 筆種子商品的庫存與價格、還原 4 筆種子訂單的狀態。\n4. src/test/resources/application.properties：給測試專用的 JWT 金鑰（依 1-9 章 JwtUtils 讀取的屬性名稱設定，例如 JWT_SECRET=test-only-至少32字元的字串），讓 mvn test 不依賴 PowerShell 的環境變數；spring.datasource.url 刻意指向連不上的位址（例如 jdbc:postgresql://unreachable-test-host.invalid:1/x），避免漏接容器時連到 1-3 章的示範資料庫。\n5. 執行 mvn test，確認既有的啟動測試在 Testcontainers 上通過，並告訴我 Flyway 在測試容器套用了哪些版本。'
+                content: '幫我把測試改成用 Testcontainers，每次跑測試都起一個乾淨的 PostgreSQL（用和 docker-compose 一樣的 pgvector 映像），測試不能碰到開發用的資料庫。\n另外做兩個小工具：一個用示範帳號登入拿 Token；一個在每個測試前後把資料還原（購物車、新增的訂單、商品庫存和價格、種子訂單的狀態）。\n測試用的 JWT 金鑰放在 src/test/resources，跑 mvn test 不依賴 .env。\n有不清楚的地方先問我，做完跑 mvn test 給我看。'
               }
             },
             {
-              title: '步驟 1：Flyway V3——已上線的資料表怎麼安全改結構',
+              title: '步驟 1：請 AI 盤點並補完購物 API',
               type: 'code',
               paragraphs: [
-                '一筆訂單要能有多個商品，所以 1-4 章的 orders（一筆一個商品）要拆成「訂單＋訂單明細」；購物車也存進資料庫，2-2 章的 AI 工具才查得到。V1、V2 已經套用過，<strong>不能修改</strong>（Flyway 會比對 checksum，改了就啟動失敗），只能新增 V3。',
-                '提示詞第一句刻意要 AI <strong>先讀 V1、V2 與 Order Entity</strong>：V3 要搬移 V2 的舊資料、刪掉 V2 的 CHECK 限制，名稱與欄位都要以實際檔案為準，不能讓 AI 憑印象猜。'
+                '不用自己寫 API 規格：讓 AI 讀專案、對照上面的購物流程列出缺什麼，你看過清單再讓它動手。如果專案已經全部做完，這一步只會得到「都有了」，可以直接進步驟 2。'
               ],
               bullets: [
-                '明細存 <code>unit_price</code>：下單當下的單價要記下來，商品之後改價不影響舊訂單。',
-                '舊資料搬進明細：<code>unit_price = total_price / quantity</code>，再刪除 orders 的 <code>product_id</code>、<code>quantity</code>。',
-                '狀態加上 <code>CANCELLED</code>：先 DROP 舊的 CHECK 限制（PostgreSQL 自動命名為 <code>orders_status_check</code>，以讀到的為準）再加回。',
-                '<code>CREATE SEQUENCE order_no_seq START WITH 1000</code>：訂單編號流水號交給資料庫產生，併發時不會重號。',
-                '<strong>寫 V3 時可能被權限擋下</strong>：V3 含 <code>DROP COLUMN</code>、<code>DROP CONSTRAINT</code>，用 Claude Code 的 auto mode 時，建立這個檔案可能被權限分類器判為破壞性動作而拒絕（課前驗證就遇到）。這是正常的保護，處理方式：請 AI 先把 SQL 全文貼出來，你確認只刪 orders 的 <code>product_id</code>、<code>quantity</code> 與舊的狀態限制、沒有 DROP TABLE，再手動放行；或照它貼出的內容自己建立檔案。不要叫 AI 換個方式（例如改用 Bash 或 python 寫檔）繞過。'
+                '要改資料表時（例如訂單拆成訂單＋明細），只能新增 Flyway 版本（V3、V4…），<strong>不能修改已套用的 V1、V2</strong>：Flyway 會比對 checksum，改了就啟動失敗。',
+                '⚠ 新的遷移含 <code>DROP COLUMN</code>、<code>DROP CONSTRAINT</code> 時，Claude Code 的 auto mode 可能判定為破壞性動作而拒絕寫檔。請 AI 先貼出 SQL，你確認沒有 DROP TABLE、只動該動的欄位後再放行；不要叫 AI 換方式繞過。',
+                '結帳要有併發測試：兩個人同時買最後一件，只能一個成功；有一項庫存不夠時，庫存和購物車都不能變。',
+                '⚠ 紅燈必須是「功能還沒做」（404 或斷言不符）；看到 <code>COMPILATION ERROR</code> 不算紅燈，請 AI 先補空的類別或方法再跑。'
               ],
               code: {
                 language: 'text',
-                title: 'AI Agent 提示詞 — V3 遷移（先紅後綠）',
-                content: '請先讀 src/main/resources/db/migration 的 V1、V2 與 Order Entity，告訴我目前 orders 的欄位、狀態 CHECK 限制的名稱與 4 筆種子訂單，再開始下面兩步。\n\n【紅：只寫測試】\n寫 MigrationV3Test（繼承 AbstractIntegrationTest，用 JdbcTemplate 查 information_schema 與資料）驗證：cart_items 表存在；orders 已沒有 product_id、quantity 欄位；4 筆舊訂單都搬進 order_items 且單價 = total_price / quantity；狀態可以存 CANCELLED；sequence order_no_seq 可以取號。\n再寫一個 OrdersMeApiTest：user 登入後 GET /api/orders/me，挑一筆你剛才讀到的 user 種子訂單，斷言它的 items[0] 的 productName 與 quantity 和 V2 的資料一致。\n只寫測試、不要寫 V3。執行 mvn test，把失敗訊息給我看，說明每個失敗是不是因為「V3 還不存在」。\n\n【綠：新增 V3 與 Entity】\n新增 V3__cart_and_order_items.sql，不准修改 V1、V2：\n- cart_items：id、username、product_id（外鍵到 products）、quantity（CHECK > 0）、created_at，UNIQUE(username, product_id)\n- order_items：id、order_id（外鍵到 orders）、product_id（外鍵到 products）、quantity（CHECK > 0）、unit_price NUMERIC(10,2)；order_id 建索引\n- 舊訂單搬進 order_items（unit_price = total_price / quantity），再刪除 orders 的 product_id、quantity\n- 狀態 CHECK 加上 CANCELLED（先 DROP 剛才讀到的舊限制再加回）\n- CREATE SEQUENCE order_no_seq START WITH 1000\n同時新增 OrderItem Entity，Order 改成 @OneToMany 關聯明細；GET /api/orders/me 改回傳 OrderView（orderNo、status、totalPrice、createdAt、items：productId、productName、quantity、unitPrice、subtotal），查詢用 @EntityGraph 一次載入明細與商品。\n不准修改測試。完成後執行 mvn test 全部通過，再用 mvn spring-boot:run 啟動，確認 1-3 章的示範資料庫也套用了 V3。'
+                title: 'AI Agent 提示詞 — 盤點並補完購物 API',
+                content: '看一下專案現在有哪些 API，對照一般購物流程（購物車、結帳、查自己的訂單、取消訂單、管理員查全部訂單和出貨），把還沒做的補完。\n先列出缺哪些給我確認再做；用 TDD，先寫測試、跑紅燈給我看。有不清楚的地方先問我。'
               }
             },
             {
-              title: '步驟 2：購物車 API——完整走一次紅 → 綠 → 重構',
+              title: '步驟 2：安全性盤點——帳號從 Token 取得、管理員 API 雙重防護',
               type: 'code',
               paragraphs: [
-                '購物車是第一個完整的 TDD 循環。紅燈提示詞有兩個重點：<strong>測試要能編譯</strong>（可以先建立空的類別與方法簽章，方法內丟 <code>UnsupportedOperationException</code>），以及<strong>失敗原因要對</strong>——API 回 404（路由還不存在）或丟出 UnsupportedOperationException，才是「功能還沒做」；編譯錯誤、測試自己寫錯都不算紅燈。',
-                '錯誤格式沿用 1-6 章的統一錯誤回應，再加一個 <code>details</code> 字串陣列（例如庫存不足的品項清單，每項一個字串；沒有時是空陣列）。注意 GlobalExceptionHandler <strong>只處理自訂的業務例外</strong>：如果寫了 <code>@ExceptionHandler(Exception.class)</code> 攔截全部例外，後面方法層級授權丟出的 AccessDeniedException 會被吃掉，403 變成 500。'
-              ],
-              code: {
-                language: 'text',
-                title: 'TDD 三段提示詞 — 購物車 API',
-                content: '【紅：只寫測試】\n我要做購物車 API，全部需要登入，帳號一律取自 Spring Security，不接受前端傳 username：\n- GET /api/cart：items（productId、productName、unitPrice、quantity、subtotal、stock、exceedsStock）、totalQuantity、totalAmount、hasStockIssue\n- POST /api/cart/items {productId, quantity}：已在購物車就累加；商品不存在 404、超過庫存 409、數量 ≤ 0 回 400\n- PATCH /api/cart/items/{productId} {quantity}：改數量，超過庫存 409\n- DELETE /api/cart/items/{productId}：移除，回傳更新後的購物車\n錯誤一律回統一格式 {timestamp, status, error, message, path, details}，details 是字串陣列（沒有補充說明時是空陣列）：專案已有 1-6 章的 GlobalExceptionHandler 就延伸它，沒有就新建。自訂例外 BadRequestException（400）、NotFoundException（404）、ConflictException（409）都繼承 BusinessException；GlobalExceptionHandler 只處理 BusinessException，不要攔截 Exception.class。\n請先只寫測試：CartApiTest（用 MockMvc 打 API：未登入 401、空購物車、加入後讀得到、累加、超過庫存 409 與錯誤格式、商品不存在 404、數量為 0 回 400、修改與移除、兩個帳號的購物車互相隔離）與 CartServiceTest。為了讓測試能編譯，可以先建立空的類別與方法簽章（方法內丟 UnsupportedOperationException），但不要寫實作。\n執行 mvn test，把失敗訊息給我看，並逐一說明失敗原因是不是「功能還沒做」（404 或 UnsupportedOperationException），而不是編譯錯誤或測試寫錯。如果有測試在這個階段就通過，告訴我為什麼。\n\n【綠：實作到通過】\n失敗原因正確。現在請實作 CartItem Entity、CartItemRepository、CartService、CartController 與例外處理，讓這些測試通過。\n不准修改測試的斷言；如果你認為測試寫錯了，先停下來告訴我原因。完成後執行 mvn test 給我看結果。\n\n【重構：測試保護下整理】\n測試都通過了。請檢查 CartService 有沒有重複的程式碼（例如檢查庫存、組回應的地方）或命名不清楚的地方，\n整理後再跑一次 mvn test，確認仍然全部通過，並列出你改了什麼。'
-              }
-            },
-            {
-              title: '步驟 3：結帳——交易、條件式扣庫存與整筆回滾',
-              type: 'code',
-              paragraphs: [
-                '結帳是整個購物流程最容易出錯的地方：兩個人同時買最後一件、三個品項中第三項沒貨、結帳到一半出錯……測試要先把這些情境寫下來，AI 實作時才有標準。',
-                '<strong>為什麼不能「先查庫存、再扣庫存」</strong>：兩個人同時查都看到還有 1 件，兩邊都扣，結果超賣。改用一句條件式 UPDATE，讓資料庫保證「檢查和扣除」是同一個原子動作：影響 0 列就代表庫存不足。'
-              ],
-              bullets: [
-                '<strong>同一個 @Transactional</strong>：第三項庫存不足時，前兩項已扣的庫存也要退回（回滾），購物車保持原樣。',
-                '<strong>依商品 id 排序後再扣</strong>：兩筆結帳以相同順序鎖住商品列，避免互相等待造成死結。',
-                '<strong>@Modifying(clearAutomatically = true)</strong>：條件式 UPDATE 繞過了 JPA 的快取，之後不要再用先前載入的 Product Entity算庫存（1-4 章的幽靈快取問題）。',
-                '<strong>併發測試</strong>：庫存 1 件、兩個帳號用 <code>CyclicBarrier</code> 同時結帳，只能一筆成功；這個測試不能加 @Transactional。'
-              ],
-              code: {
-                language: 'text',
-                title: 'AI Agent 提示詞 — 結帳（先紅後綠）',
-                content: '【紅：只寫測試】\n我要做結帳 POST /api/orders/checkout（成功回 201 與新訂單）。請先只寫測試：\n- CheckoutServiceTest（被測的是既有 OrderService 的 checkout(username) 方法與 API；結帳寫在 OrderService，不要另建 CheckoutService 類別）：正常結帳會扣庫存、建立訂單與明細、清空購物車；明細單價取結帳當下的價格，之後改價不影響舊訂單；購物車空回 400；其中一項庫存不足時整筆回滾（庫存與購物車都不變），409 的 message 為「庫存不足，無法結帳：」加上各品項（以「、」串接），details 為字串陣列、每個不足的品項一個字串，格式「商品名稱（需要 N 件，庫存 M 件）」；兩次結帳的訂單編號不同；API 成功回 201。\n- ConcurrentCheckoutTest：商品庫存設為 1，buyer1、buyer2 的購物車各放 1 件，兩個執行緒用 CyclicBarrier 同時呼叫 orderService.checkout，重複 8 輪，每輪只能一筆成功、庫存剛好變 0。這個測試不能加 @Transactional（每個執行緒要真的提交交易），資料由 resetData() 清除。\n為了讓測試能編譯，可以先在 OrderService 加上 checkout(String username) 的空方法簽章（方法內丟 UnsupportedOperationException），但不要寫實作。\n執行 mvn test，把失敗訊息給我看，說明失敗原因是不是「結帳還沒做」（404 或 UnsupportedOperationException），而不是編譯錯誤。\n\n【綠：實作到通過】\n實作 OrderService.checkout(username) 與 API（POST /api/orders/checkout），規則：\n1. 整個結帳在同一個 @Transactional 內，任何一步失敗整筆回滾。\n2. 讀購物車時依商品 id 排序（兩筆結帳以相同順序鎖列，避免死結）。\n3. 扣庫存用條件式 UPDATE：UPDATE products SET stock = stock - :qty WHERE id = :id AND stock >= :qty，影響 0 列就是庫存不足；不要先查庫存再扣。@Modifying 加 clearAutomatically = true，之後不要再用先前載入的 Product Entity。\n4. 收集所有不足的品項，最後丟 InsufficientStockException（409）：message 為「庫存不足，無法結帳：」加上各品項（以「、」串接）；details 為字串陣列，每項格式「商品名稱（需要 N 件，庫存 M 件）」，例如「香氛加濕器（需要 18 件，庫存 17 件）」，庫存取扣庫存失敗當下讀到的數字。\n5. 訂單編號 ORD-yyyyMMdd-流水號，流水號用 nextval(\'order_no_seq\')，不要用 count 推算。\n6. 建立訂單與明細（單價存進明細）後清空購物車。\n不准修改測試；完成後執行 mvn test 全部通過給我看。'
-              }
-            },
-            {
-              title: '步驟 4：取消訂單與管理員出貨',
-              type: 'code',
-              paragraphs: [
-                '取消與出貨都是「只有 PENDING 才能做」的狀態轉換。如果使用者按取消的同一刻，管理員按了出貨，會不會兩個都成功（已出貨的訂單又被退庫存）？同樣用條件式 UPDATE 解決：<code>WHERE id = :id AND status = \'PENDING\'</code>，資料庫只會讓其中一個成功，影響 0 列的那一方回 409。',
-                '出貨只有 ADMIN 可以做，授權規則寫在 SecurityConfig 的 URL 規則：<code>.requestMatchers(HttpMethod.PATCH, "/api/orders/*/ship").hasRole("ADMIN")</code>。'
-              ],
-              code: {
-                language: 'text',
-                title: 'AI Agent 提示詞 — 取消與出貨（先紅後綠）',
-                content: '【紅：只寫測試】\n請先寫 OrderLifecycleTest：\n- GET /api/orders/{orderNo} 只能看自己的訂單：別人的與不存在的都回 404（不洩漏訂單是否存在）\n- POST /api/orders/{orderNo}/cancel：取消自己的 PENDING 訂單並退回庫存；已取消、已出貨回 409；取消別人的訂單回 404 且訂單不變\n- PATCH /api/orders/{orderNo}/ship：user 回 403；admin 把 PENDING 改為 SHIPPED；非 PENDING 回 409；已出貨的訂單 user 不能取消\n- 取消與出貨同時發生（兩個執行緒），只有一個成功，且庫存只在取消成功時退回\n為了讓測試能編譯，測試直接呼叫的 Service 方法可以先建立空的方法簽章（方法內丟 UnsupportedOperationException），但不要寫實作。\n執行 mvn test，把失敗訊息給我看，說明失敗原因是不是「功能還沒做」（404、UnsupportedOperationException 或斷言不符），而不是編譯錯誤。\n\n【綠：實作到通過】\n取消與出貨都用條件式 UPDATE（WHERE id = :id AND status = \'PENDING\'），影響 1 列才算成功（取消成功才退庫存），0 列回 409 並說明目前狀態；出貨的授權寫在 SecurityConfig（PATCH /api/orders/*/ship 需要 ADMIN）。\n不准修改測試，完成後執行 mvn test 全部通過。'
-              }
-            },
-            {
-              title: '真實的紅燈長什麼樣子（課前演練的 mvn test 輸出節錄）',
-              type: 'code',
-              paragraphs: [
-                '下面是照這些提示詞實際演練時的紅燈。看紅燈時要問兩件事：<strong>失敗的是不是我們要做的功能？失敗原因是不是「還沒做」？</strong> 404、斷言不符是正確的紅燈；如果看到 <code>COMPILATION ERROR</code>，代表測試連編譯都過不了，要先請 AI 補上空的類別或方法簽章。',
-                '最後兩段是<strong>綠燈階段</strong>的失敗：實作沒問題，是測試之間互相污染。這種情況的修法是補齊 resetData()，而不是改斷言，更不是讓 AI 修改測試。'
-              ],
-              bullets: [
-                '購物車紅燈裡唯一通過的是「未登入回 401」：Spring Security 在路由之前就擋下了，所以功能還沒做也會過。這種「還沒實作就綠」的測試要看一眼，確認它不是寫錯。',
-                '「商品不存在回404」在紅燈時失敗的原因是 <code>No value at JSON path "$.status"</code>：狀態碼剛好也是 404（路由不存在），但沒有統一錯誤格式——斷言 body 而不只是狀態碼，測試才分得出來。'
-              ],
-              code: {
-                language: 'text',
-                title: '紅燈與綠燈失敗訊息節錄',
-                content: '# 步驟 1：V3 還不存在\n[ERROR] Tests run: 5, Failures: 3, Errors: 2 <<< FAILURE! -- in com.example.shop.MigrationV3Test\n[ERROR]   MigrationV3Test.購物車表存在:51 expected: 1 but was: 0\n[ERROR]   MigrationV3Test.狀態可為CANCELLED:60 expected: 1 but was: 0\n[ERROR]   OrdersMeApiTest.訂單含明細:30 No matching value at JSON path "$[?(@.orderNo==\'ORD-20261109-003\')].items[0].productName"\n\n# 步驟 2：購物車 API 還沒做（路由不存在 -> 404）\n[ERROR] Tests run: 8, Failures: 7, Errors: 0 <<< FAILURE! -- in com.example.shop.CartApiTest\n[ERROR] CartApiTest.超過庫存回409與統一錯誤格式\njava.lang.AssertionError: Status expected:<409> but was:<404>\n[ERROR] CartApiTest.商品不存在回404\njava.lang.AssertionError: No value at JSON path "$.status"\n\n# 步驟 3：結帳還沒做\n[ERROR] Tests run: 10, Failures: 6, Errors: 3 <<< FAILURE! -- in com.example.shop.CheckoutServiceTest\n[ERROR] CheckoutServiceTest.結帳API成功回傳新訂單\njava.lang.AssertionError: Status expected:<201> but was:<404>\n\n# 步驟 4：取消與出貨還沒做\n[ERROR] OrderLifecycleTest.非待出貨狀態不能出貨回409\njava.lang.AssertionError: Status expected:<409> but was:<404>\n\n# 綠燈也會失敗（1）：結帳測試改了商品價格沒還原，下一個測試的總金額不對\n[ERROR]   CheckoutServiceTest.結帳API成功回傳新訂單:147 JSON path "$.totalPrice" expected:<1890.0> but was:<5000.0>\n-> 修法：resetData() 連種子商品的價格一起還原\n\n# 綠燈也會失敗（2）：AI 工具測試取消了種子訂單沒還原\n[ERROR]   OrdersMeApiTest.訂單含明細:33 JSON path "$[?(@.orderNo==\'ORD-20261109-003\')].status" expected:<PENDING> but was:<CANCELLED>\n-> 修法：resetData() 連種子訂單的狀態一起還原'
-              }
-            },
-            {
-              title: '講師示範：TDD 紅綠燈現場跑',
-              type: 'code',
-              paragraphs: [
-                '現場請 AI 從零寫測試、實作，一輪要 10～20 分鐘。課堂上可以用示範腳本 <a href="assets/demo/demo-1-9-tdd-red-green.ps1" download>demo-1-9-tdd-red-green.ps1</a> <strong>重播</strong>參考實作的紅綠燈：它用 <code>git archive</code> 把「上一個 commit 的程式＋這個 commit 的測試」匯出到暫存資料夾跑一次（紅），再放上實作跑一次（綠），不會動到參考專案的工作目錄與分支。',
-                '<strong>示範前置</strong>：Docker Desktop 已啟動（Testcontainers 需要）；參考實作的 git repo 在本機；不需要啟動後端或前端。第一次執行會下載 pgvector 映像，建議課前先跑一次。從網站下載的 .ps1 可能被 Windows 封鎖而無法執行：先執行 <code>Unblock-File .\\腳本名稱.ps1</code>，或用 <code>pwsh -ExecutionPolicy Bypass -File .\\腳本名稱.ps1</code> 執行。'
-              ],
-              bullets: [
-                '<strong>步驟 1</strong>：執行腳本，畫面先顯示「紅燈：只有測試、還沒有實作」，約 1 分鐘後印出 <code>Tests run: 8, Failures: 7</code> 與 <code>Status expected:&lt;409&gt; but was:&lt;404&gt;</code>。停在這裡問學員：失敗原因是不是「功能還沒做」？哪一個測試沒失敗、為什麼？',
-                '<strong>步驟 2</strong>：腳本接著放上實作，印出 <code>Tests run: 8, Failures: 0</code>、<code>BUILD SUCCESS</code>。強調「測試檔一個字都沒改」。',
-                '<strong>步驟 3（選做）</strong>：加 <code>-Keep</code> 保留暫存資料夾，用 VS Code 打開 <code>CartApiTest.java</code> 與 <code>CartController.java</code> 對照講解。',
-                '<strong>為什麼只重播 CartApiTest</strong>：它只透過 HTTP 呼叫 API，實作不存在時仍能編譯，失敗原因是 404。其他測試類別（CartServiceTest、OrderLifecycleTest、AdminOrdersApiTest）會直接呼叫還不存在的 Service 或 Controller 方法，重播時會停在編譯錯誤（課前實測 CartServiceTest 即是如此，腳本會提示「這是編譯錯誤，不是紅燈」）——正好用來說明為什麼紅燈提示詞要先建立空的方法簽章。',
-                '<strong>可能出錯</strong>：<code>Could not find a valid Docker environment</code> → Docker Desktop 沒啟動；找不到 commit → 用 <code>-CommitGrep</code> 換成 <code>git log --oneline</code> 看到的訊息關鍵字；mvn 輸出存在暫存資料夾的 <code>mvn-red.log</code>、<code>mvn-green.log</code>，腳本結束時會印出路徑。'
-              ],
-              code: {
-                language: 'powershell',
-                title: 'PowerShell — 重播購物車 API 的紅燈與綠燈',
-                content: '# 參考實作的路徑依你的電腦調整\npwsh -File .\\demo-1-9-tdd-red-green.ps1 -RepoPath D:\\GitHub\\learn-spring-rehearsal2\n\n# 預期輸出（節錄）\n# == 重播 TDD：8b1abb7 [1-9 購物] 購物車 API 與統一錯誤處理（TDD）\n# == 紅燈：只有測試、還沒有實作（mvn test 執行中，約 1～2 分鐘）\n#    （先移除本次不示範的新測試：src/test/java/com/example/shop/CartServiceTest.java）\n#     [ERROR] Tests run: 8, Failures: 7, Errors: 0, Skipped: 0 ... in com.example.shop.CartApiTest\n#     java.lang.AssertionError: Status expected:<409> but was:<404>\n#    紅燈原因正確：API 還不存在（404）、斷言失敗，不是編譯錯誤。\n# == 綠燈：放上實作，再跑一次同樣的測試\n#     [INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0\n#     [INFO] BUILD SUCCESS\n\n# 學員自己的專案：直接跑指定的測試類別\nmvn test "-Dtest=CartApiTest" 2>&1 | Tee-Object logs/tdd-cart.log'
-              }
-            },
-            {
-              title: '講師示範：用 PowerShell 走一次購物 API',
-              type: 'code',
-              paragraphs: [
-                '腳本 <a href="assets/demo/demo-1-9-shop-api.ps1" download>demo-1-9-shop-api.ps1</a> 依序呼叫每個 API，印出「預期／實際」狀態碼與庫存變化，最後彙總；加 <code>-Pause</code> 會在每一段停下來等你按 Enter，方便邊跑邊講。',
-                '<strong>示範前置</strong>：PostgreSQL 容器與後端（<code>mvn spring-boot:run</code>，8080）已啟動；使用 user／user123 與 admin／admin123。腳本結束時一定會清理：取消測試訂單（退回庫存）、清空兩個帳號的購物車，已出貨的訂單用 psql 依明細補回庫存後刪除，最後比對庫存與開始前一致。腳本預設的資料庫容器是 1-3 章的 <code>spring-postgres</code>、資料庫 <code>learn_spring</code>；名稱不同時加 <code>-PgContainer 容器名稱 -Database 資料庫名稱</code>（<code>docker ps</code> 可查容器名稱）。'
-              ],
-              bullets: [
-                '<strong>A 購物車</strong>：加入 2 件回 200；再加入 9999 件回 409，message 說明「庫存只有 30 件，購物車已有 2 件」。',
-                '<strong>B 結帳</strong>：回 201 與新訂單（編號 ORD-今天日期-1000 以後），庫存 30 → 28；購物車已空再結帳回 400。',
-                '<strong>C 取消</strong>：回 200、狀態 CANCELLED、庫存回到 30；再取消一次回 409。',
-                '<strong>D 出貨</strong>：user 出貨回 403；admin 出貨回 200（SHIPPED）；user 取消已出貨回 409；admin 再出貨回 409。',
-                '<strong>E 結帳時庫存不足</strong>：user 把某商品全部庫存放進購物車，admin 搶先買走 1 件，user 結帳回 409，details 列出「香氛加濕器（需要 18 件，庫存 17 件）」（結帳提示詞規定的格式），而且購物車整筆保留（回滾）。腳本的 details 同時接受字串與物件：字串直接印出，物件（例如 productName、requested、stock 欄位）會組成同樣的句子，格式和提示詞不同也看得到內容。',
-                '<strong>可能出錯</strong>：清理時出現「找不到容器」→ 用 <code>-PgContainer</code> 指定；某一步顯示「差異」→ 對照彙總表找出是哪個 API，再看後端日誌的 <code>[業務例外]</code>。'
-              ],
-              code: {
-                language: 'powershell',
-                title: 'PowerShell — 購物 API 逐步示範',
-                content: 'pwsh -File .\\demo-1-9-shop-api.ps1 -Pause\n\n# 預期輸出（節錄；B 段為實測，E 段的 message 與 details 依結帳提示詞規定的格式）\n# == B. 結帳：交易內扣庫存、建立訂單、清空購物車\n# [OK  ] 結帳\n#        POST /api/orders/checkout -> 預期 201，實際 201\n#        新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\n# [OK  ] user 結帳（庫存只剩不夠了）\n#        POST /api/orders/checkout -> 預期 409，實際 409\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件，庫存 17 件）\n#        details：香氛加濕器（需要 18 件，庫存 17 件）\n#        整筆回滾：user 購物車仍有 1 項，hasStockIssue=True\n# == 清理\n#   OK  全部商品庫存與開始前一致\n\n# 單獨試一個 API（PowerShell 7）：-SkipHttpErrorCheck 讓 4xx 不丟例外，-StatusCodeVariable 取得狀態碼\n$login = Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/auth/login -ContentType \'application/json\' -Body \'{"username":"user","password":"user123"}\'\n$h = @{ Authorization = "Bearer $($login.token)" }\nInvoke-RestMethod -Method Post -Uri http://localhost:8080/api/cart/items -Headers $h -ContentType \'application/json\' -Body \'{"productId":3,"quantity":2}\'\nInvoke-RestMethod -Method Post -Uri http://localhost:8080/api/orders/checkout -Headers $h -SkipHttpErrorCheck -StatusCodeVariable code; "HTTP $code"'
-              }
-            },
-            {
-              title: 'Spring Security 進階：URL 規則 vs @PreAuthorize',
-              type: 'code',
-              paragraphs: [
+                '上半場的登入只解決了「認得你是誰」。前面做好的購物 API 不一定用登入身分決定帳號：常見的是讀前端傳來的 username 或自訂標頭，沒帶就預設成某個帳號。這種 API 加了登入也沒用，任何人改個標頭就能看別人的購物車與訂單。這一步請 AI 把整個專案的 API 檢查一遍，<strong>先列出問題、用測試證明問題存在，再修掉</strong>。',
                 '到目前為止的授權都寫在 SecurityConfig 的 <strong>URL 規則</strong>：請求在 Filter 鏈就被擋下，根本進不到 Controller。好處是集中在一處、看規則表就知道哪些路徑受保護；缺點是新增路徑時忘了加規則，就沒有保護。',
                 '另一種寫法是<strong>方法層級授權</strong>：在 SecurityConfig 加 <code>@EnableMethodSecurity</code>，再把 <code>@PreAuthorize("hasRole(\'ADMIN\')")</code> 貼在 Controller 方法上。規則跟著方法走，即使有人改了 URL 規則、或把方法掛到別的路徑，仍然有保護；缺點是規則分散在各處。管理員查全部訂單的 API 兩種都用，形成<strong>雙重防護</strong>：URL 規則先擋，漏網時方法註解再擋一次。'
               ],
               bullets: [
-                '路徑放在 <code>/api/admin/orders</code>，而不是 <code>/api/orders/all</code>：後者會和 <code>/api/orders/{orderNo}</code> 的路徑變數搶同一個網址；<code>/api/admin/**</code> 也讓 URL 規則一行就能保護所有管理員 API。',
+                '帳號一律從 Spring Security（登入的 Token）取得，不接受前端傳 username；查別人的訂單回 404，不洩漏訂單是否存在。',
+                '管理員 API 放在 <code>/api/admin/**</code> 底下，URL 規則一行就能全部保護，也不會和 <code>/api/orders/{orderNo}</code> 這類路徑變數衝突。',
                 '<code>@PreAuthorize</code> <strong>只放在 Controller，不要放在 Service</strong>：2-2 章的 AI 工具會在沒有登入資訊（SecurityContext）的執行緒呼叫 Service，加在 Service 上會讓工具全部失敗。',
                 '測試方法層級授權時要「繞過 URL 規則」：直接注入 Controller、在 SecurityContext 放入 user 身分後呼叫方法，預期丟 AccessDeniedException；換成 admin 身分則可以通過。',
                 '401 與 403 的差別：401 是「還不知道你是誰」（沒帶 Token 或 Token 失效），前端應該請使用者重新登入；403 是「知道你是誰，但你沒有權限」，前端只能提示，不能把使用者登出。'
               ],
               code: {
                 language: 'java',
-                title: 'AdminOrderController.java 與 SecurityConfig 的兩層授權（參考實作節錄）',
-                content: '// SecurityConfig.java\n@Configuration\n@EnableMethodSecurity   // 讓 @PreAuthorize 生效（和 URL 規則並存）\npublic class SecurityConfig {\n    // ...authorizeHttpRequests 內\n    // 僅 ADMIN：訂單出貨\n    .requestMatchers(HttpMethod.PATCH, "/api/orders/*/ship").hasRole("ADMIN")\n    // 僅 ADMIN：/api/admin/ 底下全部（第一層：在 Filter 鏈就擋掉）\n    .requestMatchers("/api/admin/**").hasRole("ADMIN")\n    // 其餘需登入\n    .anyRequest().authenticated())\n}\n\n// AdminOrderController.java\n@RestController\n@RequestMapping("/api/admin/orders")\npublic class AdminOrderController {\n    /**\n     * 列出所有帳號的訂單（新到舊，含明細與下單帳號）；?status=PENDING 可篩選，狀態不合法回 400。\n     * 第二層：方法層級授權，即使 URL 規則漏了也擋得住。\n     */\n    @PreAuthorize("hasRole(\'ADMIN\')")\n    @GetMapping\n    public List<AdminOrderView> list(@RequestParam(required = false) String status) {\n        return orderService.getAllOrders(status);\n    }\n}'
+                title: 'SecurityConfig 與管理員 Controller 的兩層授權（節錄）',
+                content: '// SecurityConfig.java\n@Configuration\n@EnableMethodSecurity   // 讓 @PreAuthorize 生效（和 URL 規則並存）\npublic class SecurityConfig {\n    // ...authorizeHttpRequests 內\n    // 僅 ADMIN：/api/admin/ 底下全部（第一層：在 Filter 鏈就擋掉）\n    .requestMatchers("/api/admin/**").hasRole("ADMIN")\n    // 其餘需登入\n    .anyRequest().authenticated())\n}\n\n// 管理員訂單 Controller（類別與方法名稱依你的專案）\n@RestController\n@RequestMapping("/api/admin/orders")\npublic class AdminOrderController {\n    /** 列出所有帳號的訂單。第二層：方法層級授權，即使 URL 規則漏了也擋得住 */\n    @PreAuthorize("hasRole(\'ADMIN\')")\n    @GetMapping\n    public List<OrderResponse> allOrders() {\n        return orderService.getAllOrders();\n    }\n}\n\n// 一般 Controller：帳號從登入身分取得，不再讀前端傳來的標頭\n@GetMapping\npublic List<OrderResponse> myOrders(Principal principal) {\n    return orderService.getMyOrders(principal.getName());\n}'
               }
             },
             {
-              title: 'AI Agent 提示詞 — 管理員查全部訂單與方法層級授權',
+              title: 'AI Agent 提示詞 — 安全性盤點',
               type: 'code',
               paragraphs: [
-                '和前面一樣先紅後綠。這支 API 是 2-5 章「訂單管理」頁面的資料來源。'
+                '修完用 Swagger 的 Authorize 換不同帳號的 Token 試一次，或用 PowerShell 打 API。'
+              ],
+              bullets: [
+                '未登入呼叫購物車 → 401；user 呼叫管理員 API → 403；admin → 200；user 查 admin 的訂單編號 → 404。',
+                '⚠ admin 或 user 拿到 500 而不是 403：GlobalExceptionHandler 攔截了 <code>Exception.class</code>，把 AccessDeniedException 吃掉了。',
+                '⚠ 原本用來指定帳號的標頭（例如 <code>X-Username</code>）改完要整個拿掉，Swagger 上也不該再出現這個參數。'
               ],
               code: {
                 language: 'text',
-                title: 'AI Agent 提示詞',
-                content: '請新增管理員查全部訂單的 API，並示範 URL 規則與 @PreAuthorize 兩種授權寫法並存。\n\n【紅：只寫測試】\n寫 AdminOrdersApiTest：未登入 401；user 403；admin 200，且包含不同帳號的訂單與 username 欄位；?status=PENDING 只回該狀態；不合法的狀態回 400；新訂單排在最前面；admin 出貨 user 的待出貨訂單後，在全部訂單中變成 SHIPPED。\n再加兩個「繞過 URL 規則」的測試：直接注入 AdminOrderController，在 SecurityContext 放入 user（ROLE_USER）身分後呼叫 list(null)，預期丟 AccessDeniedException；放入 admin（ROLE_ADMIN）身分則可以通過。\n為了讓測試能編譯，可以先建立空的 AdminOrderController 與 AdminOrderView（list(String status) 方法內丟 UnsupportedOperationException），但不要寫實作，也先不要加授權設定。\n執行 mvn test，把失敗訊息給我看，說明失敗原因是不是「功能還沒做」（404、UnsupportedOperationException 或斷言不符），而不是編譯錯誤。\n\n【綠：實作到通過】\n1. 新增 AdminOrderController：GET /api/admin/orders（放在 /api/admin 底下，避免和 /api/orders/{orderNo} 衝突），回傳 AdminOrderView（OrderView 的欄位再加 username），可選參數 status，依建立時間新到舊。\n2. 第一層：SecurityConfig 加 .requestMatchers("/api/admin/**").hasRole("ADMIN")。\n3. 第二層：SecurityConfig 加 @EnableMethodSecurity，Controller 方法加 @PreAuthorize("hasRole(\'ADMIN\')")。@PreAuthorize 只放在 Controller，不要放在 OrderService（之後 AI 工具會在沒有登入資訊的執行緒呼叫 Service）。\n4. 確認 GlobalExceptionHandler 沒有攔截 AccessDeniedException（否則方法層級的 403 會變成 500）。\n不准修改測試；完成後 mvn test 全部通過，再用 PowerShell 示範未登入 401、user 403、admin 200。'
-              }
-            },
-            {
-              title: '講師示範：401／403／200',
-              type: 'code',
-              paragraphs: [
-                '腳本 <a href="assets/demo/demo-1-9-security.ps1" download>demo-1-9-security.ps1</a> <strong>只讀不寫</strong>，可以在課堂上重複執行。每一步印出預期與實際狀態碼，最後彙總，全部符合時結束碼為 0。',
-                '<strong>示範前置</strong>：後端（8080）已啟動，已完成上面的管理員訂單 API；使用 user／user123、admin／admin123。也可以改用 Swagger UI（<a href="http://localhost:8080/swagger-ui/index.html" target="_blank">http://localhost:8080/swagger-ui/index.html</a>）：先用 <code>POST /api/auth/login</code> 取得 Token，按 <strong>Authorize</strong> 貼上 Token（不必加 <code>Bearer </code>），再呼叫 <code>GET /api/admin/orders</code>，分別用 user 與 admin 的 Token 比較 403 與 200。從網站下載的 .ps1 可能被 Windows 封鎖而無法執行：先執行 <code>Unblock-File .\\腳本名稱.ps1</code>，或用 <code>pwsh -ExecutionPolicy Bypass -File .\\腳本名稱.ps1</code> 執行。'
-              ],
-              bullets: [
-                '<strong>未登入</strong>：<code>GET /api/cart</code>、<code>GET /api/admin/orders</code> 都是 401。',
-                '<strong>user</strong>：<code>GET /api/cart</code> 200；<code>GET /api/admin/orders</code> 403。',
-                '<strong>重點一步</strong>：user 對「不存在的訂單」出貨，得到的是 <strong>403 而不是 404</strong>——URL 規則在 Filter 鏈就擋掉，根本沒去查訂單存不存在。同一個請求換成 admin，才會進到 Service 查訂單，得到 404。',
-                '<strong>admin</strong>：<code>GET /api/admin/orders</code> 200，表格看得到 user 與 admin 兩個帳號的訂單；<code>?status=PENDING</code> 只剩待出貨；<code>?status=WRONG</code> 回 400 與中文 message。',
-                '<strong>可能出錯</strong>：登入失敗 → 後端沒啟動或密碼不對（<code>-UserPassword</code>、<code>-AdminPassword</code> 可指定）；admin 查全部訂單拿到 500 → GlobalExceptionHandler 攔截了 Exception.class，把 AccessDeniedException 吃掉了；user 拿到 200 → URL 規則與 @PreAuthorize 都沒生效，檢查 @EnableMethodSecurity。'
-              ],
-              code: {
-                language: 'powershell',
-                title: 'PowerShell — 401／403／200 示範',
-                content: 'pwsh -File .\\demo-1-9-security.ps1\n\n# 預期輸出（彙總，實測）\n# 步驟                                                預期 實際 結果\n# 未登入查購物車                                       401  401 OK\n# 未登入查全部訂單（管理員 API）                       401  401 OK\n# user 查自己的購物車                                  200  200 OK\n# user 查全部訂單（管理員 API）                        403  403 OK\n# user 對不存在的訂單出貨（URL 規則先擋，不會查訂單）  403  403 OK\n# admin 查全部訂單                                     200  200 OK\n# admin 只看待出貨（?status=PENDING）                  200  200 OK\n# admin 用不合法的狀態篩選                             400  400 OK\n# admin 對不存在的訂單出貨（通過授權後才查訂單）       404  404 OK\n\n# 不用腳本、手動試一次（PowerShell 7）\n$u = Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/auth/login -ContentType \'application/json\' -Body \'{"username":"user","password":"user123"}\'\nInvoke-RestMethod -Uri http://localhost:8080/api/admin/orders -Headers @{ Authorization = "Bearer $($u.token)" } -SkipHttpErrorCheck -StatusCodeVariable code | Out-Null; "user -> HTTP $code"   # 403'
+                title: 'AI Agent 提示詞 — 安全性盤點',
+                content: '現在已經有登入了，幫我檢查所有 API 還有哪些安全性問題，例如：\n- 目前的帳號是怎麼取得的？要改成從登入的 Token 拿，不能讓前端自己指定\n- 一般會員能不能呼叫管理員的 API？管理員 API 用 URL 規則加 @PreAuthorize 兩層保護\n- 能不能看到或改到別人的購物車、訂單\n先列出問題給我確認，再寫測試證明問題存在，然後修掉。有不清楚的地方先問我。'
               }
             },
             {
               title: '併發陷阱：同一份購物車被結成兩筆訂單',
               type: 'code',
               paragraphs: [
-                '步驟 3 的併發測試保證了「兩個人搶最後一件只會成功一個」。但還有一種情況沒測到：<strong>同一個人同時送出兩次結帳</strong>（連點兩下結帳鈕、網路重送、開兩個分頁）。課前用腳本實測，5 輪全部重現：兩個請求都回 201，同一份購物車變成兩筆訂單，庫存扣了兩份。參考實作刻意保留這個問題當教材。',
-                '<strong>原因</strong>：checkout 先讀購物車、扣庫存、建訂單，最後才 <code>deleteByUsername</code> 清空購物車，中間沒有鎖住購物車列。PostgreSQL 預設的隔離等級是 <strong>READ COMMITTED</strong>，兩個交易各自讀到同一份購物車；庫存夠就都扣得到（條件式 UPDATE 只保證不超賣，不保證不重複）；第二個交易的 delete 刪到 <strong>0 列</strong>（已被第一個刪掉），而刪 0 列不是錯誤，交易照樣提交。'
+                '步驟 1 的併發測試保證了「兩個人搶最後一件只會成功一個」。但還有一種情況沒測到：<strong>同一個人同時送出兩次結帳</strong>（連點兩下結帳鈕、網路重送、開兩個分頁）。課前用腳本實測，5 輪全部重現：兩個請求都回 201，同一份購物車變成兩筆訂單，庫存扣了兩份。AI 寫的結帳很可能也有同樣的空窗，可以照下方進階任務，請 AI 先寫一個會失敗的併發測試確認。',
+                '<strong>原因</strong>：常見的結帳寫法是先讀購物車、扣庫存、建訂單，最後才清空購物車（例如 <code>deleteByUsername</code>），中間沒有鎖住購物車列。PostgreSQL 預設的隔離等級是 <strong>READ COMMITTED</strong>，兩個交易各自讀到同一份購物車；庫存夠就都扣得到（條件式 UPDATE 只保證不超賣，不保證不重複）；第二個交易的 delete 刪到 <strong>0 列</strong>（已被第一個刪掉），而刪 0 列不是錯誤，交易照樣提交。'
               ],
               bullets: [
-                '<strong>修法 A：比對刪除列數</strong>。<code>deleteByUsername</code> 回傳實際刪除的列數，和一開始讀到的品項數不同，就代表購物車已被另一個結帳處理掉，丟出 ConflictException，讓整筆交易（含已扣的庫存、已建的訂單）回滾。改動最小，第二個請求得到 409。',
-                '<strong>修法 B：悲觀鎖</strong>。另寫一個<strong>結帳專用</strong>的讀購物車查詢，加上 <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code>（SQL 變成 <code>SELECT ... FOR UPDATE</code>），第二個交易會等第一個提交後才讀，讀到的是空購物車，回 400。不要直接加在原本的查詢上：參考實作的 <code>getCart</code>（查購物車）也用同一個查詢，加了鎖連看購物車都要排隊。代價是鎖定期間同帳號的其他購物車操作要等待，鎖的範圍要用測試確認。',
-                '兩種修法都要先有<strong>會失敗的測試</strong>，修完測試轉綠才算數——見下方進階任務。下面的程式碼是示意，參考實作沒有套用（刻意保留問題）。'
+                '<strong>修法 A：比對刪除列數</strong>。清空購物車的刪除方法（例如 <code>deleteByUsername</code>）回傳實際刪除的列數，和一開始讀到的品項數不同，就代表購物車已被另一個結帳處理掉，丟出 ConflictException，讓整筆交易（含已扣的庫存、已建的訂單）回滾。改動最小，第二個請求得到 409。',
+                '<strong>修法 B：悲觀鎖</strong>。另寫一個<strong>結帳專用</strong>的讀購物車查詢，加上 <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code>（SQL 變成 <code>SELECT ... FOR UPDATE</code>），第二個交易會等第一個提交後才讀，讀到的是空購物車，回 400。不要直接加在原本的查詢上：查購物車的 API 通常也用同一個查詢，加了鎖連看購物車都要排隊。代價是鎖定期間同帳號的其他購物車操作要等待，鎖的範圍要用測試確認。',
+                '兩種修法都要先有<strong>會失敗的測試</strong>，修完測試轉綠才算數——見下方進階任務。下面的程式碼是示意，類別與方法名稱依你的專案。'
               ],
               code: {
                 language: 'java',
-                title: '兩種修法示意（OrderService.checkout／CartItemRepository）',
+                title: '兩種修法示意（類別與方法名稱依你的專案）',
                 content: '// 修法 A：OrderService.checkout 最後清空購物車時比對刪除列數\nint deleted = cartItemRepository.deleteByUsername(username);\nif (deleted != cartItems.size()) {\n    // 購物車在本交易讀取之後已被另一個結帳清掉：丟例外讓整筆交易（扣庫存、建訂單）回滾\n    throw new ConflictException("這份購物車已在另一個結帳請求中處理，這次沒有建立訂單");\n}\n\n// 修法 B：結帳專用的加鎖查詢（SELECT ... FOR UPDATE），第二個交易會等第一個提交；\n// getCart 仍用原本不加鎖的查詢，checkout 改呼叫這一個\n@Lock(LockModeType.PESSIMISTIC_WRITE)\n@Query("select c from CartItem c join fetch c.product where c.username = :username order by c.product.id")\nList<CartItem> findForCheckout(@Param("username") String username);'
-              }
-            },
-            {
-              title: '講師示範：重現併發陷阱',
-              type: 'code',
-              paragraphs: [
-                '腳本 <a href="assets/demo/demo-1-9-double-checkout.ps1" download>demo-1-9-double-checkout.ps1</a> 每一輪把 2 個商品各 1 件放進購物車，用<strong>同一個 Token 同時</strong>送出兩個 <code>POST /api/orders/checkout</code>，比較這一輪新增了幾筆訂單。預設用 .NET HttpClient 送出兩個非同步請求；也可以加 <code>-Engine ForEachParallel</code> 改用 PowerShell 的 <code>ForEach-Object -Parallel</code>，課前實測兩種方式都是 5 輪 5 中。',
-                '<strong>示範前置</strong>：PostgreSQL 容器與後端（8080）已啟動；使用 user／user123（購物車會被清空）。腳本結束時一定清理：取消本腳本建立的訂單（API 退回庫存）、清空購物車，再用 psql 刪掉這些已取消的訂單，最後比對庫存與訂單數和開始前一致；只會動到腳本自己建立的訂單編號。腳本預設的資料庫容器是 1-3 章的 <code>spring-postgres</code>、資料庫 <code>learn_spring</code>；名稱不同時加 <code>-PgContainer 容器名稱 -Database 資料庫名稱</code>（<code>docker ps</code> 可查容器名稱）。'
-              ],
-              bullets: [
-                '<strong>步驟 1</strong>：先問學員「同一個人同時按兩次結帳，會發生什麼事？」再執行腳本。',
-                '<strong>預期</strong>：每一輪都印出紅字「兩個請求的狀態碼 = 201 201；本輪新增 2 筆訂單」。正確的行為應該是一個 201、另一個 400（購物車是空的）或 409。',
-                '<strong>步驟 2</strong>：打開 <code>OrderService.checkout</code>，帶學員找出「讀購物車」與「清空購物車」之間的空窗，說明 READ COMMITTED 與「刪 0 列不報錯」。',
-                '<strong>步驟 3</strong>：指出清理結果「OK 全部商品庫存與開始前一致」，示範資料沒有被弄亂。',
-                '<strong>可能出錯</strong>：「這次沒有重現」→ 兩個請求剛好被錯開（電腦很忙時可能發生），加 <code>-Rounds 20</code> 再跑；「商品庫存不足」→ 每輪最多扣 2 件，減少輪數或用 <code>-ProductIds</code> 換庫存多的商品；修好之後再跑，應該每輪只新增 1 筆。'
-              ],
-              code: {
-                language: 'powershell',
-                title: 'PowerShell — 重現同帳號並行結帳',
-                content: 'pwsh -File .\\demo-1-9-double-checkout.ps1\n# 參考實作的容器名稱不同時：\n# pwsh -File .\\demo-1-9-double-checkout.ps1 -PgContainer rehearsal2-postgres -Rounds 10\n\n# 預期輸出（實測）\n# == 併發陷阱示範：同一份購物車、同時結帳兩次（5 輪，方式：HttpClient）\n# 開始前庫存：id=4 -> 50、id=3 -> 30\n# 第 1 輪：兩個請求的狀態碼 = 201 201；本輪新增 2 筆訂單 ORD-20261116-1042, ORD-20261116-1041\n# ……（第 2～5 輪相同）\n# == 結果：5 輪中有 5 輪「同一份購物車結出 2 筆訂單」\n# == 清理\n#   已從資料庫刪除 10 筆已取消的測試訂單（容器 rehearsal2-postgres）\n#   OK  全部商品庫存與開始前一致\n#   OK  user 的訂單回到開始前的 3 筆\n\n# 腳本核心：同一個 token、同時送出兩個結帳請求\n$client = [System.Net.Http.HttpClient]::new()\n$tasks = 1..2 | ForEach-Object {\n    $req = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::Post, \'http://localhost:8080/api/orders/checkout\')\n    $req.Headers.Authorization = [System.Net.Http.Headers.AuthenticationHeaderValue]::new(\'Bearer\', $token)\n    $client.SendAsync($req)\n}\n[System.Threading.Tasks.Task]::WaitAll([System.Threading.Tasks.Task[]]$tasks)\n$tasks | ForEach-Object { [int]$_.Result.StatusCode }   # 201 201 = 重現'
               }
             },
             {
@@ -2708,7 +2570,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 修正同帳號並行結帳（進階）',
-                content: '同一個帳號同時送出兩次 POST /api/orders/checkout，會把同一份購物車結成兩筆訂單、庫存扣兩份。請用 TDD 修正：\n\n【紅：先寫會失敗的測試】\n在 ConcurrentCheckoutTest 新增測試「同帳號同時結帳兩次只成立一筆」：user 的購物車放 2 個商品各 1 件，兩個執行緒用 CyclicBarrier 同時呼叫 orderService.checkout("user")，重複 10 輪；斷言每輪只新增 1 筆訂單、每個商品庫存只扣 1 件、另一個請求得到 BadRequestException（購物車是空的）或 ConflictException。不加 @Transactional，資料由 resetData() 清除。\n執行 mvn test，確認這個測試在目前的程式上會失敗，並把失敗訊息給我看（應該是新增了 2 筆訂單）。如果幾輪都沒有失敗，增加輪數，不要改斷言。\n\n【綠：選一種修法】\n先說明兩種修法的取捨，再實作你建議的那一種：\n(A) 清空購物車時比對 deleteByUsername 回傳的刪除列數，與一開始讀到的品項數不同就丟 ConflictException，讓整筆交易回滾；\n(B) 另寫一個結帳專用的讀購物車查詢，加 @Lock(LockModeType.PESSIMISTIC_WRITE)，第二個交易會等第一個提交後才讀到空購物車（不要加在 getCart 也在用的查詢上）。\n不准修改測試；完成後 mvn test 全部通過，再用 demo-1-9-double-checkout.ps1 重跑，確認每輪只建立 1 筆訂單。'
+                content: '同一個帳號同時送出兩次結帳，會把同一份購物車結成兩筆訂單、庫存扣兩份。請用 TDD 修正：\n先寫一個會失敗的測試（同一個帳號同時結帳兩次，重複多輪，每輪只能成立一筆），跑給我看確實失敗；幾輪都沒失敗就增加輪數，不要改斷言。\n再說明有哪些修法、各有什麼取捨，我選好再實作，實作時不要改測試。有不清楚的地方先問我。'
               }
             },
             {
@@ -2720,12 +2582,11 @@ window.COURSE = {
                 body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
               },
               bullets: [
-                '<strong>範例用來理解，提示詞才是規格</strong>：本章的程式碼範例是節錄（省略 import 與部分設定），交給 AI 的是提示詞。不要把範例整段貼給 AI 照抄；AI 的寫法和範例不同時，以提示詞的要求與測試結果判斷對錯。',
-                '<strong>先讓 AI 讀檔，再寫 V3</strong>：V3 要搬移 V2 的舊資料、刪掉 V2 的 CHECK 限制，名稱以實際檔案為準。提示詞第一句要它先報告欄位、限制名稱與種子訂單，先核對它說的和檔案一致，再讓它往下做。',
-                '<strong>⚠ V3 可能被權限分類器擋下</strong>：V3 含 <code>DROP COLUMN</code>、<code>DROP CONSTRAINT</code>，課前驗證時 auto mode 把寫入這個檔案判為破壞性動作而拒絕。這是正常的保護：讀過 SQL、確認只動 orders 的舊欄位與狀態限制之後由你放行，不要叫 AI 換個方式繞過。',
-                '<strong>⚠ 紅燈必須是「功能還沒做」</strong>：看到 <code>COMPILATION ERROR</code> 或 <code>cannot find symbol</code> 不算紅燈。每段紅燈提示詞都允許先建立空的類別與方法簽章（方法內丟 <code>UnsupportedOperationException</code>）；AI 沒建就直接跑測試時，請它補上空殼再跑一次，確認失敗原因是 404、UnsupportedOperationException 或斷言不符。',
-                '<strong>⚠ 測試和提示詞衝突時，讓 AI 停下來問你</strong>：綠燈提示詞要求的類別或方法和測試對不上、又不准改測試時，AI 可能自行另建類別湊出綠燈。看到它的實作放在提示詞沒提到的新類別，就請它停下來說明，由你決定：要改測試，就走「先改規格 → 改測試並看到紅燈 → 改實作」，測試的修改由你確認。',
-                '<strong>綠燈失敗先查資料污染</strong>：綠燈階段的失敗常是測試互相污染（改了價格、取消了種子訂單沒還原），修法是補齊 <code>resetData()</code>。資料還原屬於測試的基礎設施，可以補；代表規格的斷言與情境，不能為了通過而改。'
+                '<strong>提示詞只講需求，範例用來驗收</strong>：本章的提示詞刻意寫得簡單，細節由 AI 讀專案決定，有疑問會先問你。程式碼範例是節錄，用來對照 AI 的成果；寫法不同時以測試結果判斷對錯，不要把範例整段貼給 AI 照抄。',
+                '<strong>⚠ 紅燈必須是「功能還沒做」</strong>：看到 <code>COMPILATION ERROR</code> 或 <code>cannot find symbol</code> 不算紅燈。請 AI 先補空的類別與方法（方法內丟 <code>UnsupportedOperationException</code>）再跑一次，確認失敗原因是 404、UnsupportedOperationException 或斷言不符。',
+                '<strong>⚠ AI 想改測試時，讓它停下來問你</strong>：實作和測試對不上時，AI 可能改斷言或另建類別湊出綠燈。看到這種情況請它停下來說明，由你決定：要改測試，就走「先改規格 → 改測試並看到紅燈 → 改實作」，測試的修改由你確認。',
+                '<strong>綠燈失敗先查資料污染</strong>：綠燈階段的失敗常是測試互相污染（改了價格、取消了種子訂單沒還原），修法是補齊每個測試前後的資料還原。資料還原屬於測試的基礎設施，可以補；代表規格的斷言與情境，不能為了通過而改。',
+                '<strong>⚠ 安全性盤點先看清單再修</strong>：AI 列出的問題先逐條確認，特別是「帳號從哪裡來」；改完用不同帳號的 Token 實測 401、403、404，不要只看 AI 說「已修正」。'
               ]
             }
           ]
@@ -2758,6 +2619,24 @@ window.COURSE = {
             { id: 'd2-u1-t3', text: '整合 Spring Security 透過 Principal 隔離對話 Session' }
           ],
           sections: [
+            {
+              title: '今日準備清單：Day 2 要申請的金鑰、安裝與下載（照順序）',
+              type: 'text',
+              paragraphs: [
+                '照上課順序列出 Day 2 會用到的金鑰、網站、程式與下載檔案。API 金鑰請課前申請，避免上課時卡在信箱驗證或付款設定，申請步驟見本章「註冊與取得 API Key（課前完成）」。'
+              ],
+              bullets: [
+                '<strong>1.【2-1 金鑰】對話模型，二擇一，寫進 .env 的 <code>MODEL_API_KEY</code></strong>：Muse Spark（<a href="https://dev.meta.ai/" target="_blank">dev.meta.ai</a>，要綁付款方式並儲值少量額度）或 Groq（<a href="https://console.groq.com/" target="_blank">console.groq.com</a>，免費）。',
+                '<strong>2.【2-1 金鑰】JWT_SECRET</strong>：沿用 Day 1 寫在 .env 的值，不用再設定。',
+                '<strong>3.【2-3 金鑰】Voyage AI，寫進 .env 的 <code>VOYAGE_API_KEY</code></strong>：<a href="https://dash.voyageai.com/" target="_blank">dash.voyageai.com</a>，建議綁卡解除速率限制（免費額度內不會扣款）。',
+                '<strong>4.【2-3 範例文件】退貨政策.txt、無線耳機 Pro 規格說明.txt</strong>：把 2-3 章頁面上的範例內容存成這兩個檔案，上傳知識庫用。',
+                '<strong>5.【2-4 程式】Node.js LTS</strong>：0-1 章已安裝，<code>node -v</code> 確認即可。',
+                '<strong>6.【2-4 下載】示範商品圖片 <a href="assets/downloads/product-images.zip" download>product-images.zip</a></strong>：6 張商品圖放進 <code>frontend/public/images/products/</code>；<code>brand/</code> 資料夾留給 2-5 章末升級。',
+                '<strong>7.【2-5 插件】ui-ux-pro-max</strong>：在 VS Code 的 Claude Code 插件或 Claude 桌面版開啟插件管理畫面，新增 marketplace <code>nextlevelbuilder/ui-ux-pro-max-skill</code>，再安裝其中的 ui-ux-pro-max 插件，裝完重新開啟（搜尋腳本需要 Python 3，0-1 章已安裝）。',
+                '<strong>8.【2-5、2-8 程式】Playwright</strong>：0-1 章已安裝，寫購物流程與完整系統驗證的 e2e 用。',
+                '<strong>9.【2-9 選用】Cloudflare Tunnel</strong>：映像 <code>cloudflare/cloudflared</code> 由 docker compose 自動下載；Quick Tunnel 免註冊，要綁自己的網域才需要到 <a href="https://dash.cloudflare.com/" target="_blank">dash.cloudflare.com</a> 註冊。'
+              ]
+            },
             {
               title: 'ChatClient 在架構中的位置',
               type: 'text',
@@ -2814,24 +2693,24 @@ window.COURSE = {
                 '<strong>Groq（免費）</strong>：免綁信用卡即可取得 API Key，推論速度極快；免費方案有每分鐘請求數與每日 token 上限，同一 Key 多人共用很容易撞到 429。適合課堂練習。',
                 '<strong>Muse Spark 1.3 Contributor（成本價）</strong>：Meta 的模型，Contributor 方案以「同意 Meta 將你的提示詞、程式碼與回應用於訓練未來模型」換取接近成本的價格：輸入 US$0.10 / 百萬 tokens、輸出 US$0.20 / 百萬 tokens（Standard 方案為 1.25 / 4.25）。一整天課程練習的花費通常不到 1 美元。',
                 '⚠️ Contributor 方案的資料會被拿去訓練：<strong>不要送入客戶個資、公司機密或正式環境資料</strong>，正式產品請改用 Standard 方案或其他商用模型。',
-                '價格與限額以官方頁面為準（本頁整理於 2026-11）：Groq 看 console.groq.com/settings/limits，Muse Spark 看 dev.meta.ai/docs/pricing-rate-limits。'
+                '價格與限額以官方頁面為準（本頁整理於 2026-11）：Groq 看 <a href="https://console.groq.com/settings/limits" target="_blank">console.groq.com/settings/limits</a>，Muse Spark 看 <a href="https://dev.meta.ai/docs/pricing-rate-limits" target="_blank">dev.meta.ai/docs/pricing-rate-limits</a>。'
               ]
             },
             {
               title: '註冊與取得 API Key（課前完成）',
               type: 'text',
               paragraphs: [
-                '三把金鑰都請在課前申請好，避免上課時卡在信箱驗證。取得後一律用環境變數注入，<strong>不要寫進 application.yml 或推上 Git</strong>。'
+                '三把金鑰都請在課前申請好，避免上課時卡在信箱驗證。取得後寫進後端專案根目錄的 <code>.env</code>（1-9 章建立 JWT_SECRET 的同一個檔案），<strong>不要寫進 application.yml，.env 也不要推上 Git</strong>。'
               ],
               bullets: [
-                '<strong>Groq</strong>：① 開啟 console.groq.com，用 Google / GitHub 帳號或 Email 登入 ② 左側選單 <code>API Keys</code> → <code>Create API Key</code>，取個名稱（如 learn-spring） ③ 金鑰只顯示一次（<code>gsk_</code> 開頭），立即複製保存。',
-                '<strong>Muse Spark（Meta Model API）</strong>：① 開啟 dev.meta.ai 註冊 Model API 帳號並建立團隊 ② 在 Billing 綁定付款方式並儲值少量額度 ③ Dashboard → <code>API keys</code> → <code>Create API key</code> ④ 呼叫時模型名稱使用 <code>muse-spark-1.3-contributor</code> 才會套用 Contributor 價格。部分地區需先開通 Contributor 方案。',
-                '<strong>Voyage AI（向量與重排序）</strong>：① 開啟 dash.voyageai.com 用 Email 或 Google 註冊 ② <code>API Keys</code> → <code>Create new secret key</code>（<code>pa-</code> 開頭） ③ voyage-4 與 rerank-3 每個帳號前 2 億 tokens 免費；未綁付款方式時速率限制很低，建議綁卡以解除限制（不超過免費額度不會扣款）。'
+                '<strong>Groq</strong>：① 開啟 <a href="https://console.groq.com" target="_blank">console.groq.com</a>，用 Google / GitHub 帳號或 Email 登入 ② 左側選單 <code>API Keys</code> → <code>Create API Key</code>，取個名稱（如 learn-spring） ③ 金鑰只顯示一次（<code>gsk_</code> 開頭），立即複製保存。',
+                '<strong>Muse Spark（Meta Model API）</strong>：① 開啟 <a href="https://dev.meta.ai" target="_blank">dev.meta.ai</a> 註冊 Model API 帳號並建立團隊 ② 在 Billing 綁定付款方式並儲值少量額度 ③ Dashboard → <code>API keys</code> → <code>Create API key</code> ④ 呼叫時模型名稱使用 <code>muse-spark-1.3-contributor</code> 才會套用 Contributor 價格。部分地區需先開通 Contributor 方案。',
+                '<strong>Voyage AI（向量與重排序）</strong>：① 開啟 <a href="https://dash.voyageai.com" target="_blank">dash.voyageai.com</a> 用 Email 或 Google 註冊 ② <code>API Keys</code> → <code>Create new secret key</code>（<code>pa-</code> 開頭） ③ voyage-4 與 rerank-3 每個帳號前 2 億 tokens 免費；未綁付款方式時速率限制很低，建議綁卡以解除限制（不超過免費額度不會扣款）。'
               ],
               code: {
-                language: 'powershell',
-                title: 'PowerShell — 設定環境變數（目前視窗有效）',
-                content: '# 對話模型二擇一：Groq（免費）或 Meta Muse Spark（成本價）\n# 兩家共用同一個變數名稱，切換供應商時只改值、不改 application.yml\n$env:MODEL_API_KEY  = "meta_xxx..."   # Muse Spark；改用 Groq 時填 gsk_xxx...\n# 向量與重排序\n$env:VOYAGE_API_KEY = "pa-xxx..."\n# JWT 簽章金鑰（1-9 章，至少 32 字元）\n$env:JWT_SECRET     = "please-change-me-to-a-32-chars-or-longer-secret"\n\n# 想永久保存可寫入使用者環境變數（重開終端機後生效）\n[Environment]::SetEnvironmentVariable("VOYAGE_API_KEY", "pa-xxx...", "User")'
+                language: 'text',
+                title: '.env — 後端專案根目錄（不要推上 Git）',
+                content: '# Spring Boot 透過 application.yml 的 spring.config.import 讀這個檔\n# 對話模型二擇一：Muse Spark 填 meta_ 開頭的金鑰，改用 Groq 填 gsk_ 開頭的金鑰\nMODEL_API_KEY=meta_xxx...\n# 向量與重排序（2-3 章）\nVOYAGE_API_KEY=pa-xxx...\n# JWT 簽章金鑰（1-9 章已建立，至少 32 字元）\nJWT_SECRET=please-change-me-to-a-32-chars-or-longer-secret'
               }
             },
             {
@@ -2850,7 +2729,7 @@ window.COURSE = {
               code: {
                 language: 'yaml',
                 title: 'application.yml — Spring AI 模型設定',
-                content: 'spring:\n  ai:\n    # Spring AI 2.0 必加：只啟用 Chat，其餘子模型關閉（否則各自要求 api-key，啟動失敗）\n    model:\n      audio:\n        speech: none\n        transcription: none\n      image: none\n      moderation: none\n      # 內建 OpenAI embedding 與 Voyage 不相容（usage 缺 prompt_tokens），2-3 改用自訂 VoyageEmbeddingModel\n      embedding: none\n    openai:\n      chat:\n        # ── 預設：Muse Spark 1.3 Contributor（成本價）──\n        base-url: https://api.meta.ai/v1\n        api-key: ${MODEL_API_KEY:}   # 空預設值：沒有金鑰也能啟動與跑 mvn test（真的提問時才會失敗）\n        model: muse-spark-1.3-contributor   # 2.0.2 起寫在 chat 底下（舊寫法 options.model 已 deprecated）\n        temperature: 0.7\n        # Muse 預設推理強度 high，首字要等 15～20 秒；minimal 約 3～6 秒（contributor 不可設 none）\n        reasoning-effort: minimal\n        # ── 改用 Groq（免費）只換這三個值 ──\n        # base-url: https://api.groq.com/openai/v1\n        # api-key: ${MODEL_API_KEY:}   # 金鑰統一用同一個環境變數名稱，切換時不會漏改\n        # model: openai/gpt-oss-120b\n      embedding:\n        # 2-3 的自訂 VoyageEmbeddingModel 讀這裡的設定\n        base-url: https://api.voyageai.com/v1\n        api-key: ${VOYAGE_API_KEY:}   # 預設空值：尚未申請 Voyage 也能啟動（2-3 才用到）\n        model: voyage-4   # 預設 1024 維\n    vectorstore:\n      pgvector:\n        dimensions: 1024    # 必須與 embedding 維度一致\n        initialize-schema: true'
+                content: 'spring:\n  # 讀取專案根目錄的 .env（1-9 章已加；KEY=值 的格式和 properties 相同）\n  config:\n    import: optional:file:.env[.properties]\n  ai:\n    # Spring AI 2.0 必加：只啟用 Chat，其餘子模型關閉（否則各自要求 api-key，啟動失敗）\n    model:\n      audio:\n        speech: none\n        transcription: none\n      image: none\n      moderation: none\n      # 內建 OpenAI embedding 與 Voyage 不相容（usage 缺 prompt_tokens），2-3 改用自訂 VoyageEmbeddingModel\n      embedding: none\n    openai:\n      chat:\n        # ── 預設：Muse Spark 1.3 Contributor（成本價）──\n        base-url: https://api.meta.ai/v1\n        api-key: ${MODEL_API_KEY:}   # 空預設值：沒有金鑰也能啟動與跑 mvn test（真的提問時才會失敗）\n        model: muse-spark-1.3-contributor   # 2.0.2 起寫在 chat 底下（舊寫法 options.model 已 deprecated）\n        temperature: 0.7\n        # Muse 預設推理強度 high，首字要等 15～20 秒；minimal 約 3～6 秒（contributor 不可設 none）\n        reasoning-effort: minimal\n        # ── 改用 Groq（免費）只換這三個值 ──\n        # base-url: https://api.groq.com/openai/v1\n        # api-key: ${MODEL_API_KEY:}   # 金鑰統一用 .env 裡同一個名稱，切換時不會漏改\n        # model: openai/gpt-oss-120b\n      embedding:\n        # 2-3 的自訂 VoyageEmbeddingModel 讀這裡的設定\n        base-url: https://api.voyageai.com/v1\n        api-key: ${VOYAGE_API_KEY:}   # 預設空值：尚未申請 Voyage 也能啟動（2-3 才用到）\n        model: voyage-4   # 預設 1024 維\n    vectorstore:\n      pgvector:\n        dimensions: 1024    # 必須與 embedding 維度一致\n        initialize-schema: true'
               }
             },
             {
@@ -2929,7 +2808,19 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有的智慧商城專案（已有商品、訂單與 JWT 登入）中加入 AI 對話功能。開始前我已在同一個 PowerShell 設好 $env:MODEL_API_KEY（2-1 章申請的金鑰），之後執行 mvn spring-boot:run 與 mvn test 都在這個視窗：\n1. 依賴：在 <properties> 加 <spring-ai.version>2.0.2</spring-ai.version>，用 dependencyManagement 匯入 org.springframework.ai:spring-ai-bom:${spring-ai.version}（type pom、scope import），再加入 spring-ai-starter-model-openai。\n2. application.yml 照 2-1 章「Spring AI 模型設定」併入既有的 spring: 區塊底下：Chat 使用 Muse Spark（base-url https://api.meta.ai/v1，模型 muse-spark-1.3-contributor，金鑰讀環境變數 MODEL_API_KEY，寫成 ${MODEL_API_KEY:} 帶空預設值，未設定時至少能啟動；改用 Groq 時只換這三個值），並照範例把 spring.ai.model 底下的 audio.speech、audio.transcription、image、moderation、embedding 都設為 none（Spring AI 2.0 必加，否則缺金鑰啟動失敗；漏掉 embedding 時 mvn test 會因 OpenAiEmbeddingModel 缺金鑰而失敗，2-3 章改用自訂的 VoyageEmbeddingModel），並設 chat.reasoning-effort: minimal（Muse 預設推理強度 high，首字要等 15～20 秒）。不要把金鑰寫死在檔案裡。\n3. 建立 ChatController，用 ChatClient.Builder 建立 ChatClient，系統提示詞：「你是親切的商城智慧客服。回答商品、庫存、訂單問題時，只能根據工具或知識庫查到的資料回答；查不到就說不知道，不可以編造。請用純文字回答，不要使用 Markdown；呼叫工具前不要先說「幫你查一下」之類的過場話，查到結果再一次回答。」\n4. 提供 SSE 串流端點 POST /api/ai/stream（consumes = application/json、produces = text/event-stream）：問題放在 JSON 本文 {"message": "..."}，用 @RequestBody 接收（record ChatRequest(String message)），帳號一律從 Principal 取得；不要做成 GET 加網址參數，問題與 Token 會留在網址、瀏覽器歷史與存取日誌。問題是空白時回 400，用 ResponseStatusException 只回狀態碼（這個端點 produces text/event-stream，回 JSON 錯誤本文在客戶端送 Accept: text/event-stream 時會變成 500；GlobalExceptionHandler 照 1-9 章只處理業務例外，不要用 @ExceptionHandler(Exception.class) 攔截全部例外，否則這個 400 與 GET 的 405 都會變成 500）。回傳 Flux<String>；每個片段若以空白開頭，把第一個空白換成不換行空白（\\u00A0），否則前端依 SSE 規格解析時會去掉 data: 後面的第一個空白造成黏字；串流結束時用 .concatWith(Flux.just("[DONE]")) 多送一則結束標記，讓前端知道回覆已經結束、可以停止讀取。\n5. 對話記憶：直接注入 Spring AI 2.0 自動設定的 ChatMemory（MessageWindowChatMemory，保留最近 20 則），不要自己寫記憶類別；用 MessageChatMemoryAdvisor.builder(chatMemory).build() 建一次 Advisor 共用，並以 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, 登入帳號)) 傳入對話 ID（從 Principal 取得）。\n完成後請用 PowerShell 7 驗證串流：先登入 user 取得 $token（JSON 用單引號包住，PowerShell 7 不需要另外加反斜線跳脫）\n$token = (Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/auth/login -ContentType \'application/json\' -Body \'{"username":"user","password":"user123"}\').token\n再執行（問題放 JSON 本文，經管線交給 curl.exe；-N 關閉緩衝才看得到逐段輸出）\n\'{"message":"你好，你是誰？"}\' | curl.exe -N -X POST http://localhost:8080/api/ai/stream -H "Authorization: Bearer $token" -H "Content-Type: application/json" --data-binary \'@-\'\n（中文不要放在 curl.exe 的引數裡：繁中 Windows 的 curl.exe 會把引數以 CP950 送出，-d 直接帶中文 JSON 時後端無法以 UTF-8 解析而回 400（日誌是 Invalid UTF-8 start byte）；經管線交給 --data-binary \'@-\'，PowerShell 7 會以 UTF-8 送出。網路上常見的 -d \'{\\"message\\":...}\' 反斜線寫法，在 PowerShell 7.3 之後會把反斜線原樣送出，JSON 解析失敗回 400）\n確認回覆分成多筆 data: 陸續出現，結尾有 data:[DONE]（Invoke-RestMethod 會整包緩衝，看不出串流）。再用同一個帳號問「我剛剛問了什麼？」，確認短期記憶有效。'
+                content: '幫我在商城加上 AI 客服對話功能，用 Spring AI 2.0.2，模型用 Muse Spark（OpenAI 相容 API，base-url 是 https://api.meta.ai/v1，模型 muse-spark-1.3-contributor），金鑰放在 .env 的 MODEL_API_KEY。\n- 做一個串流 API：POST /api/ai/stream，問題放在 JSON 本文，要登入才能用\n- 客服只能根據查到的資料回答，查不到就說不知道\n- 要記得同一個使用者剛剛聊過什麼\n有不清楚的地方先問我，做完教我用 PowerShell 測試串流。'
+              }
+            },
+            {
+              title: '驗證串流：PowerShell 7 與 curl.exe',
+              type: 'code',
+              paragraphs: [
+                'AI 做完、後端啟動後，在 PowerShell 7 執行下面兩行。問題經管線交給 <code>curl.exe</code>，不要直接寫在引數裡（原因見本章「AI 開發建議」）；<code>Invoke-RestMethod</code> 會整包緩衝，看不出串流。'
+              ],
+              code: {
+                language: 'powershell',
+                title: 'PowerShell 7 — 驗證 AI 串流',
+                content: '# 完成後請用 PowerShell 7 驗證串流（JSON 用單引號包住，PowerShell 7 不需要另外加反斜線跳脫）\n# 1. 先登入 user 取得 Token\n$token = (Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/auth/login -ContentType \'application/json\' -Body \'{"username":"user","password":"user123"}\').token\n# 2. 問題放 JSON 本文、經管線送出；-N 關閉緩衝才看得到逐段輸出\n\'{"message":"你好，你是誰？"}\' | curl.exe -N -X POST http://localhost:8080/api/ai/stream -H "Authorization: Bearer $token" -H "Content-Type: application/json" --data-binary \'@-\'\n# 預期：回覆分成多筆 data: 陸續出現，結尾有 data:[DONE]\n# 再用同一個帳號問「我剛剛問了什麼？」，確認短期記憶有效'
               }
             },
             {
@@ -2940,7 +2831,7 @@ window.COURSE = {
               ],
               bullets: [
                 '最低需求：資料庫容器已先啟動',
-                '最低需求：`.env` 或環境變數中的 API Key 已載入',
+                '最低需求：後端專案根目錄的 `.env` 已填好 API Key',
                 '最低需求：JDK 21 與 Maven 3.9+ 已完成驗證'
               ],
               code: {
@@ -2963,7 +2854,7 @@ window.COURSE = {
               title: '常見錯誤與排查',
               type: 'warning',
               bullets: [
-                '啟動時卡在 API Key 相關錯誤，先確認 `.env` 是否真的被載入到目前 PowerShell session',
+                '啟動時卡在 API Key 相關錯誤，先確認 `.env` 放在後端專案根目錄，而且 application.yml 有 `spring.config.import` 那行',
                 '若 Flyway 報資料庫連線失敗，先確認資料庫容器是否還在 `Up` 狀態',
                 '若 8080 埠被占用，可先關閉既有應用或調整 Spring Boot 埠號',
                 '若只看到編譯錯誤而不是 Spring 日誌，先回頭處理 Java 或 Maven 環境'
@@ -2978,11 +2869,11 @@ window.COURSE = {
                 body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
               },
               bullets: [
-                '<strong>⚠ 中文問題不要放在 curl.exe 的引數裡</strong>：繁中 Windows 的 <code>curl.exe</code> 會把引數以 CP950 送出，用 <code>-d</code> 直接帶中文 JSON，後端回 400，只看狀態碼看不出和編碼有關（後端日誌是 Invalid UTF-8 start byte），兩輪演練都踩到。提示詞把 JSON 經管線交給 <code>--data-binary \'@-\'</code>（PowerShell 7 以 UTF-8 送出）就是為此而寫；AI 想簡化成 <code>-d</code> 直接帶中文，或改用加反斜線跳脫雙引號的寫法（PowerShell 7.3 起反斜線會原樣送出）時，不要接受。',
-                '<strong>⚠ 你設的環境變數，AI 的終端機不一定看得到</strong>：<code>$env:MODEL_API_KEY</code> 只在你設定的那個 PowerShell 視窗有效，AI 的終端機是另一個程序。請它執行 <code>mvn spring-boot:run</code> 前先檢查變數是否存在，只回報有或沒有、不要印出值；或改由你在自己的視窗啟動後端。yml 寫成 <code>${MODEL_API_KEY:}</code> 只保證沒有金鑰也能啟動，真的提問時仍會失敗。',
-                '<strong>⚠ 不要讓 AI 自己寫記憶類別</strong>：Spring AI 2.0 已自動設定 ChatMemory；第一輪演練用里程碑版時還得自寫包裝類別，AI 看過舊資料就可能照做。照提示詞直接注入即可，驗證時同一帳號連問 8 次，確認沒有 400 或 500（第二輪演練 8 次都是 200）。',
+                '<strong>⚠ 中文問題不要放在 curl.exe 的引數裡</strong>：繁中 Windows 的 <code>curl.exe</code> 會把引數以 CP950 送出，用 <code>-d</code> 直接帶中文 JSON，後端回 400，只看狀態碼看不出和編碼有關（後端日誌是 Invalid UTF-8 start byte），兩輪演練都踩到。驗證指令把 JSON 經管線交給 <code>--data-binary \'@-\'</code>（PowerShell 7 以 UTF-8 送出）就是為此而寫；AI 想簡化成 <code>-d</code> 直接帶中文，或改用加反斜線跳脫雙引號的寫法（PowerShell 7.3 起反斜線會原樣送出）時，不要接受。',
+                '<strong>⚠ 金鑰放 .env，AI 不必看到值</strong>：.env 由你建立在後端專案根目錄，Spring Boot 啟動時自己讀（靠 application.yml 的 <code>spring.config.import</code>），AI 在哪個終端機啟動後端都讀得到。請 AI 不要印出或改寫 .env；需要確認時只回報「有沒有這個 key」。yml 寫成 <code>${MODEL_API_KEY:}</code> 只保證沒有金鑰也能啟動，真的提問時仍要有金鑰。',
+                '<strong>⚠ 不要讓 AI 自己寫記憶類別</strong>：Spring AI 2.0 已自動設定 ChatMemory；第一輪演練用里程碑版時還得自寫包裝類別，AI 看過舊資料就可能照做。請它直接注入自動設定的 ChatMemory，驗證時同一帳號連問 8 次，確認沒有 400 或 500（第二輪演練 8 次都是 200）。',
                 '<strong>⚠ AI 對 Spring AI 2.0 的知識可能過時</strong>：它常給 1.x 或里程碑版的類別名稱與設定鍵（2.0.2 已把 <code>chat.options.model</code> 標為 deprecated）。請它以 pom.xml 的實際版本為準，用 context7 查最新文件，不要憑印象。',
-                '<strong>串流要看原始輸出</strong>：用 <code>curl.exe -N</code> 看原始的 <code>data:</code> 行，才看得出是否逐段輸出、有沒有 <code>[DONE]</code>、開頭空白有沒有被吃掉。第二輪演練的「有3 筆訂單」黏字就是從原始串流查出來的，提示詞第 4 點的不換行空白就是它的修法。',
+                '<strong>串流要看原始輸出</strong>：用 <code>curl.exe -N</code> 看原始的 <code>data:</code> 行，才看得出是否逐段輸出、有沒有 <code>[DONE]</code>、開頭空白有沒有被吃掉。第二輪演練的「有3 筆訂單」黏字就是從原始串流查出來的，修法是把片段開頭的空白換成不換行空白（U+00A0），並在串流結尾多送一則 [DONE] 結束標記。',
                 '<strong>慢不一定是壞了</strong>：Muse 是推理模型，演練實測首字約 3～6 秒、帶工具 3～18 秒。AI 看到慢就想調逾時或換模型時，先請它量出首字時間並對照這個範圍，再決定要不要改。'
               ]
             }
@@ -3099,7 +2990,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請為商城 AI 客服加入工具呼叫（Tool Calling），讓 AI 能查資料庫的即時資料：\n1. 建立 ProductTools，用 @Tool 包裝既有的 ProductService：\n   - searchProducts(keyword)：依名稱關鍵字查商品（用 1-4 的 findByNameContainingIgnoreCase），keyword 為空時回傳全部；回傳名稱、價格、庫存\n   - getProductDetail(name)：依商品名稱查單一商品的價格、庫存、說明與分類；庫存為 0 時明確標示「缺貨」\n2. 建立 OrderTools，用 @Tool 包裝 1-4 的 OrderService：\n   - getMyOrders()：查詢「目前登入者」的訂單：訂單編號、狀態、總金額，以及每個品項的商品名稱、數量、單價（1-9 章 V3 之後訂單是「訂單＋明細」，用 OrderService 回傳的 OrderView）\n   - 帳號不可由模型決定：在 ChatController 用 .toolContext(Map.of("username", principal.getName())) 傳入，OrderTools 從 ToolContext 取得 username，避免使用者騙 AI 查別人的訂單\n3. 每個 @Tool 的 description 用中文寫清楚「什麼情況該呼叫」，這段文字是寫給模型看的；每個工具方法第一行加 log.info("[工具呼叫] 方法名(參數)")，之後用這個字串從日誌確認工具被呼叫。getProductDetail 以名稱模糊比對（findByNameContainingIgnoreCase），回傳所有符合的商品。\n4. 在 /api/ai/stream 的 ChatClient 呼叫鏈用 .tools() 掛上兩個工具類別。\n完成後請以 user 登入測試三句提問，並在後端日誌找到 [工具呼叫] 紀錄（後端啟動請用 mvn spring-boot:run 2>&1 | Tee-Object logs/backend.log，日誌留在檔案方便搜尋）：\n- 「無線耳機 Pro 還有多少庫存？」\n- 「我的訂單出貨了嗎？」\n- 「有沒有缺貨的商品？」'
+                content: '幫 AI 客服加上工具呼叫，讓它能查資料庫的即時資料：\n- 查商品的庫存、價格和說明\n- 查目前登入者自己的訂單；查誰要由登入資訊決定，不能讓 AI 決定\n工具被呼叫時在日誌印出 [工具呼叫] 和方法名稱。做完用這三句測試，並從後端日誌確認工具真的有被呼叫：\n「無線耳機 Pro 還有多少庫存？」「我的訂單出貨了嗎？」「有沒有缺貨的商品？」\n有不清楚的地方先問我。'
               }
             },
             {
@@ -3206,27 +3097,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請為 AI 客服加入購物車與訂單工具，並實作「先詢問、下一則訊息確認才執行」；使用者明確同意或拒絕時由程式直接處理，不交給模型判斷。全部先寫測試再實作：\n1. CartTools（@Tool，帳號一律從 ToolContext 取得，不讓模型傳）：getMyCart()、addToCart(productName, quantity)（依名稱模糊比對；符合多個商品時回候選清單請使用者指明，不要自己挑；數量沒說就是 1）、removeFromCart(productName)。加入與移除是可逆操作，可以直接執行。\n2. OrderTools 擴充：getMyOrders()（含明細）、getOrderDetail(orderNo)（只能查自己的）、prepareCheckout()、prepareCancelOrder(orderNo)、confirmPendingAction()。confirmPendingAction 是備援工具，description 寫明：使用者回覆「確定」「好」「可以」等明確同意時，系統會直接執行，不需要呼叫；只有使用者在上一輪看過摘要、並且在最新這則訊息中用了系統沒辨識的說法明確表示同意時才可以呼叫。不要提供出貨工具：工具以後端身分執行、沒有角色，會繞過 1-9 章的授權。\n3. PendingActionService（後端強制，不只靠提示詞）：\n   - prepareXxx 只建立待確認動作並回傳摘要（品項、金額或要取消的訂單），不執行；每個帳號只留最新一筆，5 分鐘到期；結帳要記錄當下的購物車快照。購物車是空的、有品項超過庫存、訂單不是 PENDING 時，不建立待確認動作，直接說明原因。\n   - ChatController 每次請求產生唯一 requestId，呼叫模型前先呼叫 onNewRequest(username, requestId)：有待確認動作且不是本請求建立的 -> 武裝給本請求；已武裝過卻又來新請求 -> 作廢。\n   - confirmWithOutcome(username, requestId) 只在「武裝的請求 = 目前請求」且未到期時執行；同一個請求內建立又確認 -> 拒絕。執行前重新檢查：購物車與快照不同就拒絕，訂單已不是 PENDING 就拒絕。回傳 record ConfirmOutcome(executed, modelText, userText)：modelText 給模型工具讀；userText 直接顯示給使用者，成功是「已完成結帳，訂單編號 X，總金額 Y 元。購物車已清空。」或「已取消訂單 X，庫存已退回。」，沒執行一律以「沒有執行：」開頭加原因，不可以含給模型的指示用語。confirm(username, requestId)（給 confirmPendingAction 用）改成呼叫它再取 modelText。\n   - armedActionType(username, requestId)：待確認動作已武裝給這個請求時，回傳動作種類（CHECKOUT 或 CANCEL_ORDER），否則 empty。discardIfArmed(username, requestId)：作廢已武裝給這個請求的動作。\n   - 所有拒絕與業務錯誤都回中文文字，不丟例外；時間用可注入的 Clock，測試才不必真的等 5 分鐘。\n4. 程式層確認（明確的同意與拒絕不交給模型）：\n   - ConfirmationPhrases（純函式）：訊息先正規化（Unicode NFKC、轉小寫、移除所有非文字非數字的字元），再和詞表「完全相等」比對；不可以用 contains 或 startsWith，否則「不確定」「好的，順便幫我查庫存」會被當成同意。classify 回傳 AGREE、AGREE_CHECKOUT、AGREE_CANCEL、REJECT、OTHER。詞表一律寫正規化後的形式：\n     通用同意：確定、確認、確定執行、確認執行、好、好的、好啊、好喔、可以、可以啊、可以的、沒問題、沒問題的、是、是的、對、對的、ok、okay、yes、yep、sure、y\n     帶結帳的同意（只對結帳算同意）：確定結帳、確定請結帳、確定要結帳、確認結帳、確認請結帳、請結帳\n     帶取消的同意（只對取消訂單算同意）：確定取消、確定要取消、確認取消、確定取消訂單、確定要取消訂單、確認取消訂單\n     拒絕：不要、不要了、不用、不用了、不必、不了、不、不行、不可以、不好、否、算了、先不要、先不用、先不、取消、不要結帳、不結帳、先不結帳、不要取消、不取消、先不取消、不要我再想想、不要我再想一想、我再想想、我再想一想、再想想、我再考慮一下、再考慮一下、no、nope、n（單獨的「取消」算拒絕：語意不明時保守不執行）\n   - DirectConfirmationHandler.tryHandle(username, requestId, message) 回傳 Optional<String>：沒有已武裝給本請求的動作、或訊息是 OTHER -> empty（交給模型）；同意且種類相符（AGREE 對任何種類都算，AGREE_CHECKOUT 只對結帳、AGREE_CANCEL 只對取消訂單）-> confirmWithOutcome，回傳 userText；拒絕或種類不符 -> discardIfArmed，回傳「好的，沒有執行。」。日誌印 [程式層確認] 同意／拒絕，含帳號、requestId、動作種類、是否已執行。\n   - 處理後把「使用者訊息＋回覆」寫入 ChatMemory（對話 ID 用帳號，與 MessageChatMemoryAdvisor 相同），同意、拒絕、被拒絕的執行都要寫；寫入失敗只記錄警告，不影響已完成的結果。（若專案已完成 2-6 長期記憶，也用 ChatHistoryService 寫入長期記憶。）\n   - ChatController：onNewRequest 之後、呼叫模型之前先呼叫 tryHandle，有結果就回傳 Flux.just(回覆, "[DONE]")，不呼叫模型；前端收到的是 data:回覆、data:[DONE]，格式與模型串流相同。\n5. ChatController：.tools(productTools, cartTools, orderTools)、.toolContext(Map.of("username", 登入帳號, "requestId", requestId))；系統提示詞加入操作規則：結帳或取消前一定先呼叫 prepare 工具，把摘要告訴使用者並詢問「確定要執行嗎？」後結束這一輪，不可以在同一輪呼叫 confirmPendingAction；使用者回覆明確的同意或拒絕時由系統直接處理，不會交給你；對話紀錄中系統已回覆「已完成結帳」「已取消訂單」或「沒有執行」，表示已處理完畢，不要重複執行，也不要重新 prepare；只有使用者用系統沒辨識的說法同意時，才在他的下一則訊息呼叫 confirmPendingAction；拒絕、猶豫或改問別的事就不要呼叫，也不要自己重新 prepare，並告訴使用者沒有執行；沒有成功呼叫 confirmPendingAction 之前，不可以說已經結帳或已經取消。\n6. 先寫測試，執行 mvn test 確認紅燈原因正確後再實作，不准修改測試：\n   - PendingActionServiceTest（同一輪確認被拒、下一輪確認成功、回「不要」後再確認被拒、改問別的事後被作廢、購物車變動後確認被拒、逾時被拒、已出貨的訂單確認取消被拒）與 AiToolsTest（直接呼叫工具方法，傳入自建的 ToolContext：加入購物車用的是 toolContext 的帳號、名稱符合多個商品時不加入、查別人的訂單回覆找不到、缺少 requestId 時拒絕）。\n   - ConfirmationPhrasesTest：同意詞與加了標點、空白、全形的同意詞（確定！、 確定 、ＯＫ）判為同意；確定請結帳、確定取消各自判為帶種類的同意；不要、取消、算了、我再想想、no 判為拒絕；不確定、確定不要、好的，順便幫我查庫存、幫我結帳、空字串、null 判為其他。\n   - DirectConfirmationHandlerTest：同意直接結帳並回固定格式、同一筆不會執行兩次、種類不符不執行、拒絕後作廢、拒絕後再說確定不執行、其他訊息不處理且動作維持武裝、沒有待確認動作不處理、同一請求內建立又確認不執行、別的帳號說確定不會執行、逾時／購物車變動／庫存不足／已出貨各回原因、回覆不含給模型的指示用語、同意／拒絕／被拒絕的執行都寫入對話記憶、不處理的訊息不寫入。\n   - ChatConfirmationApiTest（繼承 1-9 的 AbstractIntegrationTest，經 HTTP 以 POST /api/ai/stream 送出 JSON 本文 {"message": ...}，並帶 Authorization 標頭）：用 @MockitoBean 把 ChatModel 換成替身，預設串流回「模型回覆」；ChatClient 會讀 chatModel.getOptions() 來掛工具，替身要回傳 ToolCallingChatOptions.builder().build()，否則會 NullPointerException。SSE 是非同步回應，讀本文前先等 getAsyncResult。驗證：回「確定」時多一筆訂單、本文以 data:已完成結帳 開頭並以 data:[DONE] 結尾，而且 verifyNoInteractions(chatModel)（同意時沒有呼叫模型）；回「不要」時沒有新訂單、購物車還在、待確認動作已作廢，也沒有呼叫模型；沒有待確認動作、或訊息是其他問題時，照常呼叫模型一次。\n   - 紅燈要是「斷言失敗」，不是編譯錯誤：先建立 ConfirmationPhrases 與 DirectConfirmationHandler 的空骨架（classify 一律回 OTHER、tryHandle 一律回 empty）讓測試能編譯。正確的紅燈是「確定」那一輪仍交給了模型，例如 Expecting actual: "data:模型回覆 data:[DONE]" to contain: "已完成結帳"。\n7. 測試不呼叫真的模型，也不需要金鑰：2-1 章的 yml 已把金鑰寫成 ${MODEL_API_KEY:}（空預設值），並把 embedding 設為 none，沒有設定 MODEL_API_KEY 的視窗也能跑 mvn test。若測試因缺少模型金鑰無法啟動，先檢查這兩項，不要另外加假金鑰。\n完成後 mvn test 全部通過。再以 user 實際對話：「我的購物車有什麼？」「幫我把機械鍵盤加入購物車」「幫我結帳」→「確定」；再加一件後「幫我結帳」→「不要，我再想想」。從後端日誌找出 [工具呼叫]、[待確認]、[程式層確認] 紀錄，確認「確定」與「不要」這兩則都由 [程式層確認] 直接處理，沒有呼叫 confirmPendingAction。'
-              }
-            },
-            {
-              title: '講師示範：幫我結帳 → 確定／不要',
-              type: 'code',
-              paragraphs: [
-                '腳本 <a href="assets/demo/demo-2-2-ai-confirm.ps1" download>demo-2-2-ai-confirm.ps1</a> 會真的呼叫模型（「幫我結帳」那一輪），邊收邊印 SSE 回覆；判斷成功與否一律看<strong>資料</strong>（庫存、購物車、訂單），不比對 AI 的句子。加上 <code>-BackendLog</code> 會在每則訊息後印出這段期間的 <code>[工具呼叫]</code>、<code>[待確認]</code>、<code>[程式層確認]</code> 日誌，並多檢查「確定」那一輪由程式層確認執行、沒有呼叫 confirmPendingAction。學員可以直接看到：「幫我結帳」只呼叫 prepareCheckout；「確定」是後端直接執行，模型沒有參與。',
-                '<strong>示範前置</strong>：PostgreSQL 容器、後端（8080，用 <code>mvn spring-boot:run 2>&amp;1 | Tee-Object logs/backend.log</code> 啟動，日誌才有檔案可讀）；模型金鑰已設定；使用 user／user123。「幫我結帳」約 5～30 秒；「確定」「不要」由後端直接回覆，幾乎立即出現。結束時一定清理：取消示範建立的訂單、清空購物車、刪掉已取消的示範訂單，比對庫存與開始前一致。腳本預設的資料庫容器是 1-3 章的 <code>spring-postgres</code>、資料庫 <code>learn_spring</code>；名稱不同時加 <code>-PgContainer 容器名稱 -Database 資料庫名稱</code>（<code>docker ps</code> 可查容器名稱）。 也可以直接在前端聊天視窗示範同樣的對話，事後用 <a href="assets/demo/demo-snapshot.ps1" download>demo-snapshot.ps1</a> 還原資料。'
-              ],
-              bullets: [
-                '<strong>路徑一（確定）</strong>：放 1 件機械鍵盤進購物車 →「幫我結帳」→ AI 列出品項、總金額 1890 元並問「確定要結帳嗎？」；腳本檢查庫存、購物車、訂單<strong>都沒變</strong> →「確定」→ 立刻回「已完成結帳，訂單編號 ORD-…，總金額 1890 元。購物車已清空。」；日誌依序是 <code>[待確認] 武裝</code>、<code>[待確認] 執行 CHECKOUT</code>、<code>[程式層確認] 同意 … 已執行=true</code>，沒有 <code>[工具呼叫] confirmPendingAction</code>；腳本檢查多了 1 筆訂單、庫存扣 1、購物車清空。',
-                '<strong>路徑二（不要）</strong>：再放 1 件 →「幫我結帳」→「不要，我再想想」→ 回「好的，沒有執行。」；日誌是 <code>[待確認] 武裝</code>、<code>[待確認] 作廢（使用者明確拒絕）</code>、<code>[程式層確認] 拒絕</code>，當下就作廢，不必等下一則訊息；腳本檢查沒有新訂單、購物車還在。',
-                '<strong>哪些說法會交給模型</strong>：「幫我結帳」之後若回「不確定」或「好的，順便幫我查庫存」，正規化後不等於詞表裡的任何一個詞，所以不會有 <code>[程式層確認]</code> 日誌，這一輪照常交給模型，由模型判斷要不要呼叫備援工具 <code>confirmPendingAction</code>（後端檢查相同，但結果又回到看模型）。這就是用「完全相等」而不用「包含」的理由：「不確定」包含「確定」、「好的，順便…」開頭是「好的」，用包含比對就會被程式當成同意而直接結帳。課堂上用 ConfirmationPhrasesTest 的這幾個測試案例說明即可，不必拿真實模型現場示範。',
-                '<strong>演進的實測數字</strong>：只靠模型判斷「確定」時（工具層武裝／作廢的版本），8 次只有 4 次真的結帳，其餘是模型重新呼叫 prepareCheckout 再問一次；改成程式層確認後，「確定」5/5、「不要」5/5，confirmPendingAction 被呼叫 0 次。可以請學員對照：如果只靠提示詞，連「同一輪就結帳」都擋不住。',
-                '<strong>可能出錯</strong>：聊天 API 回 401 → Token 失效（後端重啟換了 JWT_SECRET），重跑腳本即可；一直沒有回覆 → 檢查模型金鑰與網路，HttpClient 逾時 3 分鐘；「確定」那一輪沒有 <code>[程式層確認]</code> 日誌 → ChatController 沒在呼叫模型前先呼叫 tryHandle，或確認句不在詞表內；中文變亂碼 → 確認是用 pwsh（PowerShell 7）執行。'
-              ],
-              code: {
-                language: 'powershell',
-                title: 'PowerShell — AI 客服兩條路徑示範',
-                content: 'pwsh -File .\\demo-2-2-ai-confirm.ps1 -BackendLog ..\\backend\\logs\\backend.log\n# 只跑其中一條：-Path Confirm 或 -Path Decline；換一個同意詞：-ConfirmText 好\n\n# 預期輸出（節錄，實測）\n# == 路徑一：幫我結帳 -> 確定\n#   使用者：幫我結帳\n#   客服：……購物車共 1 件商品：機械鍵盤 x1，單價 1890 元……以上是待確認的結帳內容，尚未結帳。確定要結帳嗎？\n#     日誌：[工具呼叫] prepareCheckout(username=user, requestId=3e06dc5a-...)\n#     日誌：[待確認] 建立結帳動作 username=user requestId=3e06dc5a-... 總金額=1890.00\n#   [OK  ] 詢問階段：庫存沒變 （30）\n#   使用者：確定\n#   客服：已完成結帳，訂單編號 ORD-20261116-1077，總金額 1890 元。購物車已清空。\n#     日誌：[待確認] 武裝 username=user requestId=eff110f2-...\n#     日誌：[待確認] 執行 CHECKOUT username=user requestId=eff110f2-...\n#     日誌：[程式層確認] 同意 username=user requestId=eff110f2-... 動作=CHECKOUT 已執行=true\n#   [OK  ] 確定那一輪：程式層確認直接執行\n#   [OK  ] 確定那一輪：沒有呼叫 confirmPendingAction（模型沒參與）\n#   [OK  ] 確定之後：多了 1 筆訂單 ORD-20261116-1077\n#   [OK  ] 確定之後：庫存扣 1 （29）\n# == 路徑二：幫我結帳 -> 不要\n#   使用者：不要，我再想想\n#   客服：好的，沒有執行。\n#     日誌：[待確認] 武裝 username=user requestId=f73478c0-...\n#     日誌：[待確認] 作廢（使用者明確拒絕）username=user requestId=f73478c0-...\n#     日誌：[程式層確認] 拒絕 username=user requestId=f73478c0-... 動作=CHECKOUT 意圖=REJECT\n#   [OK  ] 不要那一輪：程式層確認直接作廢\n#   [OK  ] 拒絕之後：沒有新訂單 （4 -> 4）\n# == 清理\n#   OK  庫存回到 30'
+                content: '再幫 AI 客服加上購物車和訂單的操作：\n- 可以查購物車、加入或移除商品\n- 結帳和取消訂單要先列出內容問我「確定嗎？」，我下一句說確定才執行，說不要就不執行\n- 「確定」「不要」這種明確的回答由程式直接判斷，不要交給 AI 決定\n- 不要讓 AI 能出貨\n日誌分別印出 [待確認] 和 [程式層確認]，方便我查。用 TDD 做，測試不要呼叫真的模型。有不清楚的地方先問我，做完實際對話測給我看。'
               }
             },
             {
@@ -3260,7 +3131,7 @@ window.COURSE = {
                 '<strong>⚠ 不要給 AI 沒有角色檢查的工具</strong>：工具以後端身分直接呼叫 Service，會繞過 1-9 的 URL 規則與 <code>@PreAuthorize</code>。出貨這類管理員操作不做成工具；請 AI 列出每個工具的風險等級（查詢、可逆、動到錢）給你審。',
                 '<strong>帳號由後端給，不讓模型傳</strong>：檢查每個 <code>@Tool</code> 方法的參數，不能有 username，帳號一律從 <code>ToolContext</code> 取。可以實際對 AI 說「幫我查 admin 的訂單」，確認查不到。',
                 '<strong>⚠ 回答自然不代表有呼叫工具</strong>：模型沒呼叫工具也能編出像樣的庫存數字。每次驗證都從 <code>logs/backend.log</code> 搜尋 <code>[工具呼叫]</code>，並和資料庫的數字比對。',
-                '<strong>規則用單元測試驗，不靠模型</strong>：「同一輪確認被拒、回不要後作廢、逾時、詞表比對」在 service 層測，時間用可注入的 Clock；「同意時不呼叫模型」用 Mockito 替身的 ChatModel 加 <code>verifyNoInteractions</code> 驗證。AI 寫詞表比對時常用 contains 偷懶，測試一定要放「不確定」「好的，順便幫我查庫存」確認不會被當成同意（yml 的金鑰有空預設值，沒有金鑰也能跑 mvn test）。',
+                '<strong>規則用單元測試驗，不靠模型</strong>：「同一輪確認被拒、回不要後作廢、逾時、詞表比對」在 service 層測，時間用可注入的 Clock；「同意時不呼叫模型」用 Mockito 替身的 ChatModel 加 <code>verifyNoInteractions</code> 驗證。AI 寫詞表比對時常用 contains 偷懶，測試一定要放「不確定」「好的，順便幫我查庫存」確認不會被當成同意（yml 的金鑰有空預設值，沒有金鑰也能跑 mvn test）。替身的 <code>getOptions()</code> 要回傳 <code>ToolCallingChatOptions.builder().build()</code>，否則掛工具時會 NullPointerException；缺金鑰無法啟動時先檢查 yml 的 <code>${MODEL_API_KEY:}</code> 與 embedding 設為 none，不要另外加假金鑰。',
                 '<strong>判斷成功看資料，不看句子</strong>：驗證結帳要看庫存、購物車、訂單筆數有沒有變。系統提示詞也要求「沒有成功呼叫 confirmPendingAction 之前，不可以說已經結帳」，因為模型可能在工具拒絕後仍回「已幫你結帳」。'
               ]
             }
@@ -3414,7 +3285,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請為商城加入 RAG 知識庫，讓 AI 客服能回答商品細節與商城政策：\n1. 加入 spring-ai-starter-vector-store-pgvector 與 spring-ai-vector-store-advisor 依賴（2.0 正式版的套件名稱）；pgvector 設 dimensions: 1024、initialize-schema: true。\n2. Embedding 用 Voyage voyage-4（環境變數 VOYAGE_API_KEY）。注意：Spring AI 內建的 OpenAI embedding 與 Voyage 不相容（Voyage 回應的 usage 沒有 prompt_tokens，上傳時會丟 OpenAIInvalidDataException）。請設定 spring.ai.model.embedding: none，自行實作 VoyageEmbeddingModel（繼承 AbstractEmbeddingModel，用 RestClient 呼叫 https://api.voyageai.com/v1/embeddings，body 為 {model, input:[...]}，只取 data[].embedding 與 index；RestClient 設連線逾時 5 秒、讀取逾時 20 秒，避免 Voyage 沒回應時整個對話卡住），並註冊成 @Bean EmbeddingModel。\n3. 建立 RAGController：\n   - POST /api/rag/upload：接收文字檔，用 TextReader 讀取、TokenTextSplitter 切分，每個片段的 metadata 加上 type=product_doc 與 filename（上傳的檔名），再用 vectorStore.accept() 寫入；並在 SecurityConfig 加上「/api/rag/upload 僅 ADMIN」\n   - GET /api/rag/query?question=...：掛 QuestionAnswerAdvisor 測試檢索效果（登入即可）\n4. 把 QuestionAnswerAdvisor（filterExpression 限定 type == \'product_doc\'）也掛到 /api/ai/stream。注意它的預設範本會讓模型在「上下文沒有答案」時直接拒答，連庫存、訂單都不再呼叫工具。請用 .promptTemplate() 自訂範本（保留 {query} 與 {question_answer_context}），明講：商品規格、保固、退貨政策依知識庫；庫存、價格、缺貨、訂單必須呼叫工具；兩者都沒有才說不知道。\n5. 程式碼需有中文函式註解。\n完成後請示範：用 2-3 章提供的兩份範例文件（退貨政策.txt、無線耳機 Pro 規格說明.txt，保固期限只寫在文件裡、不寫進資料庫），以 admin 上傳；再以 user 問「無線耳機 Pro 防水嗎？保固多久？」「商城退貨政策是什麼？」，確認答案來自文件；最後重跑 2-2 的三句提問，確認工具呼叫沒有退化。'
+                content: '幫商城加上 RAG 知識庫，讓 AI 客服能回答商品細節和退貨政策：\n- 向量資料庫用現有的 PostgreSQL（pgvector），向量模型用 Voyage voyage-4，金鑰在 .env 的 VOYAGE_API_KEY\n- 做一個上傳文件的 API（只有管理員能用），和一個測試查詢的 API\n- AI 客服回答時也要查知識庫；但庫存、價格、訂單還是要用工具查\n有不清楚的地方先問我。做完用我給你的兩份範例文件（退貨政策.txt、無線耳機 Pro 規格說明.txt）上傳測試，並確認之前的工具呼叫還正常。'
               }
             },
             {
@@ -3522,8 +3393,8 @@ window.COURSE = {
               title: '開發端代理與後端 API 串接 (Vite Proxy)',
               type: 'code',
               paragraphs: [
-                '在前後端分離的架構中，前端 Vite 伺服器運行在 `http://localhost:5173`，而 Spring Boot 後端運行在 `http://localhost:8080`。如果前端直接向後端發送非同步請求（fetch），會因為「同源政策 (Same-Origin Policy)」而被瀏覽器阻擋 (CORS 跨網域錯誤)。',
-                '為了解決此問題，我們在 `vite.config.js` 中配置 `server.proxy` 代理轉發，將所有以 `/api` 開頭的請求，在開發環境中自動轉發至 `http://localhost:8080`。這樣前端程式碼只需填寫相對路徑即可，且完全免除了後端配置 CORS 的繁瑣設定！'
+                '在前後端分離的架構中，前端 Vite 伺服器運行在 <a href="http://localhost:5173" target="_blank"><code>http://localhost:5173</code></a>，而 Spring Boot 後端運行在 <a href="http://localhost:8080" target="_blank"><code>http://localhost:8080</code></a>。如果前端直接向後端發送非同步請求（fetch），會因為「同源政策 (Same-Origin Policy)」而被瀏覽器阻擋 (CORS 跨網域錯誤)。',
+                '為了解決此問題，我們在 `vite.config.js` 中配置 `server.proxy` 代理轉發，將所有以 `/api` 開頭的請求，在開發環境中自動轉發至 <a href="http://localhost:8080" target="_blank"><code>http://localhost:8080</code></a>。這樣前端程式碼只需填寫相對路徑即可，且完全免除了後端配置 CORS 的繁瑣設定！'
               ],
               code: {
                 language: 'javascript',
@@ -3540,6 +3411,22 @@ window.COURSE = {
               ]
             },
             {
+              title: '示範商品圖片（下載放進前端專案）',
+              type: 'text',
+              paragraphs: [
+                '課程準備了 6 張示範商品圖片（AI 生成，600×600 JPG），讓商城首頁一開始就有像樣的畫面。請下載後放到 <code>frontend/public/images/products/</code>；資料庫的 <code>image_url</code> 存相對路徑 <code>/images/products/檔名</code>，前端直接當 <code>&lt;img src&gt;</code> 使用。',
+                '📦 <strong>一次下載全部：</strong><a href="assets/downloads/product-images.zip" download>product-images.zip</a>（6 張商品圖放進 <code>frontend/public/images/products/</code>；<code>brand/</code> 資料夾是 2-5 章末升級品牌官網用的 Hero、分類圖與客服頭像）；商品圖也可以從下方逐張下載。'
+              ],
+              bullets: [
+                '無線耳機 Pro：<a href="assets/products/earphone-pro.jpg" download>earphone-pro.jpg</a><br><img src="assets/products/earphone-pro.jpg" alt="無線耳機 Pro" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                'Bass+ 重低音耳機：<a href="assets/products/bass-headphones.jpg" download>bass-headphones.jpg</a><br><img src="assets/products/bass-headphones.jpg" alt="Bass+ 重低音耳機" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '機械鍵盤：<a href="assets/products/keyboard.jpg" download>keyboard.jpg</a><br><img src="assets/products/keyboard.jpg" alt="機械鍵盤" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '行動電源：<a href="assets/products/power-bank.jpg" download>power-bank.jpg</a><br><img src="assets/products/power-bank.jpg" alt="行動電源" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '香氛加濕器：<a href="assets/products/humidifier.jpg" download>humidifier.jpg</a><br><img src="assets/products/humidifier.jpg" alt="香氛加濕器" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">',
+                '智慧檯燈（缺貨示範）：<a href="assets/products/desk-lamp.jpg" download>desk-lamp.jpg</a><br><img src="assets/products/desk-lamp.jpg" alt="智慧檯燈（缺貨示範）" style="width:96px;height:96px;object-fit:cover;border-radius:10px;margin-top:6px;">'
+              ]
+            },
+            {
               title: 'AI Agent 提示詞 — 建立 React 前端專案',
               type: 'code',
               paragraphs: [
@@ -3548,7 +3435,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請幫我建立智慧商城的 React 前端專案：\n1. 在專案根目錄用 Vite 建立 React 19 專案：npx create-vite@latest frontend --template react（AI Agent 的終端機不能回答互動問題，若出現提問請改用非互動方式），並執行 npm install。\n2. 設定 vite.config.js 的 server.proxy，把 /api 開頭的請求代理到 http://localhost:8080。\n3. 把 1-3 章下載的 6 張商品圖片放到 frontend/public/images/products/（檔名不變），資料庫的 image_url 就能直接當圖片網址。\n4. 建立商城首頁 ProductList：呼叫 GET /api/products（免登入），用卡片格狀排版（每張卡片的 class 為 product-card）顯示商品圖片、名稱、價格、庫存，庫存為 0 顯示「缺貨」標籤（class 為 sold-out-tag）；image_url 是空的商品（例如用 API 上架時沒填圖片網址）顯示灰色佔位區塊，不要出現破圖；點卡片開啟商品詳情（GET /api/products/{id}）。\n5. 版面：Header 顯示商城名稱，右側預留登入按鈕（class 為 login-btn）；商品載入中顯示骨架屏；右下角預留 AI 客服聊天視窗的開關按鈕（class 為 chat-toggle）。樣式請你自行設計，做得好看一點。\n6. 元件需有中文註解；提示詞指定的 class 名稱照寫、不要改名（之後的 e2e 與章末升級會用到），需要 id 可以另外加。\n完成後請告訴我如何啟動開發伺服器，並確認未登入時首頁就能看到資料庫裡的商品與商品圖片。'
+                content: '幫我用 Vite + React 建一個商城前端，放在 frontend 資料夾：\n- 首頁顯示商品列表（後端 GET /api/products，不用登入），有圖片、價格、庫存，缺貨要標示\n- 商品圖片我已經下載好（6 張 jpg，資料庫的 image_url 是 /images/products/檔名），請放到 frontend/public/images/products/\n- /api 的請求用 Vite proxy 轉到 http://localhost:8080\n- 右上角預留登入按鈕，右下角預留 AI 客服的按鈕\n樣式你自己設計，做得好看一點。有不清楚的地方先問我，做完告訴我怎麼啟動。'
               }
             },
             {
@@ -3562,7 +3449,7 @@ window.COURSE = {
               bullets: [
                 '<strong>⚠ 互動式指令會卡住</strong>：舊版 <code>create-vite</code> 會詢問要不要用 rolldown、要不要立即啟動，AI 的終端機無法回答就停住，第一輪演練加上 <code>&lt; /dev/null</code> 才過。超過一分鐘沒有新輸出，請它中止並改用非互動參數。',
                 '<strong>⚠ 用 Vite proxy，不要改後端 CORS</strong>：遇到跨網域錯誤時，AI 常在後端加 <code>@CrossOrigin</code> 或 CORS 設定。本課用 <code>vite.config.js</code> 的 proxy 解決，前端任務不應改到後端；看 diff 時若出現 Java 檔案，請它說明原因。',
-                '<strong>風格自由發揮，class 要固定</strong>：這章刻意不指定風格，但 <code>product-card</code>、<code>sold-out-tag</code>、<code>login-btn</code>、<code>chat-toggle</code> 這些 class 是之後 e2e 與章末升級的依據。請它照提示詞命名，不要自行改名。',
+                '<strong>風格與命名都交給 AI</strong>：這章刻意不指定風格與 class 名稱。之後的 e2e 由 AI 讀你的畫面自己挑選擇器；改版時要求「e2e 的檢查項目不能改」，就能抓到被改壞的地方。',
                 '<strong>用截圖驗證，不只看伺服器有沒有起來</strong>：<code>npm run dev</code> 成功不代表畫面正確。請 AI 用 0-1 章的 Playwright 開首頁截圖，確認商品卡片數等於 <code>GET /api/products</code> 的筆數、圖片有顯示、缺貨標籤只出現在庫存 0 的商品（演練用 <code>smoke-home.mjs</code> 驗證）。',
                 '<strong>⚠ 圖片路徑以資料庫為準</strong>：資料庫的 <code>image_url</code> 是 <code>/images/products/*.jpg</code>，圖片放在 <code>frontend/public/images/products/</code> 即可。AI 可能為了顯示圖片去改資料庫或寫死外部佔位圖，請它不要動資料。'
               ]
@@ -3650,7 +3537,7 @@ window.COURSE = {
               title: '完整的 ChatRoom.jsx 元件範例',
               type: 'code',
               paragraphs: [
-                '以下是智慧客服聊天室的 React 元件完整實作。包含 isThinking（AI 正在搜尋資料庫或呼叫工具中）狀態提示、isGenerating（AI 正在輸出）狀態鎖定、自動滾動到底部，以及 quickPrompts 快捷對話指令按鈕。範例的 class（<code>msg-row</code>、<code>quick-btn</code>、<code>chat-input-bar</code>）只示範結構；實作時 class 以提示詞為準（AI 回覆 <code>msg-ai</code>、快捷問題 <code>chat-chip</code>、輸入框 <code>chat-input</code>、送出鈕 <code>chat-send</code>），e2e 與章末升級都依提示詞的名稱。'
+                '以下是智慧客服聊天室的 React 元件完整實作。包含 isThinking（AI 正在搜尋資料庫或呼叫工具中）狀態提示、isGenerating（AI 正在輸出）狀態鎖定、自動滾動到底部，以及 quickPrompts 快捷對話指令按鈕。範例的 class（<code>msg-row</code>、<code>quick-btn</code>、<code>chat-input-bar</code>）只示範結構，你的專案由 AI 命名即可，e2e 會依實際畫面挑選擇器。'
               ],
               code: {
                 language: 'jsx',
@@ -3694,7 +3581,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有專案中完成「登入、商品上架、AI 客服串流聊天」三個前端功能：\n1. 後端：確認 JwtAuthenticationFilter 的 parseJwt 只讀 Authorization: Bearer 標頭，所有 API（含 AI 串流 POST /api/ai/stream）都不從網址參數取 Token；不要為了前端把串流端點改成 GET，也不要加網址參數 token 的支援。加測試：沒有標頭、只在網址參數帶 token 呼叫 POST /api/ai/stream 與 /api/cart 都回 401；用 GET 呼叫 /api/ai/stream 回 405；問題空白回 400。日誌不要印出 Token。\n2. 前端登入：Header 的登入按鈕（class login-btn，2-4 章已建立）開啟 LoginForm（帳號、密碼 input 的 name 為 username、password），呼叫 POST /api/auth/login，成功後把 Token、帳號與角色存進 localStorage，Header 顯示「你好，帳號名稱」（class greeting）與登出按鈕（class logout-btn）。\n3. 前端商品上架：登入者角色為 ADMIN 時，Header 顯示「商品上架」按鈕（class add-product-btn），開啟表單（名稱、說明、價格、庫存、分類、圖片網址，input 的 name 依序為 name、description、price、stock、category、imageUrl），以 Authorization: Bearer 呼叫 POST /api/products，成功後重新載入商品列表。\n4. 前端 ChatRoom.jsx：右下角聊天視窗（由 2-4 章的開關按鈕 chat-toggle 開啟），未登入時提示「請先登入以使用客服」（class chat-login-hint）；登入後輸入框 class 為 chat-input、送出鈕 class 為 chat-send，每則 AI 回覆的元素 class 要含 msg-ai（以上 class 是 e2e 與章末升級的選擇器，照寫）；以 fetch 送出 POST /api/ai/stream（標頭 Authorization: Bearer Token 與 Content-Type: application/json，本文 {"message": 問題}），Token 與問題都不放進網址。讀取串流的邏輯抽成 src/sseClient.js（不安裝第三方套件）：先檢查 response.ok，非 2xx 丟出帶 status 的錯誤；用 response.body.getReader() 與 new TextDecoder()（decode 時加 { stream: true }）逐段讀取，依空行切出完整事件，取出每行 data: 的內容（data: 後若有一個空白只去掉那一個，多行 data 以換行合併），收到 "[DONE]" 就結束。ChatRoom 等待時顯示骨架屏；用 AbortController 在關閉視窗（元件卸載）或送出新問題時中止請求，被中止（AbortError）不顯示錯誤；HTTP 401 時清除登入並提示重新登入（之後的購物前端會和 api.js 共用這段登出流程），其他非 2xx 在 AI 訊息顯示錯誤原因。在送出鈕的事件處理函式裡發請求，不要放在 useEffect（StrictMode 會執行兩次而重複提問）。\n5. 打字機效果：收到的文字先放進緩衝區，再用 setInterval 每 20～30 毫秒取出幾個字顯示，做出逐字出現的效果；收到 [DONE] 後把剩下的字顯示完。這只改善使用者體感，不會讓回答變快（Muse 帶工具時整段一次送達，總時間不變）。\n完成後請示範：訪客看得到商品 → admin 登入上架一個新商品，首頁立即出現 → 登出改用 user 登入，在聊天視窗問「無線耳機 Pro 還有庫存嗎？」並看到逐字回覆。'
+                content: '幫前端加上登入、商品上架和 AI 客服聊天：\n- 登入後顯示帳號和登出按鈕；管理員才看得到「商品上架」\n- 右下角的 AI 客服接後端的串流 API（POST /api/ai/stream），回覆要逐字出現\n- Token 放在 Authorization 標頭，不要放在網址\n有不清楚的地方先問我，做完示範給我看。'
               }
             },
             {
@@ -3741,7 +3628,7 @@ window.COURSE = {
               title: '購物前端：購物袋、抽屜、確認框與訂單頁',
               type: 'text',
               paragraphs: [
-                '後端的購物車、訂單、管理員 API 都在 1-9 章完成了，這一段把它們接到畫面上。元件分工如下，括號內是 e2e 與章末升級都要保留的 class。頁面切換先用最簡單的網址 hash（<code>#/orders</code>、<code>#/admin/orders</code>），章末升級的商品頁 <code>#/product/{id}</code> 會沿用同一套機制。'
+                '後端的購物車、訂單、管理員 API 都在 1-9 章完成了，這一段把它們接到畫面上。元件分工如下，括號內是參考實作的 class 名稱（你的專案由 AI 命名，可能不同）。頁面切換先用最簡單的網址 hash（<code>#/orders</code>、<code>#/admin/orders</code>），章末升級的商品頁 <code>#/product/{id}</code> 會沿用同一套機制。'
               ],
               bullets: [
                 '<strong>Header 購物袋</strong>（<code>cart-btn</code>、數量徽章 <code>cart-badge</code>）：未登入點擊時開登入表單；徽章只在有商品時顯示。',
@@ -3775,7 +3662,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在現有前端加入購物功能（後端 1-9 章的購物車、訂單與管理員 API 已完成，不要修改後端）：\n1. api.js：共用的 request(url, {method, token, body})：先看狀態碼再解析 body（401/403 的 body 可能是空的，也不是統一錯誤格式）；失敗時丟 ApiError(status, message, details)，message 取後端錯誤格式的 message。401 = 未登入或 Token 失效 -> 清除登入並提示「登入已失效，請重新登入」（只在發出請求的 Token 仍是目前 Token 時才清除，AI 客服串流回 401 也走同一個流程）；403 = 已登入但沒權限 -> 只顯示「沒有權限執行此操作」，不可登出。\n2. Header 購物袋：按鈕 class cart-btn，數量徽章 class cart-badge（totalQuantity > 0 才顯示）；未登入點擊時開登入表單。登入後與每次購物車變動後，徽章數字都要正確。\n3. 購物車抽屜 CartDrawer（class cart-drawer，右側滑出，關閉鈕 drawer-close）：每個品項 class cart-item，數量加減（qty-minus／qty-plus，呼叫 PATCH）、移除（remove-btn，呼叫 DELETE）、小計與總金額；有品項超過庫存時顯示警示並停用結帳鈕（class checkout-btn）。\n4. 確認框 ConfirmDialog（class confirm-dialog，確認鈕 confirm-ok、取消鈕 confirm-cancel）：結帳、取消訂單、出貨前都先跳畫面內確認框，不可使用 window.confirm／alert；Esc 或點背景等同取消；處理中停用按鈕。\n5. 結帳結果：成功在抽屜顯示 class checkout-result，內含訂單編號（class order-no）與「查看我的訂單」連結；失敗顯示後端 message，庫存不足時列出 details，購物車保留。\n6. 商品詳情（目前是點商品卡片開啟的詳情視窗；章末升級後會改成獨立商品頁）加上「加入購物袋」按鈕，真的呼叫 POST /api/cart/items（可選數量）；缺貨時停用；成功或失敗都在按鈕旁顯示結果。\n   頁面切換用網址 hash（#/orders、#/admin/orders），不安裝路由套件：讀 location.hash 並監聽 hashchange，回首頁用 #/；章末升級的商品頁 #/product/{id} 會沿用這個機制。\n7. 我的訂單 #/orders（根元素 class orders-page）：每筆訂單 class order-row，並加上 data-order-no 與 data-status 屬性；顯示明細、狀態標籤（待出貨／已出貨／已送達／已取消）、總金額；PENDING 訂單有「取消訂單」（class cancel-btn，先確認）。這一頁不放出貨按鈕。\n8. 訂單管理 #/admin/orders（只有 ADMIN 在 Header 看得到入口 class admin-orders-link；根元素 class admin-orders-page）：呼叫 GET /api/admin/orders 列出所有帳號的訂單，顯示下單帳號（class order-user，order-row 加 data-username）；狀態篩選下拉（class status-filter：全部／待出貨／已出貨／已送達／已取消）；PENDING 訂單有「出貨」（class ship-btn，先確認）呼叫 PATCH /api/orders/{orderNo}/ship。一般使用者直接開這個網址顯示「僅限管理員」；後端回 403 時顯示錯誤但不登出。\n9. AI 客服：聊天視窗加一個快捷問題按鈕（class chat-chip）「我的購物車有什麼？」，點一下直接送出（章末升級會再補上其他快捷問題）；每次 AI 回覆結束（收到 [DONE]）後，重新讀取購物車、商品與訂單（AI 工具可能已經在後端改了購物車）。\n10. 元件需有中文註解。\n完成後請示範：user 在商品詳情加入 2 件 -> 徽章顯示 2 -> 抽屜改數量 -> 結帳（確認框）-> 看到訂單編號 -> 我的訂單看到這筆 -> 取消 -> 庫存回到原值；再以 admin 在訂單管理頁篩選待出貨，出貨 user 的一筆訂單，回到 user 確認這筆不能取消。'
+                content: '幫前端加上購物功能，後端的 API 都做好了，不要改後端：\n- 購物袋顯示件數，購物車可以改數量、移除、結帳\n- 我的訂單，可以取消還沒出貨的訂單\n- 管理員的訂單管理頁，可以出貨\n- 結帳、取消、出貨前要先跳確認框，不要用瀏覽器的 confirm\n- 出錯時顯示後端回的訊息\n有不清楚的地方先問我，做完走一次購物流程給我看。'
               }
             },
             {
@@ -3792,30 +3679,6 @@ window.COURSE = {
                 'AI 客服「幫我結帳」→「確定」：AI 先列出品項與總金額並詢問，使用者在下一則訊息回「確定」後，由 2-2 的程式層確認直接結帳，回固定格式的訂單編號；回覆結束時購物袋徽章自動消失<br><a href="assets/samples/10-chat-checkout.jpg" target="_blank"><img src="assets/samples/10-chat-checkout.jpg" alt="AI 客服「幫我結帳」→「確定」：AI 先列出品項與總金額並詢問，使用者在下一則訊息回「確定」後，由 2-2 的程式層確認直接結帳，回固定格式的訂單編號；回覆結束時購物袋徽章自動消失" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
                 '手機寬（390px）的購物車抽屜：佔滿整個畫面，按鈕與數量加減仍然好點<br><a href="assets/samples/11-mobile-cart-drawer.jpg" target="_blank"><img src="assets/samples/11-mobile-cart-drawer.jpg" alt="手機寬（390px）的購物車抽屜：佔滿整個畫面，按鈕與數量加減仍然好點" style="width:100%;max-width:320px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>'
               ]
-            },
-            {
-              title: '講師示範：前端購物流程與 admin 出貨',
-              type: 'code',
-              paragraphs: [
-                '這一段在瀏覽器手動操作，會留下訂單、扣掉庫存。示範前先用 <a href="assets/demo/demo-snapshot.ps1" download>demo-snapshot.ps1</a> 存一份快照（庫存、訂單、購物車），示範後還原，就能再示範一次；已出貨的訂單沒有 API 能退庫存，腳本直接用 psql 處理。',
-                '<strong>示範前置</strong>：PostgreSQL 容器、後端（8080）、前端（<code>npm run dev</code>，5173）都已啟動；準備兩個瀏覽器視窗（或一般＋無痕），一個登入 user／user123，一個登入 admin／admin123。腳本預設的資料庫容器是 1-3 章的 <code>spring-postgres</code>、資料庫 <code>learn_spring</code>；名稱不同時加 <code>-PgContainer 容器名稱 -Database 資料庫名稱</code>（<code>docker ps</code> 可查容器名稱）。從網站下載的 .ps1 可能被 Windows 封鎖而無法執行：先執行 <code>Unblock-File .\\腳本名稱.ps1</code>，或用 <code>pwsh -ExecutionPolicy Bypass -File .\\腳本名稱.ps1</code> 執行。'
-              ],
-              bullets: [
-                '<strong>步驟 1（未登入）</strong>：點 Header 購物袋 → 跳出登入表單。以 user 登入，購物袋沒有徽章。',
-                '<strong>步驟 2（加入）</strong>：開「機械鍵盤」的商品詳情（章末升級前是彈出視窗，升級後是商品頁），數量選 2，按「加入購物袋」→ 徽章變 2。',
-                '<strong>步驟 3（抽屜）</strong>：開抽屜，按 ＋ 變 3、按 − 回 2，小計與總金額跟著變；按結帳 → 出現畫面內確認框，先按「取消」→ 什麼都沒發生（商品庫存沒變）。',
-                '<strong>步驟 4（結帳）</strong>：再按結帳 →「確認結帳」→ 抽屜顯示訂單編號（ORD-今天日期-1000 以後），徽章消失；商品庫存少 2。',
-                '<strong>步驟 5（我的訂單）</strong>：點「查看我的訂單」→ 新訂單在最上面、狀態待出貨、有明細；這一頁沒有出貨鈕。按「取消訂單」→ 確認 → 狀態變已取消，庫存回到原值。',
-                '<strong>步驟 6（admin 出貨）</strong>：user 再買 1 件。切到 admin 視窗 → Header 出現「訂單管理」→ 篩選「待出貨」→ 找到 user 的訂單（下單帳號 user）→ 按「出貨」→ 確認 → 從待出貨清單消失；切回「全部」顯示已出貨、出貨鈕消失。回到 user 視窗重新整理，這筆沒有取消鈕。',
-                '<strong>步驟 7（AI 同步，選做）</strong>：user 在客服視窗問「幫我把行動電源加入購物車」，回覆結束時徽章自動 +1，不必重新整理。',
-                '<strong>步驟 8（401 與 403，選做）</strong>：在 user 視窗的開發者工具執行 <code>localStorage.setItem(\'role\',\'ADMIN\')</code> 後重新整理 → 出現「訂單管理」入口，點進去後端回 403，畫面顯示「沒有權限執行此操作」但<strong>仍保持登入</strong>；重啟後端（JWT_SECRET 換了）再操作 → 401，畫面提示「登入已失效，請重新登入」並登出。',
-                '<strong>可能出錯</strong>：徽章不更新 → 檢查加入後有沒有用回傳的購物車取代狀態；訂單管理頁一片空白 → 看 Network 的 <code>/api/admin/orders</code> 是不是 403（用了 user 的 Token）；還原時出現「庫存與快照不同」→ 示範時用「商品上架」改過資料，加 <code>-ForceStock</code> 直接設回快照值。'
-              ],
-              code: {
-                language: 'powershell',
-                title: 'PowerShell — 示範前後的快照與還原',
-                content: '# 示範前：存快照（預設存到暫存資料夾的 learn-spring-demo-snapshot.json）\npwsh -File .\\demo-snapshot.ps1 -Action Save\n# 已儲存快照：C:\\Users\\...\\Temp\\learn-spring-demo-snapshot.json\n#   商品 6 個、訂單 4 筆、購物車 0 列\n\n# ……在瀏覽器示範加入購物袋、結帳、取消、admin 出貨……\n\n# 示範後：還原（刪掉快照之後新增的訂單並補回庫存、改回被改過狀態的訂單、購物車放回原狀）\npwsh -File .\\demo-snapshot.ps1 -Action Restore\n# 預期輸出（實測）\n#   訂單 ORD-20261109-003 狀態 CANCELLED -> PENDING\n# 已還原：刪除新增訂單 1 筆、改回狀態 1 筆、購物車放回 0 列\n#   OK  全部商品庫存與快照一致\n\n# 容器名稱不同時\n# pwsh -File .\\demo-snapshot.ps1 -Action Save -PgContainer rehearsal2-postgres'
-              }
             },
             {
               title: 'e2e：購物流程 verify-cart 的寫法與注意事項',
@@ -3844,12 +3707,12 @@ window.COURSE = {
               title: 'AI Agent 提示詞 — 購物流程 e2e',
               type: 'code',
               paragraphs: [
-                '把注意事項直接寫進提示詞，AI 寫出來的 e2e 才不會「第一次過、第二次掛」。'
+                '提示詞只交代要測什麼；上面的注意事項是驗收重點。AI 寫完後連跑兩次，第二次也要全部通過、資料要還原，才不會「第一次過、第二次掛」。'
               ],
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請在 e2e/ 寫一支 Playwright 腳本 verify-cart.mjs 驗證購物流程，每一項印出 PASS／FAIL，最後全部通過才以 0 結束：\n0. 選擇器只用提示詞指定的 class、data 屬性、input name 與按鈕文字（例如「加入購物袋」），不依賴沒有指定的 class 或版面結構：章末升級會改版面、把商品詳情改成獨立頁，這支腳本要能沿用。\n1. 只等條件不等秒數：禁用 waitForTimeout，用 waitForSelector、waitForFunction、waitForResponse；例如等 .cart-badge 文字變成 2、等 .order-row[data-order-no="…"] 的 data-status 變成 CANCELLED。\n2. 開始前用 API 取得全部商品庫存（GET /api/products），用 docker exec 執行 psql 取得訂單總數（select count(*) from orders），並清空 user、admin 的購物車；結束時放在 finally（失敗也執行）斷言庫存、訂單總數與開始前一致、購物車為空。\n3. 只操作本測試自己建立的訂單（用結帳回傳的 orderNo 記錄），不碰種子訂單。清理時對每一筆：仍是 PENDING 的先用 API 取消（退回庫存）；已出貨的用 psql 依明細補回庫存；最後用 psql 把這些訂單（含已取消的）的明細與訂單全部刪除，訂單總數才會回到開始前。資料庫容器名稱用參數指定，或用 docker ps --filter publish=5432（1-3 章 docker-compose 的主機埠）找。\n4. 流程：未登入點購物袋會開登入表單 -> user 登入 -> 點 .product-card 開商品詳情，用按鈕文字「加入購物袋」定位並加入 2 件（不要假設詳情是彈出視窗還是獨立頁），徽章為 2 -> 抽屜改數量與移除 -> 結帳先出現確認框，按取消後庫存不變 -> 確認結帳，畫面顯示訂單編號，用 API 交叉比對庫存扣 2 -> 我的訂單看到這筆、有明細、沒有出貨鈕 -> 取消（確認框）-> 狀態 CANCELLED、庫存回到原值 -> 用 page.route 讓結帳回 409（含 details），檢查畫面顯示後端 message 與 details。\n5. 權限：user 的 Header 沒有訂單管理入口；直接開 #/admin/orders 顯示僅限管理員；把 localStorage 的 role 改成 ADMIN 後重新整理，後端回 403 時畫面顯示權限錯誤但不登出。出貨：第 4 點的訂單已經取消，先以 user 用 API 再下一筆訂單（加入購物車＋結帳，記入本測試建立的訂單）；admin 登入後在訂單管理頁看到這筆（下單帳號 user），篩選待出貨，出貨（確認框），資料庫狀態變 SHIPPED，user 再取消得到 409。\n6. AI 部分不呼叫真的模型：用 page.route 攔截 POST /api/ai/stream，回固定的 SSE（data: …\\n\\ndata: [DONE]\\n\\n），並記下被攔截的請求，檢查是 POST、Token 在 Authorization 標頭（和頁面 localStorage 的 token 相同）、網址沒有查詢參數、問題放在 JSON 本文。攔截只換掉模型回覆，後端購物車不會變，所以：以 user 開 #/orders（/api/orders/me 只在我的訂單頁讀取），先用 API 在後端替 user 的購物車加 1 件（模擬 AI 工具加入，此時畫面徽章仍是舊數字），再在聊天視窗點「我的購物車有什麼？」；用 waitForRequest 確認回覆結束後前端重新讀取 /api/cart、/api/products、/api/orders/me，並等徽章變成新數字。驗證完清空購物車。另外：攔截後回 401，確認畫面走登出流程；攔截後不回應、在回覆還沒結束時關閉聊天視窗，用 page.waitForEvent(\'requestfailed\') 確認請求被中止；測完以 user 重新登入，再接第 5 點的出貨。\n7. 全程不得出現原生 confirm／alert（page.on(\'dialog\') 計數為 0）。\n8. 失敗時截圖存到 e2e/screenshots/，並印出 console 錯誤。\n寫完實際執行一次給我看結果，再執行第二次，確認第二次也全部通過（資料有被還原）。'
+                content: '幫我寫一支 Playwright 腳本 e2e/verify-cart.mjs 測試購物流程：登入、加入購物車、結帳、查訂單、取消，還有管理員出貨。\nAI 客服的回覆用攔截假造，不要呼叫真的模型。測試結束要把資料還原，連跑兩次都要通過。\n有不清楚的地方先問我。'
               }
             },
             {
@@ -3857,8 +3720,8 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 '到這裡商城的功能都齊了，但畫面還是 2-4 章 AI 自由發揮的樣子。請先把目前的首頁截圖存起來，接著用 <strong>ui-ux-pro-max</strong> 設計技能升級：它內建風格、配色、字體與 UX 規則資料庫，會先依產品類型產生<strong>設計系統</strong>（配色、字體、間距、要避免的樣式），AI 再照設計系統實作，視覺就有依據，不再是模型的預設口味。',
-                '安裝（在 Claude Code 對話框輸入）：<code>/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill</code>，再輸入 <code>/plugin install ui-ux-pro-max@ui-ux-pro-max-skill</code>，重開 VS Code。它的搜尋腳本需要 Python 3（0-1 章已安裝）。',
-                '素材：Hero 大圖、分類情境圖、客服頭像已放在 1-3 章的<a href="assets/downloads/product-images.zip" download>素材包 product-images.zip</a> 的 <code>brand/</code> 資料夾，解壓後放到 <code>frontend/public/images/brand/</code>。',
+                '安裝：在 VS Code 的 Claude Code 插件或 Claude 桌面版開啟插件管理畫面，新增 marketplace <code>nextlevelbuilder/ui-ux-pro-max-skill</code>，再安裝其中的 ui-ux-pro-max 插件，裝完重新開啟。它的搜尋腳本需要 Python 3（0-1 章已安裝）。',
+                '素材：Hero 大圖、分類情境圖、客服頭像已放在 2-4 章的<a href="assets/downloads/product-images.zip" download>素材包 product-images.zip</a> 的 <code>brand/</code> 資料夾，解壓後放到 <code>frontend/public/images/brand/</code>。',
                 '<strong>技能提供素材，方向由你決定</strong>：實測用「premium consumer electronics brand store apple minimal」查設計系統，會得到 Liquid Glass（毛玻璃）風格與黑金配色——這正是我們要避開的 AI 感。所以提示詞分兩步：設計系統只取字體、版面與 UX 檢查清單，配色另外用 color 領域查「Monochrome + blue accent」。這就是用設計技能的正確姿勢：讓它列出有根據的選項，你負責取捨並說明理由。',
                 'ui-ux-pro-max 的完整用法（<code>--domain</code> 補查單一領域、<code>--persist</code> 保存設計系統、三個調整旋鈕、<code>--stack</code> 技術堆疊規則）見<a href="#d2-u10">補充章節 2-10「AI 開發工作流程」</a>。',
                 '提示詞最後會請 AI 用 0-1 章學的 Playwright 寫一支 <code>e2e/verify-upgrade.mjs</code> 驗證升級結果，再重跑本章購物前端之後寫好的 <code>e2e/verify-cart.mjs</code>，確認購物流程沒被改壞；2-8 章的完整 e2e 會再把登入、上架、AI 客服全部驗一次。',
@@ -3867,7 +3730,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 用 ui-ux-pro-max 升級成品牌官網',
-                content: '請用 ui-ux-pro-max 技能，把目前的商城前端升級成「類 Apple 的品牌官網購物網站」，後端 API 不要修改：\n0. 設計系統：先用 ui-ux-pro-max 跑兩次查詢——(a) 設計系統：premium consumer electronics brand store apple minimal，取它的字體、版面與 UX 檢查清單；(b) 配色：用 color 領域查 monochrome minimal blue accent，採用「Monochrome + blue accent」這組配色。列出你採用與捨棄的建議並說明原因。方向固定為：白底與淺灰底、近黑文字、只用一個藍色強調色、大圖留白；不使用漸層、毛玻璃（backdrop-filter）與 3D 效果，建議若與此衝突（例如 Liquid Glass 風格）以限制為準。顏色、字體、圓角定義成 :root 的 CSS 變數。\n1. 素材：素材包 brand 資料夾的 hero.jpg、category-3c.jpg、category-home.jpg、ai-avatar.png、placeholder.svg 放到 frontend/public/images/brand/（商品圖維持 2-4 章放的 frontend/public/images/products/）。\n2. 首頁由上到下：\n   - Header：白色、捲動時固定在頂端（position: sticky），左側品牌名，中間「首頁」「全部商品」連結（「全部商品」捲到全部商品區並清除篩選），右側保留原本的登入／登出／商品上架按鈕，以及購物袋（含數量徽章）、「我的訂單」、ADMIN 才看得到的「訂單管理」入口。\n   - Hero：class 為 hero，深色滿版、背景 hero.jpg，主打無線耳機 Pro（商品 id 為 1），「立即選購」連到 #/product/1。\n   - 四項購物保障：免運、7 天鑑賞期、一年保固、AI 客服，圖示用 SVG。\n   - 兩張分類大圖卡：class 為 category-card，分類值為 3C、居家；點擊後捲到全部商品區並套用該分類篩選。\n   - 本週精選：有庫存且價格最高的 3 件，卡片 class 用 featured-card（不可用 product-card，e2e 會用 product-card 計數）。\n   - 全部商品：預設顯示全部，上方有「全部／3C／居家」三個篩選按鈕。\n   - 深色 Footer。\n   - 購物車抽屜、確認框、我的訂單、訂單管理也套用同一套設計系統：抽屜白底、品項之間用細分隔線；確認框置中、主要按鈕用藍色強調色；訂單狀態標籤用同一色系的淺底色區分（待出貨、已出貨、已送達、已取消），不要用紅綠大色塊。\n3. 商品詳情改成獨立頁：用網址 hash 路由 #/product/{id}（沿用購物前端建立的 hash 路由，不安裝路由套件），原本詳情視窗的「加入購物袋」移到這一頁，頁面根元素 class 為 product-page、商品名稱用 h1；左大圖右資訊（分類、價格、說明、庫存），含「問 AI 客服」按鈕，按下開啟聊天視窗並把「商品名 還有庫存嗎？」放進輸入框（不自動送出）。沒有圖片的商品顯示 placeholder.svg。\n4. AI 客服視窗：標題列加 ai-avatar.png 頭像與關閉鈕（class chat-close）。登入後先顯示一則問候，class 用 chat-greeting（不可用 msg-ai，e2e 用 msg-ai 計算 AI 回覆數），問候下方放 4 個快捷問題按鈕（class chat-chip）「有哪些耳機？」「我的訂單到哪了？」「預算 2000 推薦什麼？」「我的購物車有什麼？」，點一下就直接送出。未登入時視窗內放一個登入按鈕（class 不可用 login-btn，避免和 Header 的登入鈕重複）。\n5. 確保以下 class 與欄位名稱都存在、名稱不變（前面章節的提示詞已指定；改版時保留，萬一缺少就補上）：product-card、sold-out-tag、login-btn、greeting、add-product-btn、logout-btn、chat-toggle、chat-input、chat-send、msg-ai、chat-login-hint、chat-chip；購物與訂單的 cart-btn、cart-badge、cart-drawer、drawer-close、cart-item、qty-minus、qty-plus、remove-btn、checkout-btn、checkout-result、order-no、confirm-dialog、confirm-ok、confirm-cancel、orders-page、order-row（含 data-order-no、data-status、data-username 屬性）、cancel-btn、admin-orders-link、admin-orders-page、order-user、status-filter、ship-btn；以及登入表單 input 的 name（username、password）與上架表單 input 的 name（name、description、price、stock、category、imageUrl）。e2e 測試依賴它們，改完請逐一搜尋確認都還在。\n6. 可用性：按鈕與輸入框至少 44px 高、鍵盤焦點框看得見、圖示用 SVG 不用 emoji、支援 prefers-reduced-motion；手機（390px 寬）全部商品一排兩欄，本週精選改為可左右滑動。元件需有中文註解。\n完成後請在 e2e/ 寫一支 Playwright 腳本 verify-upgrade.mjs 並執行：未登入時首頁有 .hero、2 張 .category-card、.product-card 數量與 GET /api/products 筆數相同；點第一張 .product-card 後出現 .product-page h1 且文字等於商品名稱；再用 user / user123 登入，按「問 AI 客服」確認輸入框已帶入問題。接著重跑本章購物前端之後寫好的 e2e/verify-cart.mjs，確認購物功能沒被改壞。失敗時先分類：選擇器找不到 -> 檢查第 5 點的 class 是否都在，缺了就補回畫面；詳情改成獨立頁造成的操作步驟過時 -> 只更新 verify-cart 的操作步驟；斷言與檢查項目一律不可改或刪除，改了哪些步驟列給我看。最後截圖首頁（桌機與手機）、商品頁、購物車抽屜、我的訂單、訂單管理與客服視窗給我看。'
+                content: '用 ui-ux-pro-max 技能，把商城前端改成像 Apple 官網那種簡潔的品牌購物網站，後端不要改：\n- 白底、近黑文字、只用一個藍色強調色，不要漸層和毛玻璃\n- 首頁要有大圖主視覺、分類、精選商品；商品詳情改成獨立頁面\n- 素材（主視覺、分類圖、客服頭像）我已經放在 frontend/public/images/brand/\n改版前後都跑一次 e2e/verify-cart.mjs，購物功能不能壞；e2e 失敗時只能改操作步驟，不能改檢查項目。\n有不清楚的地方先問我，最後截圖給我看。'
               }
             },
             {
@@ -3879,7 +3742,7 @@ window.COURSE = {
                 body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
               },
               bullets: [
-                '<strong>⚠ 改版前先列出要保留的 class</strong>：章末升級會大改畫面，提示詞第 5 點列出的 class、data 屬性與表單 name 都是 e2e 的選擇器，少一個 e2e 就整批失敗。請 AI 改完先搜尋確認清單裡每一個都還在，再跑 verify-cart。',
+                '<strong>⚠ 改版前後都跑 e2e</strong>：章末升級會大改畫面。請 AI 改版前先跑一次購物流程 e2e 確認全過，改完再跑；選擇器找不到時把元素補回畫面，或只更新 e2e 的操作步驟，檢查項目不能改。',
                 '<strong>⚠ 一次提問只送一次請求，關窗要中止</strong>：在 <code>useEffect</code> 裡發請求，React StrictMode 開發模式會執行兩次，同一個問題送兩次；請 AI 在送出鈕的事件處理函式裡呼叫，並用 Playwright 計算 <code>POST /api/ai/stream</code> 的次數：問 4 次只能有 4 次。AI 也常漏掉 AbortController，關掉聊天視窗後請求還在跑；verify-cart 的「關閉聊天視窗時中止進行中的串流請求」就是檢查這件事。',
                 '<strong>401 和 403 要分開處理</strong>：AI 寫錯誤處理時常一律登出。403 是已登入但沒有權限，只能提示，不能登出；用本章示範的「把 localStorage 的 role 改成 ADMIN」實際測一次。',
                 '<strong>⚠ Token 與問題不放網址</strong>：所有 API（含 AI 串流）都只認 Authorization 標頭。AI 參考網路上的舊範例時，常把串流改回 GET、把 Token 和問題放進網址參數，Token 就會出現在存取日誌與瀏覽器歷史（第一輪演練提出的問題）。看到這種寫法，或在日誌印出 Token，請它改回 fetch + POST。',
@@ -3967,7 +3830,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請為 AI 客服加入「長期記憶」，把對話歷史向量化存入 pgvector：\n1. 建立 ChatHistoryService，提供 saveToVectorStore(username, prompt, response)：把問句與回答組成一份 Document，metadata 加上 username、type=chat_history 與建立時間，再寫入 VectorStore。\n2. 修改 /api/ai/stream：用 doOnNext 收集完整回覆，在 doOnComplete 時以 CompletableFuture.runAsync 非同步寫入向量庫，避免阻塞串流。\n3. 雙路檢索改在 ChatController 內用 vectorStore.similaritySearch 手動實作，並移除 2-3 掛在 /api/ai/stream 上的 QuestionAnswerAdvisor（它只能有一個 filter）：商品文件（type == \'product_doc\'）取前 3 筆、目前登入者的歷史對話（type == \'chat_history\' 且 username 相符）取前 2 筆。\n4. 兩路結果連同「規格、保固、政策依參考資料；庫存、價格、缺貨、訂單必須呼叫工具，不可因參考資料沒有就拒答」的規則放進 system 訊息（不要拼進 user 訊息，否則整包上下文會被短期記憶存起來；system 文字會被當成範本解析，檢索內容裡的大括號要先替換掉）。\n5. 檢索失敗（例外或逾時）時只記錄警告、以空上下文繼續回答，不可讓整個對話失敗。\n6. 2-2 的程式層確認（DirectConfirmationHandler）直接回覆時不經過模型串流，doOnComplete 不會執行：在它寫入短期記憶的同一處，也呼叫 ChatHistoryService.saveToVectorStore(使用者, 使用者訊息, 回覆) 寫入長期記憶（metadata 相同、同樣非同步、失敗只記錄警告；同意、拒絕、被拒絕的執行都要寫），否則重啟後 AI 不知道已經結帳或沒有執行。\n7. 程式碼需有中文函式註解。\n完成後請示範：以 user 聊「我預算三千、想要重低音耳機」，再聊 3 個無關話題，接著重新啟動後端（清空短期記憶，只剩向量庫的長期記憶），再問「根據我之前說的需求推薦商品」，確認 AI 記得預算與偏好，且推薦的是資料庫裡有庫存的商品；改用 admin 問同一句，確認看不到 user 的歷史。'
+                content: '幫 AI 客服加上長期記憶：把對話存進向量資料庫，下次聊天時能想起這個使用者之前說過的需求。\n- 每個使用者只能查到自己的歷史\n- 存記憶不要拖慢回覆；查不到或出錯時照常回答\n有不清楚的地方先問我。做完重啟後端，測試 AI 還記不記得我之前的需求，再換帳號確認看不到別人的。'
               }
             },
             {
@@ -3983,7 +3846,8 @@ window.COURSE = {
                 '<strong>⚠ 檢索結果放 system，不放 user</strong>：拼進 user 訊息，整包上下文會被短期記憶存起來、越滾越大；system 文字會被當成範本解析，檢索內容裡的大括號要先替換掉。',
                 '<strong>檢索失敗只能降級</strong>：第一輪演練時 Voyage 的 DNS 暫時逾時，連訂單問題也回 500。請 AI 用錯誤的 <code>VOYAGE_API_KEY</code> 啟動測一次：日誌出現警告、仍能回答庫存，才算完成（第二輪演練就是這樣驗的）。',
                 '<strong>驗證要避開「剛好成立」</strong>：先聊 3 個無關話題，再重啟後端清掉短期記憶，才能證明答案來自向量庫；少了這兩步，AI 可能只是從短期記憶記得。',
-                '<strong>⚠ 隔離要用另一個帳號驗</strong>：metadata 的 username 過濾寫錯時，user 自己測永遠正常。一定要用 admin 問同一句，確認看不到 user 的偏好。'
+                '<strong>⚠ 隔離要用另一個帳號驗</strong>：metadata 的 username 過濾寫錯時，user 自己測永遠正常。一定要用 admin 問同一句，確認看不到 user 的偏好。',
+                '<strong>⚠ 程式層確認也要存長期記憶</strong>：2-2 的程式層確認（DirectConfirmationHandler）直接回覆時不經過模型串流，串流結束時存長期記憶的程式不會執行。請 AI 在它寫短期記憶的地方也寫入長期記憶，否則重啟後 AI 不知道已經結帳或沒有執行。'
               ]
             }
           ]
@@ -4046,7 +3910,7 @@ window.COURSE = {
               imageAlt: 'MCP 跨服務工具呼叫六步驟流程圖',
               imageCaption: 'Client（8081）透過 SSE 連線呼叫 Server（8080）的工具，@Tool 程式碼完全不用修改。',
               bullets: [
-                '① 使用者呼叫 `GET http://localhost:8081/api/mcp/chat?message=有哪些商品`',
+                '① 使用者呼叫 <code>GET</code> <a href="http://localhost:8081/api/mcp/chat?message=%E6%9C%89%E5%93%AA%E4%BA%9B%E5%95%86%E5%93%81" target="_blank"><code>http://localhost:8081/api/mcp/chat?message=有哪些商品</code></a>',
                 '② MCP Client（port 8081）的 ChatClient 收到訊息，交由 LLM 判斷意圖',
                 '③ AI 判斷需要查商品，透過已建立的 SSE 連線，向 MCP Server（port 8080）發送 getProducts 工具呼叫請求',
                 '④ MCP Server 執行 `ProductTools.getProducts("")` → 查詢 PostgreSQL → 回傳商品 JSON',
@@ -4187,7 +4051,7 @@ window.COURSE = {
               title: '完成畫面樣本（照課程提示詞實際做出來的結果）',
               type: 'text',
               paragraphs: [
-                '以下截圖來自用本課程提示詞從頭實作一遍的演練專案（Spring Boot 4 + Spring AI 2.0.2 + Muse Spark），可以拿來對照自己的成果。注意第 4 張的回答裡有「我來幫你查…正在幫你查…」的過場話與「編號ORD」黏字，可以當作「看圖找問題」的練習：黏字由 2-1 章提示詞第 4 點的不換行空白修正，照最新版做就不會出現；過場話雖然 2-1 的系統提示詞已要求不要說，課前驗證時模型仍常說「我來幫你查…」「正在為您確認…」，提示詞只能減少、無法保證，屬於模型行為。'
+                '以下截圖來自用本課程提示詞從頭實作一遍的演練專案（Spring Boot 4 + Spring AI 2.0.2 + Muse Spark），可以拿來對照自己的成果。注意第 4 張的回答裡有「我來幫你查…正在幫你查…」的過場話與「編號ORD」黏字，可以當作「看圖找問題」的練習：黏字的成因與修法見 2-1 章「AI 開發建議」的「串流要看原始輸出」；過場話雖然 2-1 的系統提示詞已要求不要說，課前驗證時模型仍常說「我來幫你查…」「正在為您確認…」，提示詞只能減少、無法保證，屬於模型行為。'
               ],
               bullets: [
                 '訪客首頁：未登入就能看到商品圖片、價格、庫存，智慧檯燈顯示缺貨標籤<br><a href="assets/samples/01-visitor-home.jpg" target="_blank"><img src="assets/samples/01-visitor-home.jpg" alt="訪客首頁：未登入就能看到商品圖片、價格、庫存，智慧檯燈顯示缺貨標籤" style="width:100%;max-width:640px;border-radius:12px;margin-top:6px;border:1px solid var(--border);"></a>',
@@ -4218,13 +4082,13 @@ window.COURSE = {
               ],
               bullets: [
                 '最低需求：資料庫容器已啟動',
-                '最低需求：`.env` 中已提供可用 API Key',
+                '最低需求：後端專案根目錄的 `.env` 已填好 API Key',
                 '最低需求：JDK 21 與 Maven 3.9+ 已完成版本驗證'
               ],
               code: {
                 language: 'powershell',
                 title: '啟動資料庫與後端應用',
-                content: 'docker compose up -d\nGet-Content .env | ForEach-Object { $line = $_.Trim(); if ($line -and !$line.StartsWith(\"#\") -and $line.Contains(\"=\")) { $key, $value = $line -split \"=\", 2; Set-Item -Path \"env:$($key.Trim())\" -Value $value.Trim() } }\nmvn spring-boot:run'
+                content: 'docker compose up -d\nmvn spring-boot:run   # .env 由 Spring Boot 自己讀，不用先載入'
               }
             },
             {
@@ -4248,7 +4112,7 @@ window.COURSE = {
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞',
-                content: '請幫我對這個兩天課程完成的智慧商城專案做一次完整驗證，並寫成 e2e 腳本以便重跑：\n1. 環境：docker compose 的 PostgreSQL（pgvector）容器為 Up；用 docker exec 查 flyway_schema_history 確認 V1、V2、V3 的 success 為 t（第二次啟動後日誌只會顯示 up to date）；後端用 mvn spring-boot:run 2>&1 | Tee-Object logs/backend.log 啟動並看到 Started 訊息（工具呼叫紀錄從 logs/backend.log 搜尋 [工具呼叫]）；React 前端可啟動。\n2. 商城展示：未登入開啟首頁，看得到資料庫的商品卡片（含價格、庫存、缺貨標籤）。\n3. 商品上架：admin 登入後上架一個新商品，首頁列表立即出現；user 呼叫 POST /api/products 得到 403。\n4. AI 客服（以 user 登入，在聊天視窗逐字顯示回覆）：\n   - 問庫存：「無線耳機 Pro 還有多少庫存？」→ 數字與資料庫一致，後端日誌有 getProductDetail 工具呼叫\n   - 問訂單：「我的訂單出貨了嗎？」→ 只列出 user 自己的訂單與正確狀態，且不得出現 admin 的訂單編號\n   - 問商品細節：「無線耳機 Pro 防水嗎？保固多久？」→ 答案來自 2-3 上傳的規格文件\n   - 問不存在的商品 → 回答查不到，而不是編造\n5. Playwright 腳本放在 e2e/，等待 AI 回覆的逾時至少 120 秒（推理模型單輪可能 10～30 秒）；測試會留下上架商品與對話紀錄，庫存數字不要寫死。\n6. 把每一項結果整理成 Markdown 驗證報告，標出通過與失敗；失敗項目附可能原因與排查建議。'
+                content: '幫我把整個商城做一次完整驗證，寫成可以重跑的 e2e 腳本，放在 e2e/：\n- 首頁商品、商品上架和權限\n- AI 客服：問庫存、問我的訂單、問商品規格、問不存在的商品（AI 回覆比較慢，等待時間抓長一點）\n最後整理成一份驗證報告，失敗的項目附可能原因。有不清楚的地方先問我。'
               }
             },
             {
@@ -4256,32 +4120,12 @@ window.COURSE = {
               type: 'code',
               paragraphs: [
                 '<code>e2e/verify-cart.mjs</code> 在 2-5 章購物前端完成後就寫好了（寫法與注意事項見 2-5 章）。之後又經過章末升級與 2-6 長期記憶，到了總結這一章，先<strong>原封不動重跑</strong>，確認購物流程沒被後面的章節改壞，再把升級後才有的畫面補進同一支腳本。',
-                '重跑失敗時先分類：選擇器找不到（升級改了 class）就對照 2-5 升級提示詞第 5 點把 class 補回畫面，不要改 e2e；操作步驟過時（升級改了頁面流程，例如詳情改成獨立頁）只更新步驟，不改斷言；功能真的壞了才改程式；斷言要放寬時先停下來問你。'
+                '重跑失敗時先分類：選擇器找不到（升級改了 class）就把被改掉的元素或 class 補回畫面，不要改 e2e；操作步驟過時（升級改了頁面流程，例如詳情改成獨立頁）只更新步驟，不改斷言；功能真的壞了才改程式；斷言要放寬時先停下來問你。'
               ],
               code: {
                 language: 'text',
                 title: 'AI Agent 提示詞 — 重跑並擴充購物流程 e2e',
-                content: '2-5 章寫的 e2e/verify-cart.mjs 是章末升級之前寫的。請先原樣執行一次，把結果給我看；有失敗時先分類：選擇器找不到（class 被升級改掉）-> 把 class 補回畫面；操作步驟過時（頁面流程變了）-> 只更新腳本的操作步驟；功能被改壞 -> 先停下來告訴我原因。斷言與檢查項目一律不可改，改了哪些步驟列給我看。改好後連跑兩次都要通過。\n兩次都通過後，在同一支腳本擴充下列檢查（沿用原本的等條件寫法與清理方式，本測試建立的訂單一樣要刪除）：\n1. 商品獨立頁：開 #/product/{id}，.product-page 的 h1 等於商品名稱；按「加入購物袋」加 1 件，徽章與抽屜數量正確，再從抽屜移除。\n2. 分類篩選：首頁點「居家」的 .category-card 後，全部商品區的 .product-card 數量等於 GET /api/products 中分類為居家的筆數。\n3. 客服視窗：user 登入後打開客服，有 .chat-greeting 與 4 個 .chat-chip；用 page.route 攔截 POST /api/ai/stream，點一個 chip 只送出 1 次串流請求（POST）。\n4. 手機寬度：viewport 改成 390px 寬，先用 API 替 user 加 1 件，購物袋按鈕可點、抽屜可開，按結帳出現確認框後按取消，庫存不變，最後清空購物車。\n擴充後再連跑兩次，兩次都全部通過，並用 psql 比對跑前跑後的庫存與訂單數相同。'
-              }
-            },
-            {
-              title: '講師示範：跑購物流程 e2e 並確認資料還原',
-              type: 'code',
-              paragraphs: [
-                '重點不是「跑過了」，而是讓學員看到<strong>連續跑兩次都過</strong>，以及前後的庫存、訂單數完全一樣——這才代表測試會自己收拾。',
-                '<strong>示範前置</strong>：PostgreSQL 容器、後端（8080）、前端（5173）都已啟動；Playwright 已安裝（0-1 章）。不要同時跑其他 e2e 或建置，會互相拖慢造成假的逾時。'
-              ],
-              bullets: [
-                '<strong>步驟 1</strong>：先用 psql 查一次庫存與訂單數，寫在白板上。',
-                '<strong>步驟 2</strong>：執行 <code>node e2e/verify-cart.mjs</code>，邊跑邊解說 PASS 項目：結帳、取消、偽造 ADMIN 的 403、AI 回覆後徽章自動更新、admin 出貨。',
-                '<strong>步驟 3</strong>：最後三行應是「結束：全部商品庫存與開始前一致」「結束：訂單總數與開始前一致」「結束：購物車已清空」與 <code>ALL PASS</code>；再查一次 psql，數字和白板一樣。',
-                '<strong>步驟 4</strong>：立刻再跑一次，仍然全部通過。',
-                '<strong>可能出錯</strong>：某一步逾時 → 先看 <code>e2e/screenshots/</code> 的截圖與 console 錯誤，不要直接把等待時間調長；清理時找不到容器 → 參考實作的腳本用 <code>docker ps --filter publish=埠號</code> 找資料庫容器，確認埠號與 1-3 章 docker-compose 的設定一致；第二次跑失敗 → 第一次的清理沒做完，先用 demo-snapshot.ps1 或 psql 檢查遺留的訂單。'
-              ],
-              code: {
-                language: 'powershell',
-                title: 'PowerShell — 購物流程 e2e',
-                content: '# 跑之前：記下庫存與訂單數（spring-postgres 是 1-3 章的容器名稱，名稱不同時用 docker ps 查）\ndocker exec spring-postgres psql -U postgres learn_spring -tAc "select string_agg(id||\':\'||stock, \',\' order by id) from products; select count(*) from orders"\n\n# 執行（輸出同時存檔，事後可查）\nnode e2e/verify-cart.mjs 2>&1 | Tee-Object logs/verify-cart.log\n\n# 預期輸出（節錄，實測 52 項）\n# PASS 結帳後庫存扣 2（API 交叉比對）\n# PASS 取消後庫存回到原值（API 交叉比對）\n# PASS 偽造 ADMIN：403 沒有觸發登出（仍登入、token 保留、無失效提示）\n# PASS AI 回覆完成後徽章自動更新為 1\n# PASS 已出貨訂單 user 無法取消（API 409）\n# PASS 全程沒有出現原生 confirm/alert 次數 0\n# PASS 結束：全部商品庫存與開始前一致\n# PASS 結束：訂單總數與開始前一致\n# PASS 結束：購物車已清空\n# ALL PASS\n\n# 跑之後：數字應與跑之前相同\ndocker exec spring-postgres psql -U postgres learn_spring -tAc "select string_agg(id||\':\'||stock, \',\' order by id) from products; select count(*) from orders"'
+                content: '重跑購物流程的 e2e（e2e/verify-cart.mjs）。失敗時先告訴我原因：畫面元素找不到就補回畫面，流程變了就只改操作步驟，功能壞了先停下來問我；檢查項目不能改。\n通過後再加上這幾項檢查：商品獨立頁、分類篩選、客服快捷問題、手機版購物車。連跑兩次都要通過。\n有不清楚的地方先問我。'
               }
             },
             {
@@ -4413,16 +4257,16 @@ window.COURSE = {
                 '有自己的網域時，可以得到固定網址（例如 <code>shop.example.com</code>），重啟也不會變，而且支援 SSE。前提是網域的 DNS 交給 Cloudflare 管理。'
               ],
               bullets: [
-                '① 到 dash.cloudflare.com 免費註冊帳號，選 <code>Add a domain</code> 加入你的網域，依畫面指示到網域註冊商把 Nameserver 改成 Cloudflare 提供的兩組（生效需數分鐘到數小時）。',
+                '① 到 <a href="https://dash.cloudflare.com" target="_blank">dash.cloudflare.com</a> 免費註冊帳號，選 <code>Add a domain</code> 加入你的網域，依畫面指示到網域註冊商把 Nameserver 改成 Cloudflare 提供的兩組（生效需數分鐘到數小時）。',
                 '② 進入 <code>Zero Trust</code> → <code>Networks</code> → <code>Tunnels</code> → <code>Create a tunnel</code>，類型選 <code>Cloudflared</code>，取名（如 learn-spring）。',
-                '③ 安裝畫面選 Docker，複製指令裡 <code>--token</code> 後面那一長串 Token，存成環境變數 <code>CLOUDFLARE_TUNNEL_TOKEN</code>（不要寫進 Git）。',
+                '③ 安裝畫面選 Docker，複製指令裡 <code>--token</code> 後面那一長串 Token，寫進 docker-compose.yml 同一個資料夾的 <code>.env</code>（<code>CLOUDFLARE_TUNNEL_TOKEN=…</code>，不要推上 Git）。',
                 '④ 在 <code>Public Hostname</code> 新增：Subdomain 填 <code>shop</code>、Domain 選你的網域、Service 填 <code>http://nginx:80</code>。Cloudflare 會自動建立 DNS 記錄。',
                 '⑤ 把 compose 裡的 tunnel 服務改成下方寫法後重新啟動，開 <code>https://shop.你的網域</code> 驗證。'
               ],
               code: {
                 language: 'yaml',
                 title: 'docker-compose.yml — Named Tunnel（固定網域）',
-                content: '  tunnel:\n    image: cloudflare/cloudflared:latest\n    container_name: spring-tunnel\n    # 轉發規則（shop.你的網域 → http://nginx:80）設定在 Cloudflare 後台\n    command: tunnel --no-autoupdate run\n    environment:\n      # Token 從環境變數或 .env 讀入，不要寫死在檔案裡\n      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}\n    depends_on:\n      - nginx\n    restart: unless-stopped'
+                content: '  tunnel:\n    image: cloudflare/cloudflared:latest\n    container_name: spring-tunnel\n    # 轉發規則（shop.你的網域 → http://nginx:80）設定在 Cloudflare 後台\n    command: tunnel --no-autoupdate run\n    environment:\n      # Token 從同資料夾的 .env 讀入（docker compose 會自動讀），不要寫死在檔案裡\n      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}\n    depends_on:\n      - nginx\n    restart: unless-stopped'
               }
             },
             {
@@ -4444,7 +4288,7 @@ window.COURSE = {
                 body: '標 ⚠ 的是 AI 在這一章常犯的錯、要自己檢查的地方；其餘是提示詞怎麼下、怎麼驗證的建議。'
               },
               bullets: [
-                '<strong>⚠ Token 不進 Git</strong>：Named Tunnel 的 Token 等於通道的鑰匙。AI 為了方便常直接寫進 <code>docker-compose.yml</code>，請它改用環境變數 <code>CLOUDFLARE_TUNNEL_TOKEN</code>，commit 前確認檔案裡沒有。',
+                '<strong>⚠ Token 不進 Git</strong>：Named Tunnel 的 Token 等於通道的鑰匙。AI 為了方便常直接寫進 <code>docker-compose.yml</code>，請它改放 <code>.env</code> 的 <code>CLOUDFLARE_TUNNEL_TOKEN</code>，commit 前確認檔案裡沒有。',
                 '<strong>⚠ 公開前換掉示範帳號的密碼</strong>：admin／admin123 寫在課程講義裡，網址一公開，任何人都能用管理員登入、上架商品、出貨，也會用掉你的 AI 額度。分享前請 AI 改成只有你知道的密碼，<code>JWT_SECRET</code> 也換成新的隨機字串。',
                 '<strong>⚠ 聊天沒有逐字輸出，先懷疑 Quick Tunnel</strong>：Quick Tunnel 不支援 SSE。AI 遇到串流異常時可能去改前後端程式；先改用 Named Tunnel 或非串流端點確認，不要動已經驗證過的程式。',
                 '<strong>容器裡的 localhost 是自己</strong>：AI 常把轉發目標寫成 <code>localhost:8080</code>。cloudflared 在容器裡時要用服務名稱 <code>nginx</code>，後端跑在本機時用 <code>host.docker.internal</code>。',
@@ -4783,10 +4627,10 @@ window.COURSE = {
                 '2-5 章末用 ui-ux-pro-max 把商城升級成品牌官網。它不是模板，而是一個<strong>可搜尋的設計規則資料庫</strong>：84 種風格、192 組配色、74 組字體搭配、192 種產品類型的推理規則、98 條 UX 準則、圖示、GSAP 動態與圖表類型，涵蓋 React、Vue、Flutter、Tailwind 等 22 種技術堆疊。AI 依你的產品類型查詢，取得有根據的設計系統再實作，視覺就不再是模型的預設口味。'
               ],
               bullets: [
-                '<strong>安裝</strong>：照 2-5 章在 Claude Code 對話框用 <code>/plugin marketplace add</code> 與 <code>/plugin install</code> 安裝，重開 VS Code。搜尋腳本只需要 Python 3（0-1 章已安裝），沒有其他依賴。',
+                '<strong>安裝</strong>：照 2-5 章，在 VS Code 的 Claude Code 插件或 Claude 桌面版的插件管理畫面新增 marketplace 並安裝 ui-ux-pro-max，裝完重新開啟。搜尋腳本只需要 Python 3（0-1 章已安裝），沒有其他依賴。',
                 '<strong>腳本位置</strong>：用插件安裝時，搜尋腳本在 <code>~/.claude/plugins/marketplaces/ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/scripts/search.py</code>。平常由 AI 自己呼叫，你想親手查詢時才需要這個路徑。',
                 '<strong>何時會用到</strong>：設計新頁面、改元件、選配色字體、檢查無障礙與手機版。純後端邏輯、API、資料庫設計用不到它。',
-                '<strong>檢查優先順序</strong>：技能把規則分十類並排好優先順序：無障礙（對比 4.5:1、鍵盤操作）與觸控（按鈕至少 44px）最高，接著是效能、風格一致、版面與手機版、字體與配色、動態、表單、導覽、圖表。2-5 升級提示詞第 6 點的可用性要求，就是從這裡來的。',
+                '<strong>檢查優先順序</strong>：技能把規則分十類並排好優先順序：無障礙（對比 4.5:1、鍵盤操作）與觸控（按鈕至少 44px）最高，接著是效能、風格一致、版面與手機版、字體與配色、動態、表單、導覽、圖表。2-5 章末升級驗收畫面時，就照這個順序檢查。',
                 '<strong>查不到時不准編</strong>：技能規定搜尋結果為 0 筆時，要換關鍵字重查一次；仍然沒有就明說「這是內建預設值，不是資料庫的結果」，不能假裝有查到。'
               ]
             },
@@ -4807,7 +4651,7 @@ window.COURSE = {
               code: {
                 language: 'powershell',
                 title: 'PowerShell 7 — ui-ux-pro-max 常用查詢',
-                content: '# 用 /plugin 安裝的腳本位置\n$UX = "$HOME\\.claude\\plugins\\marketplaces\\ui-ux-pro-max-skill\\.claude\\skills\\ui-ux-pro-max\\scripts\\search.py"\n# 輸出含框線與表情符號；若出現 UnicodeEncodeError，先設定輸出編碼\n$env:PYTHONIOENCODING = \'utf-8\'\n\n# 1. 設計系統：一次查產品類型、風格、配色、字體、版面，並列出要避免的樣式\npython $UX "ecommerce electronics store minimal" --design-system -p "My Shop"\n\n# 2. 單一領域補查（--domain）：color、typography、ux、style、landing、chart、icons、gsap……\npython $UX "monochrome minimal blue accent" --domain color\npython $UX "modern clean sans" --domain typography\npython $UX "form error accessibility" --domain ux\n\n# 3. 保存設計系統（--persist）：寫到 .\\design-system\\my-shop\\MASTER.md，之後每一頁都照它做\npython $UX "ecommerce electronics store minimal" --design-system --persist -p "My Shop" --output-dir .\n#    頁面專屬覆寫：另外產生 pages\\checkout.md，規則優先於 MASTER.md\npython $UX "ecommerce electronics store minimal" --design-system --persist -p "My Shop" --output-dir . --page "checkout"\n#    MASTER.md 已存在時 --persist 會跳過不寫；確定要重產才加 --force\n\n# 4. 三個旋鈕（1～10）：variance 變化度、motion 動態、density 密度\npython $UX "admin order dashboard" --design-system --variance 3 --motion 2 --density 8\n\n# 5. 技術堆疊的實作規則（--stack）\npython $UX "form validation error" --stack react\n\n# 輸出成 Markdown 方便存檔：-f markdown；給程式讀：--json'
+                content: '# 用插件管理畫面安裝後的腳本位置\n$UX = "$HOME\\.claude\\plugins\\marketplaces\\ui-ux-pro-max-skill\\.claude\\skills\\ui-ux-pro-max\\scripts\\search.py"\n# 輸出含框線與表情符號；若出現 UnicodeEncodeError，先設定輸出編碼\n$env:PYTHONIOENCODING = \'utf-8\'\n\n# 1. 設計系統：一次查產品類型、風格、配色、字體、版面，並列出要避免的樣式\npython $UX "ecommerce electronics store minimal" --design-system -p "My Shop"\n\n# 2. 單一領域補查（--domain）：color、typography、ux、style、landing、chart、icons、gsap……\npython $UX "monochrome minimal blue accent" --domain color\npython $UX "modern clean sans" --domain typography\npython $UX "form error accessibility" --domain ux\n\n# 3. 保存設計系統（--persist）：寫到 .\\design-system\\my-shop\\MASTER.md，之後每一頁都照它做\npython $UX "ecommerce electronics store minimal" --design-system --persist -p "My Shop" --output-dir .\n#    頁面專屬覆寫：另外產生 pages\\checkout.md，規則優先於 MASTER.md\npython $UX "ecommerce electronics store minimal" --design-system --persist -p "My Shop" --output-dir . --page "checkout"\n#    MASTER.md 已存在時 --persist 會跳過不寫；確定要重產才加 --force\n\n# 4. 三個旋鈕（1～10）：variance 變化度、motion 動態、density 密度\npython $UX "admin order dashboard" --design-system --variance 3 --motion 2 --density 8\n\n# 5. 技術堆疊的實作規則（--stack）\npython $UX "form validation error" --stack react\n\n# 輸出成 Markdown 方便存檔：-f markdown；給程式讀：--json'
               }
             },
             {
@@ -4820,8 +4664,8 @@ window.COURSE = {
               bullets: [
                 '<strong>先訂限制，再查詢</strong>：把「白底、近黑文字、只用一個強調色、不用漸層與毛玻璃」這類限制寫進提示詞，並說明「建議和限制衝突時以限制為準」。沒有限制，AI 很容易照單全收。',
                 '<strong>要 AI 列出採用與捨棄的理由</strong>：每一項建議採用或不採用、為什麼，讓你檢查它的判斷，而不是只看到結果。',
-                '<strong>用 --persist 固定下來</strong>：方向確定後存成 MASTER.md，之後做「我的訂單」「訂單管理」等頁面都照同一份，畫面才會一致。2-5 升級提示詞要求購物車抽屜、確認框、訂單頁「套用同一套設計系統」，就是這個目的。',
-                '<strong>改版要保住測試依賴的 class</strong>：升級提示詞第 5 點列出 e2e 依賴的 class 與欄位名稱。逐字驗證時發現有幾個 class 原本只以 id 存在，是 subagent 升級時補上同名 class 才全部對齊，所以改版前後都要搜尋確認。',
+                '<strong>用 --persist 固定下來</strong>：方向確定後存成 MASTER.md，之後做「我的訂單」「訂單管理」等頁面都照同一份，畫面才會一致。2-5 章末升級時，購物車抽屜、確認框、訂單頁也要套用同一套設計系統，就是這個目的。',
+                '<strong>改版前後都跑 e2e</strong>：改版很容易把 e2e 依賴的 class 或欄位名稱改掉。逐字驗證時發現有幾個 class 原本只以 id 存在，是 subagent 升級時補上同名 class 才全部對齊，所以改版前後都要跑 e2e 確認。',
                 '<strong>用截圖驗收</strong>：升級前先存首頁截圖，升級後用 Playwright 截桌機與手機版比較，視覺好不好由你判斷，不是由 AI 說「已優化」就算數。'
               ]
             },
@@ -4895,7 +4739,7 @@ window.COURSE = {
     verification: [
       '先執行 `docker compose up -d` 啟動 PostgreSQL / pgvector',
       '載入 `.env` 中的 API Key 後執行 `mvn spring-boot:run`',
-      '瀏覽 `http://localhost:8080` 驗證聊天 Demo，再回到教學網站對照章節內容'
+      '瀏覽 <a href="http://localhost:8080" target="_blank"><code>http://localhost:8080</code></a> 驗證聊天 Demo，再回到教學網站對照章節內容'
     ]
   }
 };

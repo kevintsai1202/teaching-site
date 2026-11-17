@@ -5,11 +5,15 @@
 
 .DESCRIPTION
   這是刻意保留的教材，腳本只重現問題、不修它（修法見教材「併發陷阱」段）。
-  原理：checkout 先讀購物車、扣庫存、建訂單，最後才 deleteByUsername 清空購物車，中間沒有鎖住購物車列。
+  原理：常見的結帳寫法是先讀購物車、扣庫存、建訂單，最後才清空購物車，中間沒有鎖住購物車列。
   在 PostgreSQL 預設的 READ COMMITTED 隔離等級下，兩個交易都讀到同一份購物車；庫存夠就都扣得到；
   第二個交易的 delete 刪到 0 列（已被第一個刪掉）也不會報錯 -> 兩筆訂單、庫存扣兩份。
 
-  每一輪：把 2 個商品各 1 件放進購物車 -> 用同一個 token 同時送出兩個 POST /api/orders/checkout
+  結帳與「我的訂單」API 用專案現有的路徑：預設從 Swagger 的 /v3/api-docs 自動找
+  （結帳：路徑含 checkout 的 POST，否則 POST /api/orders；我的訂單：GET /api/orders/me，否則 GET /api/orders），
+  找不到或找錯時用 -CheckoutPath、-MyOrdersPath 指定。
+
+  每一輪：把 2 個商品各 1 件放進購物車 -> 用同一個 token 同時送出兩個結帳請求
           -> 比較這一輪新增了幾筆訂單（1 筆是正常，2 筆就是重現了）。
   結束時一定清理（包含中途失敗）：取消本腳本建立的訂單（API 會退回庫存）、清空購物車；
   有提供資料庫容器時，再用 psql 刪掉這些已取消的訂單與明細；最後比對庫存與開始前一致。
@@ -21,6 +25,8 @@
   pwsh -File .\demo-1-9-double-checkout.ps1 -Rounds 10 -PgContainer rehearsal2-postgres
 .EXAMPLE
   pwsh -File .\demo-1-9-double-checkout.ps1 -Engine ForEachParallel   # 改用 ForEach-Object -Parallel 送請求（課前實測同樣 5 輪 5 中）
+.EXAMPLE
+  pwsh -File .\demo-1-9-double-checkout.ps1 -CheckoutPath /api/orders -MyOrdersPath /api/orders   # 手動指定專案的 API 路徑
 #>
 param(
     # 後端網址
@@ -37,7 +43,10 @@ param(
     [string]$Engine = 'HttpClient',
     # PostgreSQL 容器與資料庫名稱（只用來刪除本腳本建立、已取消的訂單；找不到容器就略過這一步）
     [string]$PgContainer = 'spring-postgres',
-    [string]$Database = 'learn_spring'
+    [string]$Database = 'learn_spring',
+    # 專案的結帳 API（POST）與「我的訂單」API（GET）路徑；留空就從 /v3/api-docs 自動找
+    [string]$CheckoutPath = '',
+    [string]$MyOrdersPath = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -60,8 +69,45 @@ function Get-Stocks {
     $map
 }
 
+<#
+  從 Swagger 的 OpenAPI 文件（/v3/api-docs）找出專案現有的結帳與「我的訂單」路徑。
+  $Doc：OpenAPI 文件物件；回傳 @{ Checkout; MyOrders }，找不到的欄位為 $null。
+  抽成獨立函式，方便不連後端、直接餵假文件測試判斷邏輯。
+#>
+function Find-ShopPaths {
+    param($Doc)
+    # 所有路徑與它支援的 HTTP 方法
+    $paths = @($Doc.paths.PSObject.Properties | ForEach-Object {
+        [pscustomobject]@{ Path = $_.Name; Methods = @($_.Value.PSObject.Properties.Name) }
+    })
+    $has = { param($p, $m) @($paths | Where-Object { $_.Path -eq $p -and $_.Methods -contains $m }).Count -gt 0 }
+    # 結帳：優先找路徑含 checkout 的 POST，否則用 POST /api/orders
+    $checkout = @($paths | Where-Object { $_.Path -match 'checkout' -and $_.Methods -contains 'post' })[0].Path
+    if (-not $checkout -and (& $has '/api/orders' 'post')) { $checkout = '/api/orders' }
+    # 我的訂單：優先 GET /api/orders/me，否則 GET /api/orders
+    $mine = if (& $has '/api/orders/me' 'get') { '/api/orders/me' } elseif (& $has '/api/orders' 'get') { '/api/orders' } else { $null }
+    @{ Checkout = $checkout; MyOrders = $mine }
+}
+
+<# 決定本次使用的路徑：參數優先，否則自動偵測；仍找不到就停下來請講師指定 #>
+function Resolve-ShopPaths {
+    if ($CheckoutPath -and $MyOrdersPath) { return }
+    try {
+        $found = Find-ShopPaths (Invoke-RestMethod "$BaseUrl/v3/api-docs")
+    } catch {
+        $found = @{}
+        Write-Host "讀不到 $BaseUrl/v3/api-docs（專案沒有 Swagger 或沒有放行）" -ForegroundColor Yellow
+    }
+    if (-not $script:CheckoutPath) { $script:CheckoutPath = $found.Checkout }
+    if (-not $script:MyOrdersPath) { $script:MyOrdersPath = $found.MyOrders }
+    if (-not $script:CheckoutPath -or -not $script:MyOrdersPath) {
+        Write-Host '找不到結帳或我的訂單 API，請用 -CheckoutPath、-MyOrdersPath 指定專案的路徑（Swagger 頁面可查）' -ForegroundColor Red
+        exit 1
+    }
+}
+
 <# 目前帳號的訂單編號清單 #>
-function Get-MyOrderNos { @((Invoke-Api GET '/api/orders/me' $token).Body | ForEach-Object orderNo) }
+function Get-MyOrderNos { @((Invoke-Api GET $MyOrdersPath $token).Body | ForEach-Object orderNo) }
 
 <# 清空目前帳號的購物車（走 API） #>
 function Clear-Cart {
@@ -75,7 +121,7 @@ function Send-TwoCheckouts {
     if ($Engine -eq 'HttpClient') {
         # 兩個非同步請求先後「發出」只差幾微秒，伺服器端幾乎同時開始處理
         $tasks = 1..2 | ForEach-Object {
-            $req = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::Post, "$BaseUrl/api/orders/checkout")
+            $req = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::Post, "$BaseUrl$CheckoutPath")
             $req.Headers.Authorization = [System.Net.Http.Headers.AuthenticationHeaderValue]::new('Bearer', $token)
             $client.SendAsync($req)
         }
@@ -83,7 +129,7 @@ function Send-TwoCheckouts {
         return @($tasks | ForEach-Object { [int]$_.Result.StatusCode })
     }
     # ForEach-Object -Parallel：每個請求在自己的 runspace 執行；runspace 啟動有時間差，機器很忙時兩個請求可能被錯開
-    $url = "$BaseUrl/api/orders/checkout"; $t = $token
+    $url = "$BaseUrl$CheckoutPath"; $t = $token
     @(1..2 | ForEach-Object -ThrottleLimit 2 -Parallel {
         Invoke-WebRequest -Method Post -Uri $using:url -Headers @{ Authorization = "Bearer $using:t" } `
             -SkipHttpErrorCheck | ForEach-Object StatusCode
@@ -97,6 +143,8 @@ try {
 } catch {
     Write-Host "登入失敗：$($_.Exception.Message)（後端是否已啟動？）" -ForegroundColor Red; exit 1
 }
+Resolve-ShopPaths
+Write-Host "使用的 API：結帳 POST $CheckoutPath、我的訂單 GET $MyOrdersPath"
 $client = [System.Net.Http.HttpClient]::new()
 
 # 開始前快照：庫存、這個帳號原本的訂單（結束時必須一樣）

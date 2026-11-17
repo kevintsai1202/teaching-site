@@ -29,20 +29,13 @@ const STREAM_COMPARE_TITLE = '為什麼不用 EventSource：改用 fetch 讀取�
 const EXPECTED = {
   '0-1': ['先把 PowerShell 升級到 7：課程指令的執行環境', 'macOS 對照：用 Homebrew 安裝課程環境'],
   '1-9': [
-    '下半場：登入後的購物車、結帳與訂單',
+    // 2026-11-18 改版：下半場改為「請 AI 盤點補完購物 API → 安全性盤點」，提示詞改成口語短版
+    '下半場：補完購物 API，再做一次安全性盤點',
     '步驟 0：Testcontainers——測試有自己的乾淨資料庫',
-    '步驟 1：Flyway V3——已上線的資料表怎麼安全改結構',
-    '步驟 2：購物車 API——完整走一次紅 → 綠 → 重構',
-    '步驟 3：結帳——交易、條件式扣庫存與整筆回滾',
-    '步驟 4：取消訂單與管理員出貨',
-    '真實的紅燈長什麼樣子（課前演練的 mvn test 輸出節錄）',
-    '講師示範：TDD 紅綠燈現場跑',
-    '講師示範：用 PowerShell 走一次購物 API',
-    'Spring Security 進階：URL 規則 vs @PreAuthorize',
-    'AI Agent 提示詞 — 管理員查全部訂單與方法層級授權',
-    '講師示範：401／403／200',
+    '步驟 1：請 AI 盤點並補完購物 API',
+    '步驟 2：安全性盤點——帳號從 Token 取得、管理員 API 雙重防護',
+    'AI Agent 提示詞 — 安全性盤點',
     '併發陷阱：同一份購物車被結成兩筆訂單',
-    '講師示範：重現併發陷阱',
     '進階任務：請 AI 先寫會失敗的併發測試，再修',
   ],
   '2-2': [
@@ -51,13 +44,11 @@ const EXPECTED = {
     '程式層確認：明確的同意與拒絕由後端直接處理',
     '系統提示詞規則與 toolContext（原文）',
     'AI Agent 提示詞 — 購物車工具與先詢問再執行',
-    '講師示範：幫我結帳 → 確定／不要',
   ],
   '2-5': [
     '購物前端：購物袋、抽屜、確認框與訂單頁',
     'api.js：先看狀態碼，401 與 403 分開處理',
     'AI Agent 提示詞 — 購物車與訂單前端',
-    '講師示範：前端購物流程與 admin 出貨',
     // verify-cart 在購物前端完成後就寫（章末升級才有回歸檢查可用）
     'e2e：購物流程 verify-cart 的寫法與注意事項',
     // 購物前端完成畫面樣本（scripts/capture-shop-samples.mjs 從參考實作擷取）
@@ -68,7 +59,6 @@ const EXPECTED = {
   ],
   '2-8': [
     '購物流程 e2e：重跑與擴充',
-    '講師示範：跑購物流程 e2e 並確認資料還原',
   ],
 };
 
@@ -81,14 +71,13 @@ const MUST = {
     'accessDeniedHandler',                                    // #2 403 處理
     '@Value(\\"${JWT_SECRET:}\\")',                            // #3 範例讀環境變數
     'new LoginResponse(token, authentication.getName(), role)', // #4
-    'mvn spring-boot:run 與 mvn test 都要',                    // #6
-    '可以先在 OrderService 加上 checkout(String username) 的空方法簽章', // #7 #8
-    '先建立空的 AdminOrderController 與 AdminOrderView',       // #7
-    '格式「商品名稱（需要 N 件，庫存 M 件）」',                 // #9
-    '寫 V3 時可能被權限擋下',                                  // 任務 4
+    'optional:file:.env[.properties]',                        // #6 金鑰放 .env，由 spring.config.import 讀取
+    'DROP CONSTRAINT',                                         // 任務 4：新遷移可能被權限分類器擋下
     '跑測試可能被權限擋下',                                    // 任務 3
+    '不能讓前端自己指定',                                      // 安全性盤點：帳號改從 Token 取得
+    '有不清楚的地方先問我',                                    // 口語提示詞：AI 有疑問先反問
   ],
-  '2-1': ['moderation、embedding 都設為 none', '$token = (Invoke-RestMethod', 'Successfully validated 3 migrations', 'Started ShopApplication',
+  '2-1': ['moderation: none', '$token = (Invoke-RestMethod', 'Successfully validated 3 migrations', 'Started ShopApplication',
     // AI 串流改 POST：端點、@RequestBody 範例、PowerShell 7 以管線把 UTF-8 JSON 交給 curl.exe
     'POST /api/ai/stream', '@RequestBody ChatRequest request', "--data-binary '@-'"],
   '2-2': [
@@ -101,30 +90,25 @@ const MUST = {
     '[程式層確認] 同意',                                        // 示範看日誌
     '由系統直接處理，不會交給你',                               // 系統提示詞原文（rehearsal2 現行版）
     '單獨的「取消」也算拒絕',
-    '同意、拒絕、被拒絕的執行都要寫',                           // 寫入短期記憶
+    '同意、拒絕、被拒絕的執行（例如購物車已變動）都要寫',                           // 寫入短期記憶
     '@RequestBody ChatRequest request',                         // 串流端點範例為 POST
   ],
   '2-6': ['DirectConfirmationHandler）直接回覆時不經過模型串流', '@RequestBody ChatRequest request'], // 程式層確認也寫入長期記憶；範例為 POST
-  '2-3': ['提到到貨後 7 天內的鑑賞期', 'GET /api/rag/query?question=', 'filename（上傳的檔名）'],
-  '2-4': ['class 為 sold-out-tag', 'class 為 login-btn', 'class 為 chat-toggle', 'image_url 是空的商品'],
+  '2-3': ['提到到貨後 7 天內的鑑賞期', 'VOYAGE_API_KEY'],
+  // 2-4 不再指定 class 名稱：e2e 由 AI 讀畫面挑選擇器；示範商品圖片從 1-3 搬到本章
+  '2-4': ['示範商品圖片（下載放進前端專案）', '風格與命名都交給 AI'],
   '2-5': [
     // AI 串流改 fetch + POST（Token 只走 Authorization 標頭、問題放 JSON 本文）
     'POST /api/ai/stream',
     'response.body.getReader()', 'new TextDecoder', '依空行切出完整事件', 'AbortController',
     '所有 API（含 AI 串流）都只認 Authorization 標頭',
     'HttpOnly Cookie', 'SameSite', '一次性票證', 'polyfill',  // 其他替代方案與取捨
-    'class chat-login-hint', 'class add-product-btn', 'name 為 username、password', // #14
-    '確保以下 class 與欄位名稱都存在',
-    '重跑本章購物前端之後寫好的 e2e/verify-cart.mjs',          // #15
     'body 不是統一錯誤格式',                                   // 401/403 描述
-    '最後用 psql 把這些訂單（含已取消的）的明細與訂單全部刪除', // #17 第 3 點
-    '先用 API 在後端替 user 的購物車加 1 件',                   // #17 第 6 點
-    '先以 user 用 API 再下一筆訂單',                            // #17 第 5 點
-    '選擇器只用提示詞指定的 class、data 屬性、input name 與按鈕文字', // 升級後 verify-cart 仍可沿用
-    '只更新 verify-cart 的操作步驟；斷言與檢查項目一律不可改',
-    '實作時 class 以提示詞為準',                                // ChatRoom 範例與提示詞的 class
+    '先以 user 用 API 再下一筆訂單',                            // e2e 注意事項：出貨要另建待出貨訂單
+    '改版前後都跑 e2e',                                         // 章末升級：不靠固定 class，靠 e2e 回歸
+    '不能改檢查項目',
   ],
-  '2-8': ['原封不動重跑', '提示詞只能減少、無法保證', '操作步驟過時', '斷言與檢查項目一律不可改',
+  '2-8': ['原封不動重跑', '提示詞只能減少、無法保證', '操作步驟過時', '檢查項目不能改',
     '攔截 POST /api/ai/stream'],
 };
 
@@ -136,7 +120,7 @@ const STREAM_LEGACY = [
   '只有 SSE 聊天端點', 'Query Token',
 ];
 const MUST_NOT = {
-  '1-9': ['商品查詢 API 需登入身分即可', 'SECRET_STRING', 'CustomUserDetailsService', '新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\\n# [OK  ] user 結帳（庫存只剩不夠了）\\n#        POST /api/orders/checkout -> 預期 409，實際 409\\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件）\\n'],
+  '1-9': ['/api/orders/me', '商品查詢 API 需登入身分即可', 'SECRET_STRING', 'CustomUserDetailsService', '新訂單 ORD-20261116-1061，狀態 PENDING，總金額 3780，庫存 30 -> 28\\n# == E. 結帳時庫存不足：加入時有貨，結帳前被別人買走\\n# [OK  ] user 結帳（庫存只剩不夠了）\\n#        POST /api/orders/checkout -> 預期 409，實際 409\\n#        message：庫存不足，無法結帳：香氛加濕器（需要 18 件）\\n'],
   '2-1': ['LearnSpringApplication', 'validated 2 migrations'],
   '2-2': [
     '加入假的金鑰',
@@ -151,12 +135,9 @@ const MUST_NOT = {
 
 // 講師示範腳本（必須可下載，且頁面上要有連結）
 const DEMOS = [
-  'demo-1-9-tdd-red-green.ps1',
-  'demo-1-9-shop-api.ps1',
-  'demo-1-9-security.ps1',
-  'demo-1-9-double-checkout.ps1',
-  'demo-2-2-ai-confirm.ps1',
-  'demo-snapshot.ps1',
+  // demo-1-9-tdd-red-green／shop-api／security 隨舊步驟 1～4 移除，頁面不再連結（檔案仍保留在 assets/demo/）
+  // 1-9 講師示範（重現併發陷阱）也已移除，demo-1-9-double-checkout.ps1 不再連結（檔案仍保留）
+  // Day 2 講師示範段落已移除（AI 提示詞本身就是示範），demo-2-2-ai-confirm、demo-snapshot 不再連結（檔案仍保留）
 ];
 
 // 2-5 完成畫面樣本（必須被 2-5 引用、可下載、是 jpg 且小於 300KB）
@@ -259,16 +240,14 @@ try {
     }
     console.log(`PASS ${chapter}：${titles.length} 個新段落都已渲染`);
     if (chapter === '1-9') {
-      // 展開「講師示範：重現併發陷阱」，確認下載連結與 PowerShell 程式碼都顯示，並截圖存證
-      const h = page.getByText('講師示範：重現併發陷阱').first();
+      // 展開「併發陷阱」段落，確認兩種修法的示意程式碼顯示，並截圖存證（講師示範段落已移除）
+      const h = page.getByText('併發陷阱：同一份購物車被結成兩筆訂單').first();
       await h.scrollIntoViewIfNeeded();
       await h.click();
-      const link = page.locator('a[href="assets/demo/demo-1-9-double-checkout.ps1"]').first();
-      await link.waitFor({ state: 'visible', timeout: 10000 });
-      await page.getByText('[System.Threading.Tasks.Task]::WaitAll', { exact: false }).first().waitFor({ state: 'visible', timeout: 10000 });
+      await page.getByText('修法 A：比對刪除列數', { exact: false }).first().waitFor({ state: 'visible', timeout: 10000 });
       await h.scrollIntoViewIfNeeded();
       await page.screenshot({ path: 'data/screenshots/verify-shop-cart-course-1-9.png' });
-      console.log('PASS 1-9：展開講師示範後，下載連結與 PowerShell 程式碼可見');
+      console.log('PASS 1-9：展開併發陷阱段落後，修法說明可見');
     }
   }
 
@@ -295,7 +274,9 @@ try {
       assert.ok(!text.includes(bad), `${name} 仍把 Token 放在網址：${bad}`);
     }
   }
-  console.log(`PASS ${DEMOS.length} 支講師示範腳本都有連結且可下載`);
+  // 講師示範段落全部移除（AI 提示詞本身就是示範），頁面不應再連結 assets/demo/ 的腳本
+  assert.strictEqual(pageHrefs.size, 0, `頁面仍連結講師示範腳本：${[...pageHrefs].join(', ')}`);
+  console.log('PASS 頁面已不再連結講師示範腳本');
 
   // 2-5 完成畫面樣本：資料有引用、圖片可下載（200、image/jpeg、< 300KB），展開段落後圖片實際載入並截圖
   for (const name of SHOP_SAMPLES) {
