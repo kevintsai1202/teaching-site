@@ -3993,6 +3993,9 @@ window.COURSE = {
               paragraphs: [
                 '把 SkillsTool 與需要的 Agent 工具透過 defaultTools 掛入 ChatClient：SkillsTool 啟動時讀取指定路徑下的 SKILL.md，平時只讓模型看到技能描述，任務匹配時才載入完整內容（漸進式載入）— 與 Claude Code 載入 Skill 的行為一致。'
               ],
+              image: 'assets/teaching-site/28-diagram-prompt-structure.png',
+              imageAlt: 'Spring AI 提示詞組裝結構圖：System、Memory、RAG、Tools、MCP、Skills 如何組成一次 Chat Request',
+              imageCaption: '一次 Chat Request 由 messages[]（System／History／User + RAG）、tools[]（本地工具、MCP 工具、Skills 摘要）與 options 組成；模型回傳 tool_call 後進入 Tool Calling 迴圈，SkillsTool 被呼叫時才回傳完整 SKILL.md。',
               code: {
                 language: 'java',
                 title: 'ChatClient 整合 SkillsTool（節錄）',
